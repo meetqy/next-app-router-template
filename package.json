@@ -4,24 +4,30 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "build": "next build --turbopack && node scripts/copy-content-to-build.mjs",
     "start": "next start",
     "lint": "eslint",
-    "images:upload": "node scripts/upload-images.mjs"
+    "images:manifest": "node scripts/generate-image-manifest.mjs",
+    "images:upload": "node scripts/upload-images.mjs",
+    "submit:baidu": "node scripts/submit-baidu-urls.mjs",
+    "submit:indexnow": "node scripts/submit-indexnow-urls.mjs"
   },
   "dependencies": {
+    "@t3-oss/env-nextjs": "^0.12.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^0.540.0",
+    "lucide-react": "^1.17.0",
     "next": "^16.3.0",
     "radix-ui": "^1.6.7",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "tailwind-merge": "^3.3.1"
+    "tailwind-merge": "^3.3.1",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/typography": "^0.5.20",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

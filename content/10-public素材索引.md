@@ -1,0 +1,141 @@
+# public 素材索引
+
+public 目录已经复制到知识库目录下，知识库内素材根路径为 `public/`。项目页面中的图片路径一般以 `/` 开头，例如 `/assets/校区环境1.png`，在知识库中对应为 `public/assets/校区环境1.png`。
+
+## 图片素材
+
+- public/老师/世茂校区/曾毅.png
+- public/老师/世茂校区/陈杨林.png
+- public/老师/世茂校区/炊晓敏.png
+- public/老师/世茂校区/代为.png
+- public/老师/世茂校区/高玉梅.png
+- public/老师/世茂校区/巩灏炜.png
+- public/老师/世茂校区/顾芯月.png
+- public/老师/世茂校区/何秀群.png
+- public/老师/世茂校区/胡晓妍.png
+- public/老师/世茂校区/蒋丽玲.png
+- public/老师/世茂校区/冷倩.png
+- public/老师/世茂校区/李澄蔚.png
+- public/老师/世茂校区/李海川.png
+- public/老师/世茂校区/李佳.png
+- public/老师/世茂校区/李育哲.png
+- public/老师/世茂校区/梁灿.png
+- public/老师/世茂校区/刘涛.png
+- public/老师/世茂校区/戚智华.png
+- public/老师/世茂校区/孙海洋.png
+- public/老师/世茂校区/王凤姣.png
+- public/老师/世茂校区/王小飞.png
+- public/老师/世茂校区/吴涛.png
+- public/老师/世茂校区/夏彬.png
+- public/老师/世茂校区/肖海艳.png
+- public/老师/世茂校区/肖鹏.png
+- public/老师/世茂校区/谢琲.png
+- public/老师/世茂校区/熊伟.png
+- public/老师/世茂校区/阳宇航.png
+- public/老师/世茂校区/杨红琴.png
+- public/老师/世茂校区/袁晓芳.png
+- public/老师/世茂校区/张金涛.png
+- public/老师/世茂校区/张梦敏.png
+- public/老师/世茂校区/张萍.png
+- public/老师/世茂校区/张荣希.png
+- public/老师/世茂校区/张雨寒.png
+- public/老师/世茂校区/郑天奕.png
+- public/老师/世茂校区/周洁.png
+- public/老师/顺吉校区/车思雨.jpg
+- public/老师/顺吉校区/陈明琪.jpg
+- public/老师/顺吉校区/陈勇.jpg
+- public/老师/顺吉校区/朵澜涛.jpg
+- public/老师/顺吉校区/冯坤林.jpg
+- public/老师/顺吉校区/韩帅.jpg
+- public/老师/顺吉校区/黄军霖.jpg
+- public/老师/顺吉校区/雷小亮.jpg
+- public/老师/顺吉校区/黎佳丽.jpg
+- public/老师/顺吉校区/李锡山.jpg
+- public/老师/顺吉校区/廖咏冬.jpg
+- public/老师/顺吉校区/林小伟.jpg
+- public/老师/顺吉校区/陆富贵.jpg
+- public/老师/顺吉校区/彭川福.jpg
+- public/老师/顺吉校区/彭婧.jpg
+- public/老师/顺吉校区/王丽.jpg
+- public/老师/顺吉校区/王薇.jpg
+- public/老师/顺吉校区/王钰婷.jpg
+- public/老师/顺吉校区/夏琪.jpg
+- public/老师/顺吉校区/谢强.jpg
+- public/老师/顺吉校区/杨利达.jpg
+- public/老师/顺吉校区/杨启超.jpg
+- public/老师/顺吉校区/张峻.jpg
+- public/老师/顺吉校区/张小英.jpg
+- public/老师/顺吉校区/张宇帆.jpg
+- public/老师/顺吉校区/周行.jpg
+- public/喜报/2025/1.jpg
+- public/喜报/2025/2.jpg
+- public/喜报/2025/3.jpg
+- public/喜报/2025/4.jpg
+- public/喜报/2025/5.jpg
+- public/喜报/2025/6.jpg
+- public/喜报/2025/7.jpg
+- public/校区/花千集/高三.jpg
+- public/校区/花千集/高中.jpg
+- public/校区/花千集/门头 1.JPG
+- public/校区/花千集/门头 2.JPG
+- public/校区/花千集/门头 3.JPG
+- public/校区/花千集/数交班.jpg
+- public/校区/花千集/小学.jpg
+- public/校区/花千集/新高一.jpg
+- public/校区/花千集/英语.jpg
+- public/assets/2027招生简章封面主视觉占位.jpg
+- public/assets/高考全日制项目介绍600x400.jpg
+- public/assets/高考提分解决方案-(4).jpg
+- public/assets/高考提分解决方案-(4).png
+- public/assets/教学管理体系.jpg
+- public/assets/老师1-王平.jpg
+- public/assets/老师2-罗南兴.jpg
+- public/assets/老师3-宋强.jpg
+- public/assets/老师4-刘佩玲.jpg
+- public/assets/四馆场景图占位.jpg
+- public/assets/校区环境1.png
+- public/assets/校区环境2.jpg
+- public/assets/校区环境3.jpg
+- public/assets/校区环境4.jpg
+- public/assets/校区环境5.jpg
+- public/assets/校区环境6.png
+- public/assets/校园环境图占位.jpg
+- public/assets/资讯配图占图1.jpg
+- public/assets/资讯配图占图2.jpg
+- public/assets/资讯配图占图3.jpeg
+- public/favicon.ico
+- public/honors/1.jpeg
+- public/honors/2.jpeg
+- public/honors/3.png
+- public/honors/4.jpeg
+- public/honors/5.jpeg
+- public/honors/6.jpeg
+- public/honors/7.jpeg
+- public/honors/8.jpeg
+- public/honors/9.png
+- public/honors/10.png
+- public/honors/11.png
+- public/logo.png
+
+## 非图片文件
+
+- public/8d76a0c7632d2c12d6491406a9b6eec5.txt
+- public/b11f26b1b457208ce32b7a7d277117d2.txt
+- public/baidu_verify_codeva-BJ9sLzZpFn.html
+- public/baidu_verify_codeva-cLlSAHhTrY.html
+- public/baidu_verify_codeva-FRyYgRORtW.html
+- public/baidu_verify_codeva-UNSIDGcVTJ.html
+- public/BingSiteAuth.xml
+- public/shenma-site-verification.txt
+- public/sogousiteverification.txt
+
+## 常用匹配关系
+
+- 首页主视觉：/assets/高考提分解决方案-(4).png -> public/assets/高考提分解决方案-(4).png
+- 高考全日制介绍图：/assets/高考全日制项目介绍600x400.jpg -> public/assets/高考全日制项目介绍600x400.jpg
+- 教学管理体系图：/assets/教学管理体系.jpg -> public/assets/教学管理体系.jpg
+- 荣誉资质图：/honors/1.jpeg 至 /honors/11.png -> public/honors/
+- 升学喜报图：/喜报/2025/1.jpg 至 /喜报/2025/7.jpg -> public/喜报/2025/
+- 世茂校区老师图：/老师/世茂校区/姓名.png -> public/老师/世茂校区/
+- 顺吉校区老师图：/老师/顺吉校区/姓名.jpg -> public/老师/顺吉校区/
+- 花千集校区图：/校区/花千集/文件名 -> public/校区/花千集/
