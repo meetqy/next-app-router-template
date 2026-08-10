@@ -1,6 +1,6 @@
 # Next.js App Router Demo Project
 
-An interactive demonstration project showcasing Next.js 15 App Router core features, including layout systems, file conventions, and routing functionality with complete examples.
+An interactive demonstration project showcasing Next.js 16 App Router core features, including layout systems, file conventions, and routing functionality with complete examples.
 
 ## 🚀 Project Features
 
@@ -14,7 +14,7 @@ An interactive demonstration project showcasing Next.js 15 App Router core featu
   - `not-found.js` - 404 page customization
 
 ### Tech Stack
-- **Next.js 15.5.0** - Latest version of App Router
+- **Next.js 16.3.0** - Latest stable version of App Router
 - **TypeScript** - Complete type support
 - **Tailwind CSS v4** - Modern styling system
 - **shadcn/ui** - High-quality UI component library
@@ -66,7 +66,7 @@ app-router-template/
 ├── public/                          # Static assets
 ├── package.json                     # Project dependencies
 ├── next.config.ts                   # Next.js configuration
-├── tailwind.config.ts               # Tailwind configuration
+├── postcss.config.mjs               # Tailwind CSS v4 PostCSS integration
 └── tsconfig.json                    # TypeScript configuration
 ```
 
@@ -83,7 +83,7 @@ The project adopts a modern dark theme design:
 ## 🛠️ Quick Start
 
 ### Requirements
-- Node.js 18.17 or higher
+- Node.js 20.9 or higher
 - npm or yarn package manager
 
 ### Install Dependencies
@@ -201,7 +201,7 @@ Implements true parallel routing features:
 - [Route Groups](https://nextjs.org/docs/app/building-your-application/routing/route-groups)
 
 ### Related Technologies
-- [React 18](https://react.dev/)
+- [React 19](https://react.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)

@@ -1,6 +1,6 @@
 # Next.js App Router 演示项目
 
-一个交互式演示 Next.js 15 App Router 核心特性的项目，包含布局系统、文件约定和路由功能的完整示例。
+一个交互式演示 Next.js 16 App Router 核心特性的项目，包含布局系统、文件约定和路由功能的完整示例。
 
 ## 🚀 项目特性
 
@@ -14,7 +14,7 @@
   - `not-found.js` - 404页面定制
 
 ### 技术栈
-- **Next.js 15.5.0** - 最新版本的 App Router
+- **Next.js 16.3.0** - 当前稳定版 App Router
 - **TypeScript** - 完整的类型支持
 - **Tailwind CSS v4** - 现代化样式系统
 - **shadcn/ui** - 高质量UI组件库
@@ -66,7 +66,7 @@ app-router-template/
 ├── public/                          # 静态资源
 ├── package.json                     # 项目依赖
 ├── next.config.ts                   # Next.js 配置
-├── tailwind.config.ts               # Tailwind 配置
+├── postcss.config.mjs               # Tailwind CSS v4 PostCSS 集成配置
 └── tsconfig.json                    # TypeScript 配置
 ```
 
@@ -83,7 +83,7 @@ app-router-template/
 ## 🛠️ 快速开始
 
 ### 环境要求
-- Node.js 18.17 或更高版本
+- Node.js 20.9 或更高版本
 - npm 或 yarn 包管理器
 
 ### 安装依赖
@@ -201,7 +201,7 @@ edgeone pages dev
 - [Route Groups](https://nextjs.org/docs/app/building-your-application/routing/route-groups)
 
 ### 相关技术
-- [React 18](https://react.dev/)
+- [React 19](https://react.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [shadcn/ui](https://ui.shadcn.com/)
