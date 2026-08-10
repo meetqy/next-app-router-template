@@ -27,6 +27,7 @@ import {
 	SITE_HOTLINE_TEXT,
 	UTILITY_LINKS,
 } from "@/lib/constants/site";
+import { imageUrl } from "@/lib/image-url";
 
 export function GlobalHeader() {
 	const handlePrimaryTriggerMouseDown = (
@@ -75,7 +76,7 @@ export function GlobalHeader() {
 							className="h-9 w-auto object-contain sm:h-10 lg:h-12"
 							height={974}
 							priority
-							src="/logo.png"
+							src={imageUrl("/logo.png")}
 							width={3216}
 						/>
 					</Link>

@@ -2,12 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { PhoneButton } from "@/components/phone-action";
 import { SITE_FULL_NAME } from "@/lib/constants/site";
+import { imageUrl } from "@/lib/image-url";
 
 export function HeroBanner() {
   return (
     <section className="relative w-full overflow-hidden">
       <div className="relative h-144 w-full md:h-168">
-        <Image alt="戴氏教育高考提分主视觉" className="object-cover" fill priority sizes="100vw" src="/assets/高考提分解决方案-(4).png" />
+        <Image alt="戴氏教育高考提分主视觉" className="object-cover" fill priority sizes="100vw" src={imageUrl("/assets/高考提分解决方案-(4).png")} />
       </div>
       <div className="absolute inset-0 bg-slate-950/55" />
       <div className="absolute inset-0">

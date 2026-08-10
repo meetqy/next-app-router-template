@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { imageUrl } from "@/lib/image-url";
 
 export function FullTimeProgram() {
 	return (
@@ -35,7 +36,7 @@ export function FullTimeProgram() {
 							className="object-cover"
 							fill
 							sizes="(min-width: 768px) 50vw, 100vw"
-							src="/assets/高考全日制项目介绍600x400.jpg"
+							src={imageUrl("/assets/高考全日制项目介绍600x400.jpg")}
 						/>
 					</div>
 				</div>

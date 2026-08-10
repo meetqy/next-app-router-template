@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SITE_FULL_NAME } from "@/lib/constants/site";
+import { imageUrl } from "@/lib/image-url";
 
 const campusImages = [
 	{ src: "/assets/校区环境1.png", alt: "校区环境展示一" },
@@ -41,7 +42,7 @@ export function CampusEnvironment() {
 								className="object-cover"
 								fill
 								sizes="(min-width: 768px) 33vw, 50vw"
-								src={image.src}
+								src={imageUrl(image.src)}
 							/>
 						</div>
 					))}

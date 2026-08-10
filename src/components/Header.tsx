@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { imageUrl } from "@/lib/image-url";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -40,7 +41,7 @@ export default function Header() {
               <div className="flex items-center space-x-3">
                 <div className="w-6 h-6 rounded-full flex items-center justify-center">
                   <Image
-                    src="/eo-logo-blue.svg"
+                    src={imageUrl("/eo-logo-blue.svg")}
                     alt="EdgeOne Pages"
                     width={32}
                     height={32}
@@ -98,7 +99,7 @@ export default function Header() {
             <div className="flex items-center space-x-2">
               <div className="w-5 h-5 rounded-full flex items-center justify-center">
                 <Image
-                  src="/eo-logo-blue.svg"
+                  src={imageUrl("/eo-logo-blue.svg")}
                   alt="EdgeOne Pages"
                   width={24}
                   height={24}

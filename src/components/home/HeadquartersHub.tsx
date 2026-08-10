@@ -8,6 +8,7 @@ import Image from "next/image";
 import { PhoneButton, PhoneLink } from "@/components/phone-action";
 import { CONTACT_HEADQUARTERS, CONTACT_TOPICS } from "@/lib/constants/contact";
 import { SITE_FULL_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
+import { imageUrl } from "@/lib/image-url";
 
 export function HeadquartersHub() {
 	return (
@@ -32,7 +33,7 @@ export function HeadquartersHub() {
 							className="object-cover"
 							fill
 							sizes="(min-width: 1024px) 50vw, 100vw"
-							src="/assets/校园环境图占位.jpg"
+							src={imageUrl("/assets/校园环境图占位.jpg")}
 						/>
 						<div className="absolute inset-0 bg-linear-to-t from-slate-950/75 via-slate-950/30 to-transparent" />
 						<div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-8">

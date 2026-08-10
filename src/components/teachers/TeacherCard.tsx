@@ -4,6 +4,7 @@ import {
 	getTeacherDisplayTitle,
 	type TeacherProfile,
 } from "@/lib/constants/teachers";
+import { imageUrl } from "@/lib/image-url";
 
 type TeacherCardProps = {
 	teacher: TeacherProfile;
@@ -22,7 +23,7 @@ export function TeacherCard({ teacher }: TeacherCardProps) {
 						className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.02]"
 						fill
 						sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-						src={teacher.image}
+						src={imageUrl(teacher.image)}
 					/>
 				) : null}
 			</div>

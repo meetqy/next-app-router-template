@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { imageUrl } from "@/lib/image-url";
 
 export function ManagementSystem() {
 	const points = [
@@ -31,7 +32,7 @@ export function ManagementSystem() {
 							className="object-cover"
 							fill
 							sizes="(min-width: 768px) 50vw, 100vw"
-							src="/assets/教学管理体系.jpg"
+							src={imageUrl("/assets/教学管理体系.jpg")}
 						/>
 					</div>
 				</div>

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { imageUrl } from "@/lib/image-url";
 
 export function ExamNews() {
 	const news = [
@@ -52,7 +53,7 @@ export function ExamNews() {
 									className="object-cover"
 									fill
 									sizes="(min-width: 768px) 33vw, 100vw"
-									src={item.image}
+									src={imageUrl(item.image)}
 								/>
 							</div>
 							<div className="mb-2 flex items-center gap-3">
