@@ -7,7 +7,7 @@ const projectRoot = path.resolve(
 	"..",
 );
 const sourceDirectories = [
-	path.join(projectRoot, ".local-assets"),
+	path.join(projectRoot, "cos-assets"),
 	path.join(projectRoot, "public"),
 ];
 const manifestPath = path.join(

@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import COS from "cos-nodejs-sdk-v5";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const defaultSourceDirectory = path.join(projectRoot, ".local-assets");
+const defaultSourceDirectory = path.join(projectRoot, "cos-assets");
 const imageAssetPrefix = "site-assets/v1";
 const cacheControl = "public,max-age=31536000,immutable";
 const supportedExtensions = new Set([
@@ -34,7 +34,7 @@ function printUsage() {
 
 选项：
   --dry-run          只列出待上传对象，不访问腾讯云
-  --source <目录>    指定本地图片目录，默认 .local-assets
+  --source <目录>    指定本地图片目录，默认 cos-assets
   --help             显示帮助`);
 }
 
@@ -186,7 +186,7 @@ async function main() {
 		const publicDirectory = path.join(projectRoot, "public");
 		await access(publicDirectory);
 		sourceDirectory = publicDirectory;
-		console.warn("未找到 .local-assets，回退使用 public/ 作为图片源目录。");
+		console.warn("未找到 cos-assets，回退使用 public/ 作为图片源目录。");
 	}
 
 	const sourceStats = await stat(sourceDirectory);
