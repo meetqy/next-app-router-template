@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import {
 	getKnowledgeArticleFilterById,
+	getKnowledgeArticlesByFilter,
 	getKnowledgeArticleFilters,
 } from "@/lib/knowledge-base";
+import { createNoIndexMetadata, createPageMetadata } from "@/lib/seo";
 import {
 	KNOWLEDGE_PAGE_PARAM,
 	KnowledgeBaseContent,
@@ -25,20 +27,35 @@ export function generateStaticParams() {
 
 export async function generateMetadata({
 	params,
+	searchParams,
 }: PageProps): Promise<Metadata> {
 	const { filter } = await params;
 	const activeFilter = getKnowledgeArticleFilterById(filter);
 
 	if (!activeFilter) {
-		return {
-			title: "资料库",
-		};
+		return createNoIndexMetadata("资料库");
 	}
 
-	return {
+	const resolvedSearchParams = await searchParams;
+	const currentPage = resolveKnowledgePage(
+		resolvedSearchParams?.[KNOWLEDGE_PAGE_PARAM],
+	);
+	const articleCount = getKnowledgeArticlesByFilter(filter)?.length ?? 0;
+	const totalPages = Math.max(1, Math.ceil(articleCount / 10));
+	const safePage = Math.min(currentPage, totalPages);
+	const path =
+		safePage > 1
+			? `/zi-liao-ku/fen-lei/${filter}?page=${safePage}`
+			: `/zi-liao-ku/fen-lei/${filter}`;
+
+	return createPageMetadata({
 		description: activeFilter.description,
-		title: `${activeFilter.title} - 资料库`,
-	};
+		path,
+		title:
+			safePage > 1
+				? `${activeFilter.title} 第${safePage}页 - 资料库`
+				: `${activeFilter.title} - 资料库`,
+	});
 }
 
 export default async function KnowledgeFilterPage({

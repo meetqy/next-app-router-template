@@ -7,11 +7,13 @@ import { SimpleCard } from "@/components/ui/simple-card";
 import { getVisibleCampuses } from "@/lib/constants/campuses";
 import { SITE_FULL_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
 import { getKnowledgeCampuses } from "@/lib/knowledge-base";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-	title: "校区查询",
+export const metadata: Metadata = createPageMetadata({
 	description: `查看${SITE_FULL_NAME}全部校区信息，快速了解各校区地址、课程方向、学习环境与到校咨询入口。`,
-};
+	path: "/xiao-qu-cha-xun",
+	title: "校区查询",
+});
 
 export default function CampusListPage() {
 	const campuses = getVisibleCampuses();

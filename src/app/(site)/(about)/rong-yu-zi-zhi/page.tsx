@@ -7,11 +7,13 @@ import { PhoneButton } from "@/components/phone-action";
 import { HONOR_CERTIFICATES } from "@/lib/constants/honor-certificates";
 import { imageUrl } from "@/lib/image-url";
 import { SITE_FULL_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-	title: "荣誉资质",
+export const metadata: Metadata = createPageMetadata({
 	description: `查看${SITE_FULL_NAME}荣誉证书、版权登记、办学资质、质量认证、媒体报道与行业任职等真实展示内容。`,
-};
+	path: "/rong-yu-zi-zhi",
+	title: "荣誉资质",
+});
 
 function HonorCard({ index }: { index: number }) {
 	const honor = HONOR_CERTIFICATES[index];

@@ -3,11 +3,13 @@ import { PageTopNav } from "@/components/PageTopNav";
 import { SimpleCard } from "@/components/ui/simple-card";
 import { getAllBrochures } from "@/lib/brochures";
 import { SITE_FULL_NAME } from "@/lib/constants/site";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata = createPageMetadata({
+	description: `查看${SITE_FULL_NAME}历年高考全日制招生简章。`,
+	path: "/zhao-sheng-jian-zhang",
 	title: "招生简章列表",
-	description: `查看${SITE_FULL_NAME}历年高考全日制招生简章`,
-};
+});
 
 export default function BrochuresPage() {
 	const brochures = getAllBrochures();

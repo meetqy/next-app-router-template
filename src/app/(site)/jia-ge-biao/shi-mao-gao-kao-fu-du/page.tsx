@@ -12,27 +12,35 @@ import {
 	UsersIcon,
 } from "lucide-react";
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/JsonLd";
 import { PageTopNav } from "@/components/PageTopNav";
 import { PhoneButton, PhoneLink } from "@/components/phone-action";
 import { TableOfContents } from "@/components/TableOfContents";
 import { Button } from "@/components/ui/button";
-import { env } from "@/env";
-import { CONTACT_HEADQUARTERS } from "@/lib/constants/contact";
-import {
-	SITE_BRAND_NAME,
-	SITE_FULL_NAME,
-	SITE_HOTLINE_TEXT,
-} from "@/lib/constants/site";
+import { getCampusBySlug } from "@/lib/constants/campuses";
+import { SITE_BRAND_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
+import { createPageMetadata, getSiteUrl } from "@/lib/seo";
 
-const PAGE_TITLE = "2027 届高考中心总部校区（世贸）复读优惠政策与收费标准公示";
-const PAGE_DESCRIPTION = `${SITE_FULL_NAME}2027 届高考复读、高三全日制全科班最新优惠政策与收费标准官方公示。`;
+function getShiMaoCampus() {
+	const campus = getCampusBySlug("shi-mao");
+	if (!campus) {
+		throw new Error("未配置世贸校区信息");
+	}
+	return campus;
+}
+
+const CAMPUS = getShiMaoCampus();
+const PAGE_TITLE = `2027 届${CAMPUS.name}复读优惠政策与收费标准公示`;
+const PAGE_DESCRIPTION = `${CAMPUS.title}2027 届高考复读、高三全日制全科班最新优惠政策与收费标准官方公示。`;
 const PAGE_PATH = "/jia-ge-biao/shi-mao-gao-kao-fu-du";
-const CAMPUS_ADDRESS = `戴氏教育总部（${CONTACT_HEADQUARTERS.address}）`;
 
-export const metadata: Metadata = {
-	title: PAGE_TITLE,
+export const metadata: Metadata = createPageMetadata({
+	authors: [SITE_BRAND_NAME],
 	description: PAGE_DESCRIPTION,
-};
+	openGraphType: "article",
+	path: PAGE_PATH,
+	title: PAGE_TITLE,
+});
 
 const catalogueItems = [
 	{ id: "you-hui-zheng-ce", title: "暑期报名优惠" },
@@ -168,8 +176,7 @@ function InfoTable({
 }
 
 function PageStructuredData() {
-	const siteUrl = new URL(`https://${env.NEXT_PUBLIC_SITE_DOMAIN}`);
-	const pageUrl = new URL(PAGE_PATH, siteUrl).toString();
+	const pageUrl = getSiteUrl(PAGE_PATH).toString();
 	const structuredData = {
 		"@context": "https://schema.org",
 		"@type": "Article",
@@ -178,7 +185,7 @@ function PageStructuredData() {
 		inLanguage: "zh-CN",
 		mainEntityOfPage: pageUrl,
 		articleSection: catalogueItems.map((item) => item.title),
-		about: ["高考复读", "高三全日制", "顺吉校区", "收费标准", "暑期报名优惠"],
+		about: ["高考复读", "高三全日制", CAMPUS.name, "收费标准", "暑期报名优惠"],
 		author: {
 			"@type": "Organization",
 			name: SITE_BRAND_NAME,
@@ -192,20 +199,15 @@ function PageStructuredData() {
 				addressCountry: "CN",
 				addressLocality: "成都市",
 				addressRegion: "四川省",
-				streetAddress: CAMPUS_ADDRESS,
+				streetAddress: CAMPUS.address,
 			},
 		},
 	};
 
-	return (
-		<script
-			dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-			type="application/ld+json"
-		/>
-	);
+	return <JsonLd data={structuredData} />;
 }
 
-export default function ShunJiGaoKaoFuDuPage() {
+export default function ShiMaoGaoKaoFuDuPage() {
 	return (
 		<div className="min-h-screen bg-white">
 			<PageStructuredData />
@@ -214,7 +216,7 @@ export default function ShunJiGaoKaoFuDuPage() {
 					{ label: "首页", href: "/" },
 					{ label: "价格表", href: "/jia-ge-biao" },
 					{
-						label: "2027 届高考中心总部校区（世贸）复读优惠政策公示",
+						label: `2027 届${CAMPUS.name}复读优惠政策公示`,
 						href: "/jia-ge-biao/shi-mao-gao-kao-fu-du",
 					},
 				]}
@@ -229,11 +231,11 @@ export default function ShunJiGaoKaoFuDuPage() {
 								2027 官方优惠政策公示
 							</div>
 							<h1 className="max-w-4xl font-black text-4xl leading-tight tracking-tight md:text-6xl">
-								2027 届高考中心总部校区（世贸）暑期报名优惠政策公示
+								2027 届{CAMPUS.name}暑期报名优惠政策公示
 							</h1>
 							<p className="mt-6 max-w-3xl text-lg text-slate-300 leading-8">
-								为助力 2027 届高考学子高效备考，{SITE_FULL_NAME}
-								（顺吉校区）现正式公示本年度优惠政策。涵盖暑期提前批优惠、分数专项减免、团报福利及老生续报专项。政策透明，保障每一位学子的升学之路。
+								为助力 2027 届高考学子高效备考，{CAMPUS.title}
+								现正式公示本年度优惠政策。涵盖暑期提前批优惠、分数专项减免、团报福利及老生续报专项。政策透明，保障每一位学子的升学之路。
 							</p>
 							<div className="mt-10 flex flex-col gap-4 sm:flex-row">
 								<PhoneButton className="h-11 px-6 text-base">
@@ -275,7 +277,7 @@ export default function ShunJiGaoKaoFuDuPage() {
 								</div>
 							</div>
 							<div className="space-y-3 pt-4 text-slate-300 text-sm">
-								<p>1. 本页公示口径仅适用于高考中心总部校区（世贸）。</p>
+								<p>1. 本页公示口径仅适用于{CAMPUS.name}。</p>
 								<p>2. 复读生分数优惠与暑期优惠不可叠加，取最高值使用。</p>
 							</div>
 							<div className="mt-6 flex items-center gap-2 text-primary text-sm">
@@ -295,7 +297,7 @@ export default function ShunJiGaoKaoFuDuPage() {
 						{/* 暑期报名优惠 */}
 						<section className="scroll-mt-48 py-2" id="you-hui-zheng-ce">
 							<SectionHeading
-								description="针对 2027 届高三全科班（含复读生）的暑期提前批报名优惠，以下内容仅按高考中心总部校区（世贸）口径公示，越早报名优惠力度越大。"
+								description={`针对 2027 届高三全科班（含复读生）的暑期提前批报名优惠，以下内容仅按${CAMPUS.name}口径公示，越早报名优惠力度越大。`}
 								icon={TagIcon}
 								index="01"
 								label="暑期报名优惠"
@@ -327,7 +329,7 @@ export default function ShunJiGaoKaoFuDuPage() {
 									],
 									[
 										"7 月 1 日 - 7 月 31 日",
-										"总部校区（世贸）全部班型",
+										`${CAMPUS.name}全部班型`,
 										<span className="font-bold text-primary" key="price">
 											总价统一优惠 1000 元
 										</span>,
@@ -498,11 +500,11 @@ export default function ShunJiGaoKaoFuDuPage() {
 						{/* 收费标准详情 */}
 						<section className="scroll-mt-48 py-2" id="shou-fei-biao-zhun">
 							<SectionHeading
-								description="本页仅公示高考中心总部校区（世贸）收费标准，价格透明，无隐形消费。"
+								description={`本页仅公示${CAMPUS.name}收费标准，价格透明，无隐形消费。`}
 								icon={ReceiptIcon}
 								index="05"
 								label="收费标准详情"
-								title="2027 届高考中心总部校区（世贸）收费公示"
+								title={`2027 届${CAMPUS.name}收费公示`}
 							/>
 							<InfoTable
 								headers={["班型", "月度标准", "常规月度优惠", "常规优惠后总价"]}
@@ -587,17 +589,17 @@ export default function ShunJiGaoKaoFuDuPage() {
 							<div className="px-5 py-4">
 								<div className="flex items-center gap-2 text-primary text-sm">
 									<MapPinIcon className="size-4" />
-									<span>总部校区（世贸）到校咨询地址</span>
+									<span>{CAMPUS.name}到校咨询地址</span>
 								</div>
 								<div className="mt-3 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 									<div className="min-w-0">
 										<a
 											className="font-medium text-slate-900 text-sm leading-7 transition-colors hover:text-primary"
-											href={CONTACT_HEADQUARTERS.mapHref}
+											href={CAMPUS.mapHref}
 											rel="noopener noreferrer"
 											target="_blank"
 										>
-											{CAMPUS_ADDRESS}
+											{CAMPUS.address}
 										</a>
 										<p className="mt-1 text-slate-600 text-sm leading-7">
 											如对具体位置、路线或到校流程还不清楚，可直接拨打电话咨询。

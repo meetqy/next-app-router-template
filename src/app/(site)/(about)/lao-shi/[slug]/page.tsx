@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { JsonLd } from "@/components/JsonLd";
 import { PageTopNav } from "@/components/PageTopNav";
 import { PhoneButton } from "@/components/phone-action";
 import { env } from "@/env";
@@ -11,6 +12,7 @@ import {
 	getTeacherDisplayTitle,
 	TEACHERS,
 } from "@/lib/constants/teachers";
+import { createNoIndexMetadata, createPageMetadata } from "@/lib/seo";
 
 type PageProps = {
 	params: Promise<{ slug: string }>;
@@ -29,15 +31,14 @@ export async function generateMetadata({
 	const teacher = getTeacherBySlug(slug);
 
 	if (!teacher) {
-		return {
-			title: "未找到老师",
-		};
+		return createNoIndexMetadata("未找到老师");
 	}
 
-	return {
-		title: `${teacher.name}老师介绍`,
+	return createPageMetadata({
 		description: teacher.summary,
-	};
+		path: `/lao-shi/${teacher.slug}`,
+		title: `${teacher.name}老师介绍`,
+	});
 }
 
 function TeacherSection({ items, title }: { items: string[]; title: string }) {
@@ -86,17 +87,11 @@ function TeacherStructuredData({
 			name: SITE_BRAND_NAME,
 			url: siteUrl.toString(),
 		},
-		sameAs: [],
 		knowsAbout: ["高考", "高中教育", "教学研究", "升学指导"],
 		honorificPrefix: "老师",
 	};
 
-	return (
-		<script
-			dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-			type="application/ld+json"
-		/>
-	);
+	return <JsonLd data={structuredData} />;
 }
 
 export default async function TeacherDetailPage({ params }: PageProps) {

@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageTopNav } from "@/components/PageTopNav";
 import { getSiteUrls, URLS_PER_PAGE } from "@/lib/site-urls";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-	title: "URL 目录",
+export const metadata: Metadata = createPageMetadata({
 	description: "戴氏高考网站全部公开页面 URL 的分页文本目录。",
-};
+	path: "/urls",
+	title: "URL 目录",
+});
 
 export default function UrlsPage() {
 	const totalUrls = getSiteUrls().length;

@@ -2,6 +2,7 @@ import { ArrowRightIcon, type LucideIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { JsonLd } from "@/components/JsonLd";
 import { PageTopNav } from "@/components/PageTopNav";
 import { PhoneButton, PhoneLink } from "@/components/phone-action";
 import { TableOfContents } from "@/components/TableOfContents";
@@ -18,11 +19,18 @@ import type {
 	JiaZhangArticle,
 	SimpleArticleTable,
 } from "@/lib/constants/jia-zhang-fu-wu";
-import { SITE_HOTLINE_TEXT } from "@/lib/constants/site";
+import { SITE_BRAND_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
 import {
 	getAllJiaZhangArticles,
 	getJiaZhangArticleBySlug,
 } from "@/lib/jia-zhang-fu-wu";
+import {
+	createNoIndexMetadata,
+	createPageMetadata,
+	getPublicImageUrl,
+	getSiteUrl,
+	normalizeSeoDate,
+} from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 interface PageProps {
@@ -39,12 +47,16 @@ export async function generateMetadata({
 	const { slug } = await params;
 	const article = getJiaZhangArticleBySlug(slug);
 	if (!article) {
-		return { title: "未找到页面" };
+		return createNoIndexMetadata();
 	}
-	return {
+	return createPageMetadata({
+		authors: [SITE_BRAND_NAME],
 		description: article.summary,
+		openGraphType: "article",
+		path: `/jia-zhang-fu-wu/${article.slug}`,
+		publishedTime: normalizeSeoDate(article.publishedAt),
 		title: `${article.title} - 家长服务`,
-	};
+	});
 }
 
 function InlineFaqCta({
@@ -112,10 +124,7 @@ function FaqBlock({ article }: { article: JiaZhangArticle }) {
 
 	return (
 		<>
-			<script
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-				type="application/ld+json"
-			/>
+			<JsonLd data={jsonLd} />
 			<div className="space-y-12">
 				{visibleSections.map((section) => (
 					<div className="space-y-6" key={section.title}>
@@ -174,14 +183,6 @@ function GuideBlock({ article }: { article: JiaZhangArticle }) {
 	const { hero, intro, sections, relatedQuestions, bottomCta } =
 		article.content;
 
-	const jsonLd = {
-		"@context": "https://schema.org",
-		"@type": "Article",
-		articleSection: sections.map((section) => section.title),
-		description: article.summary,
-		headline: article.title,
-	};
-
 	const guideLabels: Record<string, string> = {
 		"jia-xiao-gou-tong": "家校沟通",
 		"pai-ke-kai-ban": "排课开班",
@@ -207,12 +208,7 @@ function GuideBlock({ article }: { article: JiaZhangArticle }) {
 	const tocFootnote = hero?.tocFootnote ?? "继续下滑查看完整流程";
 
 	return (
-		<>
-			<script
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-				type="application/ld+json"
-			/>
-			<article className="bg-white">
+		<article className="bg-white">
 				<section className="border-slate-800 border-b bg-slate-950 py-16 text-white md:py-24">
 					<div className="container mx-auto px-4">
 						<div className="grid items-end gap-12 lg:grid-cols-[minmax(0,1.15fr)_340px]">
@@ -411,8 +407,7 @@ function GuideBlock({ article }: { article: JiaZhangArticle }) {
 						</div>
 					</div>
 				</div>
-			</article>
-		</>
+		</article>
 	);
 }
 
@@ -445,27 +440,10 @@ function SimpleArticleBlock({ article }: { article: JiaZhangArticle }) {
 	if (article.content.kind !== "simple-article") return null;
 	const { paragraphs, table, bottomCta } = article.content;
 
-	const jsonLd = {
-		"@context": "https://schema.org",
-		"@type": "Article",
-		author: {
-			"@type": "Organization",
-			name: "戴氏高考",
-		},
-		datePublished: article.publishedAt,
-		description: article.summary,
-		headline: article.title,
-	};
-
 	const tocItems = table ? [{ id: "dui-bi-biao", title: "完整对比表" }] : [];
 
 	return (
-		<>
-			<script
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-				type="application/ld+json"
-			/>
-			<article className="container mx-auto px-4 py-10 md:py-14">
+		<article className="container mx-auto px-4 py-10 md:py-14">
 				<div className="grid gap-12 lg:grid-cols-[240px_minmax(0,1fr)]">
 					<TableOfContents
 						className="hidden lg:sticky lg:top-32 lg:block"
@@ -522,8 +500,7 @@ function SimpleArticleBlock({ article }: { article: JiaZhangArticle }) {
 						</div>
 					</div>
 				</div>
-			</article>
-		</>
+		</article>
 	);
 }
 
@@ -586,14 +563,6 @@ function CampusDirectoryBlock({ article }: { article: JiaZhangArticle }) {
 	if (article.content.kind !== "campus-directory") return null;
 	const { hero, intro, sections, bottomCta } = article.content;
 
-	const jsonLd = {
-		"@context": "https://schema.org",
-		"@type": "Article",
-		articleSection: sections.map((section) => section.title),
-		description: article.summary,
-		headline: article.title,
-	};
-
 	const heroBadge = hero?.badge ?? "校区汇总专题";
 	const heroButtonText = hero?.primaryButtonText ?? "立即电话咨询";
 	const heroStats = hero?.stats ?? [
@@ -613,12 +582,7 @@ function CampusDirectoryBlock({ article }: { article: JiaZhangArticle }) {
 	const tocFootnote = hero?.tocFootnote ?? "继续下滑查看完整校区信息";
 
 	return (
-		<>
-			<script
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-				type="application/ld+json"
-			/>
-			<article className="bg-white">
+		<article className="bg-white">
 				<section className="border-slate-800 border-b bg-slate-950 py-16 text-white md:py-24">
 					<div className="container mx-auto px-4">
 						<div className="grid items-end gap-12 lg:grid-cols-[minmax(0,1.15fr)_340px]">
@@ -756,8 +720,7 @@ function CampusDirectoryBlock({ article }: { article: JiaZhangArticle }) {
 						</div>
 					</div>
 				</div>
-			</article>
-		</>
+		</article>
 	);
 }
 
@@ -797,11 +760,39 @@ export default async function JiaZhangArticleDetailPage({ params }: PageProps) {
 	if (!article) {
 		notFound();
 	}
+	const pageUrl = getSiteUrl(`/jia-zhang-fu-wu/${article.slug}`).toString();
+	const publishedTime = normalizeSeoDate(article.publishedAt);
+	const articleJsonLd = {
+		"@context": "https://schema.org",
+		"@type": "Article",
+		author: {
+			"@type": "Organization",
+			name: SITE_BRAND_NAME,
+			url: getSiteUrl().toString(),
+		},
+		...(publishedTime ? { datePublished: publishedTime } : {}),
+		description: article.summary,
+		headline: article.title,
+		mainEntityOfPage: {
+			"@id": pageUrl,
+			"@type": "WebPage",
+		},
+		publisher: {
+			"@type": "Organization",
+			logo: {
+				"@type": "ImageObject",
+				url: getPublicImageUrl("/logo.png"),
+			},
+			name: SITE_BRAND_NAME,
+		},
+		url: pageUrl,
+	};
 
 	return (
 		<div
 			className={`min-h-screen ${article.content.kind === "faq" ? "bg-slate-50" : "bg-white"}`}
 		>
+			<JsonLd data={articleJsonLd} />
 			<PageTopNav
 				items={[
 					{ label: "首页", href: "/" },

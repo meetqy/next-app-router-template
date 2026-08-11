@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { resolveKnowledgeHref } from "@/lib/knowledge-base";
 
 type PageProps = {
@@ -8,5 +8,7 @@ type PageProps = {
 export default async function LegacyCampusPage({ params }: PageProps) {
 	const { segments = [] } = await params;
 	const legacyPath = `/campus/${segments.join("/")}`.replace(/\/$/g, "");
-	redirect(encodeURI(resolveKnowledgeHref(legacyPath) ?? "/xiao-qu-cha-xun"));
+	const destination = resolveKnowledgeHref(legacyPath);
+	if (!destination) notFound();
+	permanentRedirect(encodeURI(destination));
 }

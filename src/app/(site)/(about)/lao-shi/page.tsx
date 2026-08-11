@@ -1,9 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { PageTopNav } from "@/components/PageTopNav";
 import { PhoneButton } from "@/components/phone-action";
 import { TeacherCard } from "@/components/teachers/TeacherCard";
 import { SITE_FULL_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
 import { TEACHERS } from "@/lib/constants/teachers";
+import { createPageMetadata } from "@/lib/seo";
 
 // 提取所有校区名称
 const campuses = Array.from(
@@ -17,6 +19,32 @@ type PageProps = {
 		[CAMPUS_PARAM_KEY]?: string | string[];
 	}>;
 };
+
+export async function generateMetadata({
+	searchParams,
+}: PageProps): Promise<Metadata> {
+	const resolvedSearchParams = await searchParams;
+	const campusFromParams = resolvedSearchParams?.[CAMPUS_PARAM_KEY];
+	const currentCampus =
+		typeof campusFromParams === "string"
+			? campusFromParams
+			: campusFromParams?.[0];
+	const selectedCampus =
+		currentCampus && campuses.includes(currentCampus) ? currentCampus : "全部";
+	const path =
+		selectedCampus === "全部"
+			? "/lao-shi"
+			: `/lao-shi?${CAMPUS_PARAM_KEY}=${encodeURIComponent(selectedCampus)}`;
+
+	return createPageMetadata({
+		description:
+			selectedCampus === "全部"
+				? `查看${SITE_FULL_NAME}核心老师的教学背景、教研方向与代表性成果。`
+				: `查看${selectedCampus}老师团队的教学背景、学科方向与代表性成果。`,
+		path,
+		title: selectedCampus === "全部" ? "老师团队" : `${selectedCampus}老师团队`,
+	});
+}
 
 function getCampusHref(campus: string) {
 	if (campus === "全部") {

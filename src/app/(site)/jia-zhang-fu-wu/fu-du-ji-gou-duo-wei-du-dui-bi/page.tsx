@@ -1,13 +1,24 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/JsonLd";
 import { PageTopNav } from "@/components/PageTopNav";
 import { PhoneButton } from "@/components/phone-action";
 import { TableOfContents } from "@/components/TableOfContents";
+import { SITE_BRAND_NAME } from "@/lib/constants/site";
+import { createPageMetadata, getSiteUrl } from "@/lib/seo";
 
-export const metadata: Metadata = {
-	title: "复读机构多维度对比 公立高中民办高中与培训机构优缺点 - 家长服务",
-	description:
-		"从合规、教学、管理、收费与服务等维度，对比公立高中、民办高中和培训机构三类复读路径的主要优缺点。",
-};
+const PAGE_TITLE = "复读机构多维度对比 公立高中民办高中与培训机构优缺点 - 家长服务";
+const PAGE_DESCRIPTION =
+	"从合规、教学、管理、收费与服务等维度，对比公立高中、民办高中和培训机构三类复读路径的主要优缺点。";
+const PAGE_PATH = "/jia-zhang-fu-wu/fu-du-ji-gou-duo-wei-du-dui-bi";
+
+export const metadata: Metadata = createPageMetadata({
+	authors: [SITE_BRAND_NAME],
+	description: PAGE_DESCRIPTION,
+	openGraphType: "article",
+	path: PAGE_PATH,
+	publishedTime: "2026-06-10",
+	title: PAGE_TITLE,
+});
 
 const jsonLd = {
 	"@context": "https://schema.org",
@@ -17,9 +28,13 @@ const jsonLd = {
 		"从合规、教学、管理、收费与服务等维度，对比公立高中、民办高中和培训机构三类复读路径的主要优缺点。",
 	author: {
 		"@type": "Organization",
-		name: "戴氏教育高考总部",
+		name: SITE_BRAND_NAME,
 	},
 	datePublished: "2026-06-10",
+	mainEntityOfPage: {
+		"@type": "WebPage",
+		"@id": getSiteUrl(PAGE_PATH).toString(),
+	},
 };
 
 type ComparisonTopic = {
@@ -352,10 +367,7 @@ const tocItems = [
 export default function GuidePage() {
 	return (
 		<>
-			<script
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-				type="application/ld+json"
-			/>
+			<JsonLd data={jsonLd} />
 			<div className="min-h-screen bg-white pb-20">
 				<PageTopNav
 					items={[
@@ -373,7 +385,7 @@ export default function GuidePage() {
 						<div className="grid items-end gap-12 lg:grid-cols-[minmax(0,1.22fr)_320px]">
 							<div>
 								<div className="mb-5 inline-flex items-center rounded-full bg-white/8 px-4 py-1.5 text-slate-300 text-sm">
-									2026-06-10・戴氏教育高考总部
+									2026-06-10・{SITE_BRAND_NAME}
 								</div>
 								<h1 className="max-w-5xl font-bold text-4xl leading-tight md:text-5xl lg:text-6xl">
 									复读机构多维度对比 公立高中民办高中与培训机构优缺点

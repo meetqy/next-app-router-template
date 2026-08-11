@@ -1,7 +1,8 @@
 import { ArrowRightIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
+import { JsonLd } from "@/components/JsonLd";
 import { MarkdownContent } from "@/components/MarkdownContent";
 import { PageTopNav } from "@/components/PageTopNav";
 import { PhoneButton, PhoneLink } from "@/components/phone-action";
@@ -16,7 +17,11 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { SITE_FULL_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
+import {
+	SITE_BRAND_NAME,
+	SITE_FULL_NAME,
+	SITE_HOTLINE_TEXT,
+} from "@/lib/constants/site";
 import {
 	formatKnowledgeArticleDate,
 	getArticleCategoryFilterId,
@@ -25,6 +30,13 @@ import {
 	getRelatedKnowledgeArticles,
 	resolveKnowledgeHref,
 } from "@/lib/knowledge-base";
+import {
+	createNoIndexMetadata,
+	createPageMetadata,
+	getPublicImageUrl,
+	getSiteUrl,
+	normalizeSeoDate,
+} from "@/lib/seo";
 
 type PageProps = {
 	params: Promise<{ slug: string }>;
@@ -45,15 +57,17 @@ export async function generateMetadata({
 	const article = articleResult?.article ?? null;
 
 	if (!article) {
-		return {
-			title: "未找到资料",
-		};
+		return createNoIndexMetadata("未找到资料");
 	}
 
-	return {
+	return createPageMetadata({
+		authors: [SITE_BRAND_NAME],
 		description: article.summary,
+		openGraphType: "article",
+		path: `/zi-liao-ku/${article.slug}`,
+		publishedTime: normalizeSeoDate(article.publishedAt),
 		title: `${article.title} - 资料库`,
-	};
+	});
 }
 
 function SidebarCard({
@@ -96,7 +110,7 @@ export default async function KnowledgeArticlePage({ params }: PageProps) {
 	}
 
 	if (!articleResult.isCanonical) {
-		redirect(encodeURI(`/zi-liao-ku/${articleResult.article.slug}`));
+		permanentRedirect(encodeURI(`/zi-liao-ku/${articleResult.article.slug}`));
 	}
 
 	const { article } = articleResult;
@@ -104,9 +118,43 @@ export default async function KnowledgeArticlePage({ params }: PageProps) {
 	const relatedArticles = getRelatedKnowledgeArticles(article);
 	const publishedDate = formatKnowledgeArticleDate(article);
 	const categoryFilterId = getArticleCategoryFilterId(article);
+	const pageUrl = getSiteUrl(`/zi-liao-ku/${article.slug}`).toString();
+	const sourceUrl = article.sourceUrl?.trim();
+	const publicSourceUrl = sourceUrl && /^https?:\/\//i.test(sourceUrl)
+		? sourceUrl
+		: undefined;
+	const publishedTime = normalizeSeoDate(article.publishedAt);
+	const articleJsonLd = {
+		"@context": "https://schema.org",
+		"@type": "Article",
+		articleSection: article.categoryLabel,
+		author: {
+			"@type": "Organization",
+			name: SITE_BRAND_NAME,
+			url: getSiteUrl().toString(),
+		},
+		...(publishedTime ? { datePublished: publishedTime } : {}),
+		description: article.summary,
+		headline: article.title,
+		...(publicSourceUrl ? { isBasedOn: publicSourceUrl } : {}),
+		mainEntityOfPage: {
+			"@id": pageUrl,
+			"@type": "WebPage",
+		},
+		publisher: {
+			"@type": "Organization",
+			logo: {
+				"@type": "ImageObject",
+				url: getPublicImageUrl("/logo.png"),
+			},
+			name: SITE_BRAND_NAME,
+		},
+		url: pageUrl,
+	};
 
 	return (
 		<div className="min-h-screen bg-muted/40">
+			<JsonLd data={articleJsonLd} />
 			<PageTopNav
 				containerClassName="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8"
 				items={[
@@ -130,7 +178,20 @@ export default async function KnowledgeArticlePage({ params }: PageProps) {
 								<CardDescription className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
 									<span>{publishedDate}</span>
 									<Separator className="h-4" orientation="vertical" />
-									<span>来源：{SITE_FULL_NAME}</span>
+									<span>
+										来源：
+										{publicSourceUrl ? (
+											<a
+												href={publicSourceUrl}
+												rel="noopener noreferrer"
+												target="_blank"
+											>
+												原始公开资料
+											</a>
+										) : (
+											SITE_FULL_NAME
+										)}
+									</span>
 									<Separator className="h-4" orientation="vertical" />
 									<span>{article.categoryLabel}</span>
 									{article.year ? (

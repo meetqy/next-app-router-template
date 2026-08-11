@@ -6,12 +6,16 @@ import { TEACHERS } from "@/lib/constants/teachers";
 import { getAllJiaZhangArticles } from "@/lib/jia-zhang-fu-wu";
 import {
 	getKnowledgeArticles,
+	getKnowledgeArticleFilters,
+	getKnowledgeArticlesByFilter,
 	getKnowledgeCampuses,
 } from "@/lib/knowledge-base";
+import { normalizeSeoDate } from "@/lib/seo";
 
 export type SiteRoute = {
 	changeFrequency: "daily" | "weekly" | "monthly" | "yearly";
 	description: string;
+	lastModified?: string;
 	path: string;
 	priority: number;
 	title: string;
@@ -68,6 +72,14 @@ const STATIC_SITE_ROUTES: SiteRoute[] = [
 		path: "/jia-zhang-fu-wu",
 		priority: 0.8,
 		title: "家长服务",
+	},
+	{
+		changeFrequency: "monthly",
+		description:
+			"从合规、教学、管理、收费与服务等维度，对比公立高中、民办高中和培训机构三类复读路径。",
+		path: "/jia-zhang-fu-wu/fu-du-ji-gou-duo-wei-du-dui-bi",
+		priority: 0.8,
+		title: "复读机构多维度对比",
 	},
 	{
 		changeFrequency: "weekly",
@@ -135,11 +147,26 @@ export function getSiteRoutes(): SiteRoute[] {
 		priority: 0.7,
 		title: `${teacher.name}老师介绍`,
 	}));
+	const teacherCampuses = [
+		...new Set(
+			TEACHERS.map((teacher) => teacher.campus).filter(
+				(campus): campus is string => Boolean(campus),
+			),
+		),
+	];
+	const teacherFilterRoutes: SiteRoute[] = teacherCampuses.map((campus) => ({
+		changeFrequency: "monthly",
+		description: `查看${campus}老师团队的教学背景、学科方向与代表性成果。`,
+		path: `/lao-shi?xiaoqu=${encodeURIComponent(campus)}`,
+		priority: 0.5,
+		title: `${campus}老师团队`,
+	}));
 
 	const jiaZhangRoutes: SiteRoute[] = getAllJiaZhangArticles().map(
 		(article) => ({
 			changeFrequency: "monthly",
 			description: article.summary,
+			lastModified: normalizeSeoDate(article.publishedAt),
 			path: `/jia-zhang-fu-wu/${article.slug}`,
 			priority: 0.7,
 			title: article.title,
@@ -159,6 +186,7 @@ export function getSiteRoutes(): SiteRoute[] {
 			changeFrequency: "yearly",
 			description:
 				campus.description ?? `${campus.title}校区地址、路线与到访提示。`,
+			lastModified: normalizeSeoDate(campus.crawledAt),
 			path: `/xiao-qu-cha-xun/${campus.slug}`,
 			priority: 0.4,
 			title: `${campus.title}校区资料`,
@@ -169,19 +197,75 @@ export function getSiteRoutes(): SiteRoute[] {
 		(article) => ({
 			changeFrequency: "yearly",
 			description: article.summary,
+			lastModified:
+				normalizeSeoDate(article.publishedAt) ??
+				normalizeSeoDate(article.crawledAt),
 			path: `/zi-liao-ku/${article.slug}`,
 			priority: article.historical ? 0.35 : 0.45,
 			title: `${article.title}资料`,
 		}),
 	);
+	const knowledgeArticles = getKnowledgeArticles();
+	const knowledgePageCount = Math.max(1, Math.ceil(knowledgeArticles.length / 10));
+	const knowledgeListRoutes: SiteRoute[] = Array.from(
+		{ length: Math.max(0, knowledgePageCount - 1) },
+		(_, index) => {
+			const page = index + 2;
+			return {
+				changeFrequency: "weekly" as const,
+				description: `${SITE_FULL_NAME}资料库第${page}页。`,
+				path: `/zi-liao-ku?page=${page}`,
+				priority: 0.4,
+				title: `资料库第${page}页`,
+			};
+		},
+	);
+	const knowledgeFilterRoutes: SiteRoute[] = getKnowledgeArticleFilters().flatMap(
+		(filter) => {
+			const pageCount = Math.max(
+				1,
+				Math.ceil((getKnowledgeArticlesByFilter(filter.id)?.length ?? 0) / 10),
+			);
+			const baseRoute: SiteRoute = {
+				changeFrequency: "weekly",
+				description: filter.description,
+				path: `/zi-liao-ku/fen-lei/${filter.id}`,
+				priority: 0.5,
+				title: `${filter.title}资料库`,
+			};
+			const pageRoutes: SiteRoute[] = Array.from(
+				{ length: Math.max(0, pageCount - 1) },
+				(_, index) => {
+					const page = index + 2;
+					return {
+						changeFrequency: "weekly" as const,
+						description: `${filter.description}第${page}页。`,
+						path: `/zi-liao-ku/fen-lei/${filter.id}?page=${page}`,
+						priority: 0.35,
+						title: `${filter.title}第${page}页`,
+					};
+				},
+			);
+			return [baseRoute, ...pageRoutes];
+		},
+	);
 
-	return [
+	const routes = [
 		...STATIC_SITE_ROUTES,
 		...brochureRoutes,
 		...teacherRoutes,
+		...teacherFilterRoutes,
 		...campusRoutes,
 		...archiveCampusRoutes,
 		...jiaZhangRoutes,
 		...knowledgeRoutes,
+		...knowledgeListRoutes,
+		...knowledgeFilterRoutes,
 	];
+	const seenPaths = new Set<string>();
+	return routes.filter((route) => {
+		if (seenPaths.has(route.path)) return false;
+		seenPaths.add(route.path);
+		return true;
+	});
 }

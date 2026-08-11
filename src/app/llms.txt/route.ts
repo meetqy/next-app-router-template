@@ -5,7 +5,10 @@ function buildLlmsText() {
 	const siteOrigin = getSiteOrigin();
 	const routeLines = getSiteRoutes().map((route) => {
 		const url = new URL(route.path, siteOrigin).toString();
-		return `- [${route.title}](${url}): ${route.description}`;
+		const lastModified = route.lastModified
+			? `（页面日期：${route.lastModified}）`
+			: "";
+		return `- [${route.title}](${url}): ${route.description}${lastModified}`;
 	});
 
 	return [
@@ -17,6 +20,8 @@ function buildLlmsText() {
 		`- 官网：${siteOrigin}`,
 		"- 语言：中文",
 		"- 主题：高考全日制、招生简章、荣誉资质、常见问题与咨询服务",
+		"- 内容说明：价格、课程、校区开放状态和招生安排以对应页面当前公开信息及当期书面说明为准。",
+		"- 资料库说明：资料库同时包含当前资料与历史归档，页面会标注公开来源或资料时间。",
 		"",
 		"## 页面清单",
 		...routeLines,

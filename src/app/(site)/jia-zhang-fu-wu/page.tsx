@@ -6,11 +6,13 @@ import { PhoneButton } from "@/components/phone-action";
 import { SimpleCard } from "@/components/ui/simple-card";
 import { SITE_FULL_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
 import { getAllJiaZhangArticles } from "@/lib/jia-zhang-fu-wu";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-	title: "家长服务",
+export const metadata: Metadata = createPageMetadata({
 	description: `${SITE_FULL_NAME}家长服务中心：学管服务流程、教学管理规范、家长指南、学习方法、备考攻略与高考资讯集中呈现，帮助家长系统性解决高三备考中的各类问题。`,
-};
+	path: "/jia-zhang-fu-wu",
+	title: "家长服务",
+});
 
 function formatDate(iso: string) {
 	const date = new Date(iso);

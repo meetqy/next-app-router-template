@@ -1,6 +1,7 @@
 import { PhoneIcon } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react";
+import { JsonLd } from "@/components/JsonLd";
 import { PhoneLink } from "@/components/phone-action";
 import {
 	Breadcrumb,
@@ -33,20 +34,17 @@ export function PageTopNav({
 
 	return (
 		<div className="w-full border-slate-200/80 border-b bg-white">
-			<script
-				dangerouslySetInnerHTML={{
-					__html: JSON.stringify({
-						"@context": "https://schema.org",
-						"@type": "BreadcrumbList",
-						itemListElement: items.map((item, index) => ({
-							"@type": "ListItem",
-							position: index + 1,
-							name: item.label,
-							item: new URL(item.href, siteUrl).toString(),
-						})),
-					}),
+			<JsonLd
+				data={{
+					"@context": "https://schema.org",
+					"@type": "BreadcrumbList",
+					itemListElement: items.map((item, index) => ({
+						"@type": "ListItem",
+						position: index + 1,
+						name: item.label,
+						item: new URL(item.href, siteUrl).toString(),
+					})),
 				}}
-				type="application/ld+json"
 			/>
 			<div
 				className={cn(

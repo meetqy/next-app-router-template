@@ -1,16 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JsonLd } from "@/components/JsonLd";
 import { AdmissionCelebrationGallery } from "@/components/honors/AdmissionCelebrationGallery";
 import { PageTopNav } from "@/components/PageTopNav";
 import { PhoneButton } from "@/components/phone-action";
 import { getAdmissionCelebrationYears } from "@/lib/admission-celebrations";
 import { SITE_FULL_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
 import { getSiteOrigin } from "@/lib/site-routes";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-	title: "升学喜报",
+export const metadata: Metadata = createPageMetadata({
 	description: `查看${SITE_FULL_NAME}历年大学录取喜报图片展示，支持按年份查看与分页浏览，方便家长快速了解升学成果。`,
-};
+	path: "/sheng-xue-xi-bao",
+	title: "升学喜报",
+});
 
 export default async function ShengXueXiBaoPage() {
 	const celebrationYears = await getAdmissionCelebrationYears();
@@ -44,10 +47,7 @@ export default async function ShengXueXiBaoPage() {
 				]}
 			/>
 
-			<script
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-				type="application/ld+json"
-			/>
+			<JsonLd data={jsonLd} />
 
 			<section className="bg-white">
 				<div className="container mx-auto px-4 py-12 md:py-16">

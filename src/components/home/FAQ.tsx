@@ -1,5 +1,6 @@
 import { ArrowRightIcon } from "lucide-react";
 import Link from "next/link";
+import { JsonLd } from "@/components/JsonLd";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { getAllJiaZhangFaqItems } from "@/lib/constants/jia-zhang-fu-wu";
@@ -15,8 +16,23 @@ const HOME_FAQ_QUESTIONS = [
 const HOME_FAQS = getAllJiaZhangFaqItems().filter((item) => HOME_FAQ_QUESTIONS.includes(item.question));
 
 export function FAQ() {
-  return (
-    <section className="bg-white py-20" id="jia-chang-wen-da">
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "FAQPage",
+		mainEntity: HOME_FAQS.map((faq) => ({
+			"@type": "Question",
+			acceptedAnswer: {
+				"@type": "Answer",
+				text: faq.answer,
+			},
+			name: faq.question,
+		})),
+	};
+
+	return (
+		<>
+			<JsonLd data={jsonLd} />
+			<section className="bg-white py-20" id="jia-chang-wen-da">
       <div className="container mx-auto max-w-4xl px-4">
         <h2 className="mb-4 text-center font-bold text-3xl md:text-4xl">家长最常问的几个问题</h2>
         <p className="mb-12 text-center text-slate-600">从家长们常关心的问题里挑了几个，先看看有没有您想了解的。</p>
@@ -47,6 +63,7 @@ export function FAQ() {
           </Button>
         </div>
       </div>
-    </section>
-  );
+			</section>
+		</>
+	);
 }

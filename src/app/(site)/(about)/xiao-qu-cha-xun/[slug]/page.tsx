@@ -10,7 +10,8 @@ import {
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
+import { JsonLd } from "@/components/JsonLd";
 import { MarkdownContent } from "@/components/MarkdownContent";
 import { PageTopNav } from "@/components/PageTopNav";
 import { PhoneButton, PhoneLink } from "@/components/phone-action";
@@ -31,6 +32,7 @@ import {
 	getKnowledgeCampuses,
 	resolveKnowledgeHref,
 } from "@/lib/knowledge-base";
+import { createNoIndexMetadata, createPageMetadata } from "@/lib/seo";
 
 type PageProps = {
 	params: Promise<{ slug: string }>;
@@ -57,21 +59,21 @@ export async function generateMetadata({
 
 	if (!campus) {
 		if (archiveCampus) {
-			return {
-				title: `${archiveCampus.title}详情`,
+			return createPageMetadata({
 				description: archiveCampus.description ?? archiveCampus.address,
-			};
+				path: `/xiao-qu-cha-xun/${archiveCampus.slug}`,
+				title: `${archiveCampus.title}详情`,
+			});
 		}
 
-		return {
-			title: "未找到校区",
-		};
+		return createNoIndexMetadata("未找到校区");
 	}
 
-	return {
-		title: `${campus.name}详情`,
+	return createPageMetadata({
 		description: campus.listSummary,
-	};
+		path: `/xiao-qu-cha-xun/${campus.slug}`,
+		title: `${campus.name}详情`,
+	});
 }
 
 function buildTocItems(campus: CampusProfile): TocItem[] {
@@ -141,12 +143,7 @@ function CampusStructuredData({
 		},
 	};
 
-	return (
-		<script
-			dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-			type="application/ld+json"
-		/>
-	);
+	return <JsonLd data={structuredData} />;
 }
 
 function AddressLink({
@@ -181,7 +178,9 @@ export default async function CampusDetailPage({ params }: PageProps) {
 	const archiveCampus = archiveCampusResult?.campus ?? null;
 
 	if (!campus && archiveCampusResult && !archiveCampusResult.isCanonical) {
-		redirect(encodeURI(`/xiao-qu-cha-xun/${archiveCampusResult.campus.slug}`));
+		permanentRedirect(
+			encodeURI(`/xiao-qu-cha-xun/${archiveCampusResult.campus.slug}`),
+		);
 	}
 
 	if (!campus) {

@@ -1,22 +1,28 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BrochureTemplate2026 } from "@/components/brochures/BrochureTemplate2026";
 import { BrochureTemplate2027 } from "@/components/brochures/BrochureTemplate2027";
 import { BrochureTemplateGeneric } from "@/components/brochures/BrochureTemplateGeneric";
 import { PageTopNav } from "@/components/PageTopNav";
 import { getBrochureByYear } from "@/lib/brochures";
+import { SITE_BRAND_NAME } from "@/lib/constants/site";
+import { createNoIndexMetadata, createPageMetadata } from "@/lib/seo";
 
 interface PageProps {
 	params: Promise<{ year: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const { year } = await params;
 	const brochure = getBrochureByYear(year);
-	if (!brochure) return { title: "未找到页面" };
-	return {
-		title: brochure.title,
+	if (!brochure) return createNoIndexMetadata();
+	return createPageMetadata({
+		authors: [SITE_BRAND_NAME],
 		description: brochure.content.slice(0, 150),
-	};
+		openGraphType: "article",
+		path: `/zhao-sheng-jian-zhang/${brochure.year}`,
+		title: brochure.title,
+	});
 }
 
 export default async function BrochureDetailPage({ params }: PageProps) {

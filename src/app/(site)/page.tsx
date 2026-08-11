@@ -16,12 +16,14 @@ import { Honors } from "@/components/home/Honors";
 import { ManagementSystem } from "@/components/home/ManagementSystem";
 import { StudentParentFeedback } from "@/components/home/StudentParentFeedback";
 import { TeachingSystem } from "@/components/home/TeachingSystem";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  alternates: {
-    canonical: "/",
-  },
-};
+export const metadata: Metadata = createPageMetadata({
+	description:
+		"成都戴氏教育高考中心官网，查看高考全日制、复读、教学管理、师资、校区环境、招生简章与家长问答。",
+	path: "/",
+	title: "成都戴氏教育高考中心官网",
+});
 
 export default function HomePage() {
   return (

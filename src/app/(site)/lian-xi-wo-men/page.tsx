@@ -6,6 +6,7 @@ import {
 	SchoolIcon,
 } from "lucide-react";
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/JsonLd";
 import { PageTopNav } from "@/components/PageTopNav";
 import { PhoneButton, PhoneLink } from "@/components/phone-action";
 import {
@@ -15,11 +16,15 @@ import {
 	CONTACT_TOPICS,
 } from "@/lib/constants/contact";
 import { SITE_FULL_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
+import { createPageMetadata, getSiteUrl } from "@/lib/seo";
 
-export const metadata: Metadata = {
+const CONTACT_DESCRIPTION = `查看${SITE_FULL_NAME}联系方式、总部地址、到访说明与电话咨询方式。未提供的信息不单独展示，方便家长快速联系${SITE_FULL_NAME}。`;
+
+export const metadata: Metadata = createPageMetadata({
+	description: CONTACT_DESCRIPTION,
+	path: "/lian-xi-wo-men",
 	title: "联系我们",
-	description: `查看${SITE_FULL_NAME}联系方式、总部地址、到访说明与电话咨询方式。未提供的信息不单独展示，方便家长快速联系${SITE_FULL_NAME}。`,
-};
+});
 
 const CONTACT_ICONS = {
 	咨询热线: PhoneCallIcon,
@@ -46,7 +51,7 @@ export default function LianXiWoMenPage() {
 				: undefined,
 			name: CONTACT_HEADQUARTERS.name,
 			telephone: SITE_HOTLINE_TEXT,
-			url: "/lian-xi-wo-men",
+			url: getSiteUrl("/lian-xi-wo-men").toString(),
 		},
 	};
 
@@ -59,10 +64,7 @@ export default function LianXiWoMenPage() {
 				]}
 			/>
 
-			<script
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-				type="application/ld+json"
-			/>
+			<JsonLd data={jsonLd} />
 
 			<section className="bg-white">
 				<div className="container mx-auto px-4 py-12 md:py-16">
