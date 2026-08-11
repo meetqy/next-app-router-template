@@ -75,7 +75,7 @@ import { imageUrl } from "@/lib/image-url";
 | 命令 | 作用 |
 | --- | --- |
 | `pnpm dev` | 启动开发服务器（Turbopack） |
-| `pnpm build` | 生产构建，随后把 `content/` 复制到 `.next/content` |
+| `pnpm build` | 生产构建（Turbopack） |
 | `pnpm start` | 启动生产服务器，需先执行 `pnpm build` |
 | `pnpm lint` | ESLint 检查 |
 | `pnpm images:manifest` | 扫描 `cos-assets/` 与 `public/`，生成图片清单 `src/lib/generated/image-manifest.json`。**增删图片后必须执行**，否则喜报图库和 Markdown 配图不会显示 |
@@ -87,6 +87,6 @@ import { imageUrl } from "@/lib/image-url";
 
 ## 知识库内容
 
-`content/` 下的 Markdown 文件由 `src/lib/knowledge-base.ts` 读取，驱动资料库（`/zi-liao-ku`）相关页面。构建后 `content/` 会被复制到 `.next/content`，因此部署时需要保留该目录或完整的 `.next` 产物。
+`content/` 下的 Markdown 文件由 `src/lib/knowledge-base.ts` 读取，驱动资料库（`/zi-liao-ku`）相关页面。Next.js 会在构建时跟踪这些文件，部署时请保留 `content/` 目录。
 
 `/urls` 与 `/llms.txt` 提供站点 URL 清单与 AI 友好的内容索引，供搜索引擎和大模型抓取。

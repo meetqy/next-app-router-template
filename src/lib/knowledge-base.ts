@@ -2,12 +2,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { SITE_HOTLINE_TEXT } from "@/lib/constants/site";
 
-const KNOWLEDGE_CONTENT_DIR =
-	[
-		path.join(process.cwd(), "content"),
-		path.join(process.cwd(), ".next", "content"),
-	].find((directory) => fs.existsSync(directory)) ??
-	path.join(process.cwd(), "content");
+// content/ 下的 markdown 会被 Next.js 的 file tracing 自动收进函数包，
+// 因此构建产物和运行时都能从项目根目录读取，无需额外拷贝。
+const KNOWLEDGE_CONTENT_DIR = path.join(process.cwd(), "content");
 const CRAWLED_CONTENT_DIR = path.join(KNOWLEDGE_CONTENT_DIR, "抓取页面");
 
 const CATEGORY_LABELS: Record<string, string> = {
