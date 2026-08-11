@@ -1,6 +1,8 @@
+import { createHash } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { access, readFile, readdir, stat } from "node:fs/promises";
 import path from "node:path";
+import { pipeline } from "node:stream/promises";
 import { fileURLToPath } from "node:url";
 import COS from "cos-nodejs-sdk-v5";
 
@@ -8,6 +10,7 @@ const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
 const defaultSourceDirectory = path.join(projectRoot, "cos-assets");
 const imageAssetPrefix = "site-assets/v1";
 const cacheControl = "public,max-age=31536000,immutable";
+const uploadConcurrency = 8;
 const supportedExtensions = new Set([
 	".avif",
 	".gif",
@@ -34,6 +37,7 @@ function printUsage() {
 
 选项：
   --dry-run          只列出待上传对象，不访问腾讯云
+  --force            跳过远端比对，强制重传全部图片
   --source <目录>    指定本地图片目录，默认 cos-assets
   --help             显示帮助`);
 }
@@ -88,6 +92,7 @@ async function loadLocalEnvironment() {
 function parseArguments() {
 	const argumentsList = process.argv.slice(2);
 	let dryRun = false;
+	let force = false;
 	let sourceDirectory = defaultSourceDirectory;
 	let sourceWasProvided = false;
 
@@ -100,6 +105,11 @@ function parseArguments() {
 
 		if (argument === "--dry-run") {
 			dryRun = true;
+			continue;
+		}
+
+		if (argument === "--force") {
+			force = true;
 			continue;
 		}
 
@@ -124,7 +134,7 @@ function parseArguments() {
 		throw new Error(`未知选项：${argument}`);
 	}
 
-	return { dryRun, sourceDirectory, sourceWasProvided };
+	return { dryRun, force, sourceDirectory, sourceWasProvided };
 }
 
 async function collectImageFiles(directory) {
@@ -169,11 +179,62 @@ function putObject(cosClient, options) {
 	});
 }
 
+// 取远端对象的 ETag；对象不存在时返回 undefined。
+// COS 对单次 putObject 上传的对象，ETag 就是内容的 MD5（带引号），
+// 因此可以直接和本地文件的 MD5 比对来判断是否需要重传。
+function headObjectETag(cosClient, options) {
+	return new Promise((resolve, reject) => {
+		cosClient.headObject(options, (error, data) => {
+			if (error) {
+				if (error.statusCode === 404) {
+					resolve(undefined);
+					return;
+				}
+
+				reject(error);
+				return;
+			}
+
+			resolve(data.ETag?.replace(/"/g, ""));
+		});
+	});
+}
+
+async function computeFileMd5(filePath) {
+	const hash = createHash("md5");
+	await pipeline(createReadStream(filePath), hash);
+	return hash.digest("hex");
+}
+
+// 以固定并发跑完整个任务列表，结果顺序与输入一致。
+async function runWithConcurrency(items, limit, worker) {
+	const results = new Array(items.length);
+	let nextIndex = 0;
+
+	async function runNext() {
+		while (nextIndex < items.length) {
+			const index = nextIndex;
+			nextIndex += 1;
+			results[index] = await worker(items[index], index);
+		}
+	}
+
+	await Promise.all(
+		Array.from({ length: Math.min(limit, items.length) }, () => runNext()),
+	);
+
+	return results;
+}
+
 async function main() {
 	await loadLocalEnvironment();
 
-	const { dryRun, sourceDirectory: requestedSourceDirectory, sourceWasProvided } =
-		parseArguments();
+	const {
+		dryRun,
+		force,
+		sourceDirectory: requestedSourceDirectory,
+		sourceWasProvided,
+	} = parseArguments();
 	let sourceDirectory = requestedSourceDirectory;
 
 	try {
@@ -226,9 +287,23 @@ async function main() {
 	}
 
 	const cosClient = new COS({ SecretId: secretId, SecretKey: secretKey });
+	const uploaded = [];
+	let skipped = 0;
 
-	for (const [index, filePath] of imageFiles.entries()) {
+	await runWithConcurrency(imageFiles, uploadConcurrency, async (filePath) => {
 		const objectKey = toObjectKey(sourceDirectory, filePath, imageAssetPrefix);
+
+		if (!force) {
+			const [remoteETag, localMd5] = await Promise.all([
+				headObjectETag(cosClient, { Bucket: bucket, Region: region, Key: objectKey }),
+				computeFileMd5(filePath),
+			]);
+
+			if (remoteETag === localMd5) {
+				skipped += 1;
+				return;
+			}
+		}
 
 		await putObject(cosClient, {
 			Bucket: bucket,
@@ -239,10 +314,29 @@ async function main() {
 			CacheControl: cacheControl,
 		});
 
-		console.log(`[${index + 1}/${imageFiles.length}] 已上传 ${objectKey}`);
-	}
+		uploaded.push(objectKey);
+		console.log(`已上传 ${objectKey}`);
+	});
 
-	console.log("COS 图片上传完成。未执行远程删除。");
+	console.log(
+		`\nCOS 图片上传完成：新增或更新 ${uploaded.length} 个，跳过 ${skipped} 个未变化。未执行远程删除。`,
+	);
+
+	// 对象键不含内容哈希，且 Cache-Control 为 immutable，
+	// 因此内容变化的图片需要手动刷新 CDN 缓存才能生效。
+	if (uploaded.length > 0) {
+		const imageBaseUrl = process.env.NEXT_PUBLIC_IMAGE_BASE_URL?.trim().replace(/\/+$/, "");
+
+		console.log("\n以下图片内容已变化，需要刷新 CDN 缓存：");
+
+		for (const objectKey of uploaded) {
+			const encodedKey = objectKey
+				.split("/")
+				.map((segment) => encodeURIComponent(segment))
+				.join("/");
+			console.log(imageBaseUrl ? `${imageBaseUrl}/${encodedKey}` : `/${encodedKey}`);
+		}
+	}
 }
 
 main().catch((error) => {
