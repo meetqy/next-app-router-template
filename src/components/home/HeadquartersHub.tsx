@@ -13,7 +13,7 @@ import { imageUrl } from "@/lib/image-url";
 export function HeadquartersHub() {
 	return (
 		<section className="bg-slate-50 py-20" id="zong-bu-ru-kou">
-			<div className="container mx-auto px-4">
+			<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="mb-10 max-w-3xl">
 					<div className="inline-flex rounded-full bg-white px-4 py-1.5 font-medium text-primary text-sm">
 						总部在哪里

@@ -9,7 +9,7 @@ const NEWS_ARTICLES = (getKnowledgeArticlesByFilter("kao-shi-zheng-ce") ?? []).s
 export function ExamNews() {
 	return (
 		<section className="bg-white py-20" id="xin-wen">
-			<div className="container mx-auto px-4">
+			<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="mb-12 flex items-end justify-between">
 					<div>
 						<h2 className="mb-2 font-bold text-3xl text-slate-900 md:text-4xl">

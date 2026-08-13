@@ -26,7 +26,7 @@ const BUSINESS_ITEMS = [
 export function BrandOverview() {
   return (
     <section className="bg-white py-18" id="pin-pai-zong-shu">
-      <div className="container mx-auto px-4">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)] lg:items-start">
           <div>
             <div className="inline-flex rounded-full bg-primary/10 px-4 py-1.5 font-medium text-primary text-sm">品牌总述</div>

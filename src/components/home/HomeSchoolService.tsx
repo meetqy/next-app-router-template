@@ -1,7 +1,7 @@
 export function HomeSchoolService() {
 	return (
 		<section className="bg-primary py-20 text-primary-foreground">
-			<div className="container mx-auto px-4 text-center">
+			<div className="mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
 				<h2 className="mb-8 font-bold text-3xl md:text-4xl">
 					家长怎么了解孩子在校情况
 				</h2>

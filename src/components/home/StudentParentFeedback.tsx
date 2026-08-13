@@ -19,7 +19,7 @@ export function StudentParentFeedback() {
 
 	return (
 		<section className="bg-white py-20">
-			<div className="container mx-auto px-4">
+			<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 				<h2 className="mb-16 text-center font-bold text-3xl md:text-4xl">
 					学生成果与家长口碑
 				</h2>

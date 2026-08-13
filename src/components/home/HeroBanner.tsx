@@ -12,7 +12,7 @@ export function HeroBanner() {
       </div>
       <div className="absolute inset-0 bg-slate-950/55" />
       <div className="absolute inset-0">
-        <div className="container mx-auto flex h-full items-center justify-end px-4">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-center justify-end px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl text-white">
             <div className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-1.5 font-medium text-sm backdrop-blur-sm">{SITE_FULL_NAME}</div>
             <h1 className="mt-6 font-bold text-4xl leading-tight md:text-6xl">{SITE_FULL_NAME.replace("成都", "")}官网</h1>

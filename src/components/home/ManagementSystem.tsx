@@ -11,7 +11,7 @@ export function ManagementSystem() {
 
 	return (
 		<section className="bg-white py-20" id="jiao-xue-guan-li">
-			<div className="container mx-auto px-4">
+			<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="flex flex-col items-center gap-12 md:flex-row-reverse">
 					<div className="flex-1">
 						<h2 className="mb-8 font-bold text-3xl text-slate-900 md:text-4xl">

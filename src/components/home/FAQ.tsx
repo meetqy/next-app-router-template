@@ -35,7 +35,7 @@ export function FAQ() {
 		<>
 			<JsonLd data={jsonLd} />
 			<section className="bg-white py-20" id="jia-chang-wen-da">
-      <div className="container mx-auto max-w-4xl px-4">
+      <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
         <h2 className="mb-4 text-center font-bold text-3xl md:text-4xl">家长最常问的几个问题</h2>
         <p className="mb-12 text-center text-slate-600">从家长们常关心的问题里挑了几个，先看看有没有您想了解的。</p>
         <Accordion collapsible type="single">

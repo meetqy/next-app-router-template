@@ -8,8 +8,8 @@ export function CoreEndorsement() {
 
 	return (
 		<section className="bg-white py-16">
-			<div className="container mx-auto px-4">
-				<div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+			<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+				<div className="grid grid-cols-2 gap-6 md:grid-cols-4">
 					{stats.map((stat) => (
 						<div className="text-center" key={stat.label}>
 							<div className="mb-2 font-bold text-4xl text-primary md:text-5xl">

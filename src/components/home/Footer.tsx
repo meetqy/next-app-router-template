@@ -6,6 +6,7 @@ import { SITE_BRAND_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
 
 const FOOTER_LINK_GROUPS = [
 	{
+		align: "text-left",
 		links: [
 			{ href: "/lao-shi", label: "教师团队" },
 			{ href: "/xiao-qu-cha-xun", label: "校区查询" },
@@ -14,6 +15,7 @@ const FOOTER_LINK_GROUPS = [
 		title: "快速入口",
 	},
 	{
+		align: "text-center",
 		links: [
 			{ href: "/sheng-xue-xi-bao", label: "升学案例" },
 			{ href: "/ti-fen-an-li", label: "提分案例" },
@@ -21,6 +23,7 @@ const FOOTER_LINK_GROUPS = [
 		title: "案例展示",
 	},
 	{
+		align: "text-center",
 		links: [
 			{ href: "/jiao-xue-huan-jing", label: "教学环境" },
 			{ href: "/rong-yu-zi-zhi", label: "荣誉资质" },
@@ -29,6 +32,7 @@ const FOOTER_LINK_GROUPS = [
 		title: "了解戴氏",
 	},
 	{
+		align: "text-right",
 		links: [
 			{
 				href: "/zi-liao-ku/fen-lei/zhao-sheng-jian-zhang",
@@ -89,7 +93,7 @@ export function Footer() {
 					className="grid grid-cols-2 gap-x-6 gap-y-8 py-9 md:grid-cols-4 md:py-10"
 				>
 					{FOOTER_LINK_GROUPS.map((group) => (
-						<div key={group.title}>
+						<div className={group.align} key={group.title}>
 							<h3 className="font-semibold text-sm text-white">{group.title}</h3>
 							<ul className="mt-4 space-y-2.5 text-slate-400 text-sm">
 								{group.links.map((link) => (

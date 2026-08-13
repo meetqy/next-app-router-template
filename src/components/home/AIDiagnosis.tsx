@@ -27,7 +27,7 @@ export function AIDiagnosis() {
 
 	return (
 		<section className="bg-white py-24">
-			<div className="container mx-auto px-4">
+			<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="relative overflow-hidden rounded-[2.5rem] bg-slate-950 p-8 md:p-16 lg:p-20">
 					{/* 背景装饰 */}
 					<div className="absolute -top-20 -right-20 h-64 w-64 rounded-full bg-primary/20 blur-[80px]" />

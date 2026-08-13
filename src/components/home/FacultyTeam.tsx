@@ -7,7 +7,7 @@ const HOME_TEACHERS = TEACHERS.slice(0, 8);
 export function FacultyTeam() {
 	return (
 		<section className="bg-slate-50 py-20" id="lao-shi-tuan-dui">
-			<div className="container mx-auto px-4">
+			<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="mb-16 text-center">
 					<h2 className="mb-4 font-bold text-3xl text-slate-900 md:text-4xl">
 						孩子的老师是什么样的
@@ -17,7 +17,7 @@ export function FacultyTeam() {
 					</p>
 				</div>
 
-				<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+				<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
 					{HOME_TEACHERS.map((teacher) => (
 						<TeacherCard key={teacher.slug} teacher={teacher} />
 					))}

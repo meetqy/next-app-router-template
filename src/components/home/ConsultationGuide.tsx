@@ -9,7 +9,7 @@ import { SITE_HOTLINE_TEXT } from "@/lib/constants/site";
 export function ConsultationGuide() {
 	return (
 		<section className="border-slate-200 border-y bg-white py-20">
-			<div className="container mx-auto px-4">
+			<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="grid gap-10 rounded-3xl border border-slate-200 bg-slate-50/60 p-8 md:p-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)] lg:gap-12 lg:p-12">
 					<div>
 						<div className="mb-5 inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 font-medium text-primary text-sm">

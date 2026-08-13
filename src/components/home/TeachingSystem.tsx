@@ -21,7 +21,7 @@ export function TeachingSystem() {
 
 	return (
 		<section className="bg-white py-20" id="jiao-xue-jiao-yan">
-			<div className="container mx-auto px-4 text-center">
+			<div className="mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
 				<h2 className="mb-12 font-bold text-3xl text-slate-900 md:text-4xl">
 					孩子在学校是怎么学的
 				</h2>

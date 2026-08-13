@@ -9,7 +9,7 @@ export function Honors() {
 
 	return (
 		<section className="bg-white py-14 md:py-16" id="rong-yu-zi-zhi">
-			<div className="container mx-auto px-4">
+			<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
 					<div className="max-w-2xl">
 						<p className="mb-3 font-semibold text-primary text-sm">

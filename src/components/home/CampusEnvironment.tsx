@@ -14,7 +14,7 @@ const featuredImages = [
 export function CampusEnvironment() {
 	return (
 		<section className="bg-slate-50 py-20" id="jiao-xue-huan-jing">
-			<div className="container mx-auto px-4">
+			<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="mb-16 text-center">
 					<h2 className="mb-4 font-bold text-3xl text-slate-900 md:text-4xl">
 						看得见的教学环境
