@@ -1,60 +1,17 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { BrochureTemplate2026 } from "@/components/brochures/BrochureTemplate2026";
-import { BrochureTemplate2027 } from "@/components/brochures/BrochureTemplate2027";
-import { BrochureTemplateGeneric } from "@/components/brochures/BrochureTemplateGeneric";
-import { PageTopNav } from "@/components/PageTopNav";
-import { getBrochureByYear } from "@/lib/brochures";
-import { SITE_BRAND_NAME } from "@/lib/constants/site";
-import { createNoIndexMetadata, createPageMetadata } from "@/lib/seo";
+import { notFound, permanentRedirect } from "next/navigation";
+import { getBrochureDestination } from "@/lib/content-center";
 
-interface PageProps {
+type PageProps = {
 	params: Promise<{ year: string }>;
-}
+};
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export default async function BrochureRedirectPage({ params }: PageProps) {
 	const { year } = await params;
-	const brochure = getBrochureByYear(year);
-	if (!brochure) return createNoIndexMetadata();
-	return createPageMetadata({
-		authors: [SITE_BRAND_NAME],
-		description: brochure.content.slice(0, 150),
-		openGraphType: "article",
-		path: `/zhao-sheng-jian-zhang/${brochure.year}`,
-		title: brochure.title,
-	});
-}
+	const destination = getBrochureDestination(year);
 
-export default async function BrochureDetailPage({ params }: PageProps) {
-	const { year } = await params;
-	const brochure = getBrochureByYear(year);
-
-	if (!brochure) {
+	if (!destination) {
 		notFound();
 	}
 
-	// 根据年份选择模版
-	const renderTemplate = () => {
-		switch (year) {
-			case "2027":
-				return <BrochureTemplate2027 brochure={brochure} />;
-			case "2026":
-				return <BrochureTemplate2026 brochure={brochure} />;
-			default:
-				return <BrochureTemplateGeneric brochure={brochure} />;
-		}
-	};
-
-	return (
-		<div className="min-h-screen">
-			<PageTopNav
-				items={[
-					{ label: "首页", href: "/" },
-					{ label: "招生简章", href: "/zhao-sheng-jian-zhang" },
-					{ label: brochure.title, href: `/zhao-sheng-jian-zhang/${year}` },
-				]}
-			/>
-			{renderTemplate()}
-		</div>
-	);
+	permanentRedirect(destination);
 }

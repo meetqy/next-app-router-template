@@ -1,7 +1,8 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
+import { getPriceArticleDestination } from "@/lib/content-center";
 
 export const dynamic = "force-dynamic";
 
 export default function Page() {
-	redirect("/jia-ge-biao/shi-mao-gao-kao-fu-du");
+	permanentRedirect(getPriceArticleDestination());
 }

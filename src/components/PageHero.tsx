@@ -36,7 +36,7 @@ export function PageHero({
 		<section className={cn("bg-white", className)}>
 			<div
 				className={cn(
-					"container mx-auto px-4 py-12 md:py-16",
+					"mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8",
 					containerClassName,
 				)}
 			>

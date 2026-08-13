@@ -26,11 +26,11 @@ export const metadata: Metadata = {
 		default: `${SITE_FULL_NAME}官网`,
 		template: `%s | ${SITE_FULL_NAME}官网`,
 	},
-	description: `${SITE_FULL_NAME}官网，提供品牌介绍、总部信息、高考中心、高考复读、高考全日制、招生简章与电话咨询入口。`,
+	description: `${SITE_FULL_NAME}官网，提供教师团队、校区查询、升学案例与招生备考资讯。`,
 	metadataBase: siteUrl,
 	icons: [{ rel: "icon", url: "/favicon.ico" }],
 	openGraph: {
-		description: `${SITE_FULL_NAME}官网，提供品牌介绍、总部信息、高考中心、高考复读、高考全日制、招生简章与电话咨询入口。`,
+		description: `${SITE_FULL_NAME}官网，提供教师团队、校区查询、升学案例与招生备考资讯。`,
 		images: [
 			{
 				alt: "戴氏教育高考提分主视觉",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: "summary_large_image",
-		description: `${SITE_FULL_NAME}官网，提供品牌介绍、总部信息、高考中心、高考复读、高考全日制、招生简章与电话咨询入口。`,
+		description: `${SITE_FULL_NAME}官网，提供教师团队、校区查询、升学案例与招生备考资讯。`,
 		images: [getPublicImageUrl("/assets/高考提分解决方案-(4).png")],
 		title: `${SITE_FULL_NAME}官网`,
 	},

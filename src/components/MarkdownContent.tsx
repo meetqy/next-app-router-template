@@ -14,6 +14,15 @@ function cleanHeadingText(text: string) {
 	return text.replace(/^\s*\d+[\s.、．-]*/g, "").trim();
 }
 
+function createHeadingId(text: string, occurrence: number) {
+	const base = cleanHeadingText(text)
+		.toLowerCase()
+		.replace(/[^\p{Script=Han}a-z0-9]+/gu, "-")
+		.replace(/^-+|-+$/g, "");
+
+	return occurrence > 1 ? `${base}-${occurrence}` : base;
+}
+
 const MARKDOWN_IMAGE_PATTERN = /!\[[^\]]*]\([^)]+\)/g;
 const RESOURCE_PATH_PATTERN =
 	/(?:\/|public\/)?(?:assets|老师|校区|honors|address|daishi-site\/uploads)\/[^\s`，。；、）)\]]+\.(?:jpg|jpeg|png|webp|gif)/gi;
@@ -171,11 +180,20 @@ export function MarkdownContent({
 	const lines = content.split("\n");
 	const elements: React.ReactNode[] = [];
 	let index = 0;
+	let pendingAnchorId: string | null = null;
+	const headingOccurrences = new Map<string, number>();
 
 	while (index < lines.length) {
 		const line = lines[index]?.trimEnd() ?? "";
 
 		if (!line.trim()) {
+			index += 1;
+			continue;
+		}
+
+		const anchorMatch = line.match(/^<!--\s*anchor:\s*([a-z0-9-]+)\s*-->$/i);
+		if (anchorMatch) {
+			pendingAnchorId = anchorMatch[1] ?? null;
 			index += 1;
 			continue;
 		}
@@ -291,9 +309,14 @@ export function MarkdownContent({
 			const [, marks = "", heading = ""] = headingMatch;
 			const level = marks.length;
 			const Heading = `h${Math.min(level, 4)}` as "h1" | "h2" | "h3" | "h4";
+			const cleanedHeading = cleanHeadingText(heading);
+			const occurrence = (headingOccurrences.get(cleanedHeading) ?? 0) + 1;
+			headingOccurrences.set(cleanedHeading, occurrence);
+			const headingId = pendingAnchorId ?? createHeadingId(cleanedHeading, occurrence);
+			pendingAnchorId = null;
 			elements.push(
-				<Heading key={`heading-${index}`}>
-					{parseInline(cleanHeadingText(heading), resolveHref)}
+				<Heading id={headingId} key={`heading-${index}`}>
+					{parseInline(cleanedHeading, resolveHref)}
 				</Heading>,
 			);
 			index += 1;

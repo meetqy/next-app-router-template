@@ -33,6 +33,15 @@ scripts/              构建与运维脚本
 - **`public/`** — 必须从站点根路径访问、且不适合走 CDN 的文件：`favicon.ico`、各搜索引擎的站点验证文件（百度、必应、神马、搜狗、头条）。这些文件跟随代码提交。
 - **`cos-assets/`** — 所有图片资源，保持与线上一致的目录结构（`assets/`、`honors/`、`老师/`、`校区/`、`喜报/` 等）。该目录被 `.gitignore` 忽略，图片通过 `pnpm images:upload` 上传到 COS，页面经 `imageUrl()` 引用 CDN 地址。
 
+教学环境照片统一放在以下四个目录，`/jiao-xue-huan-jing` 会自动按目录分类、去重并分页展示：
+
+```
+cos-assets/教学环境/课堂教学/
+cos-assets/教学环境/学习日常/
+cos-assets/教学环境/考试测评/
+cos-assets/教学环境/空间环境/
+```
+
 新增图片后需要执行两步：
 
 ```bash
@@ -40,7 +49,7 @@ pnpm images:manifest   # 更新图片清单（清单要提交）
 pnpm images:upload     # 上传到 COS
 ```
 
-清单 `src/lib/generated/image-manifest.json` 会提交进仓库，因为 `cos-assets/` 在部署环境不存在，升学喜报图库和 Markdown 配图需要靠它判断图片是否存在。
+清单 `src/lib/generated/image-manifest.json` 会提交进仓库，因为 `cos-assets/` 在部署环境不存在，升学案例图库和 Markdown 配图需要靠它判断图片是否存在。
 
 ## 图片引用方式
 
@@ -78,7 +87,7 @@ import { imageUrl } from "@/lib/image-url";
 | `pnpm build` | 生产构建（Turbopack） |
 | `pnpm start` | 启动生产服务器，需先执行 `pnpm build` |
 | `pnpm lint` | ESLint 检查 |
-| `pnpm images:manifest` | 扫描 `cos-assets/` 与 `public/`，生成图片清单 `src/lib/generated/image-manifest.json`。**增删图片后必须执行**，否则喜报图库和 Markdown 配图不会显示 |
+| `pnpm images:manifest` | 扫描 `cos-assets/` 与 `public/`，生成主图片清单、教学环境分类清单和升学案例尺寸清单。**增删图片后必须执行**，否则升学案例图库、教学环境图库和 Markdown 配图不会显示 |
 | `pnpm images:upload` | 把 `cos-assets/` 下的图片上传到 COS，对象前缀 `site-assets/v1/`。只上传不删除远端文件。加 `--dry-run` 可先列出待上传对象，`--source <目录>` 可指定其他源目录 |
 | `pnpm submit:baidu` | 向百度站长平台推送 URL，从文本文件读取（默认 `1.txt`，每行一个 URL）。可用 `--file`、`--site`、`--token` 覆盖，或用环境变量 `BAIDU_PUSH_SITE` / `BAIDU_PUSH_TOKEN` |
 | `pnpm submit:indexnow` | 向 IndexNow 推送 URL（必应、Yandex 等）。不传文件时自动读取线上 `/sitemap.xml`，也可传文件路径。加 `--dry-run` 只预览不提交 |

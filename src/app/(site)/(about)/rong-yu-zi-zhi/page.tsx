@@ -108,15 +108,15 @@ function HonorCard({ index }: { index: number }) {
 export default function HonorsPage() {
 	return (
 		<div className="bg-slate-50">
-			<PageTopNav
-				items={[
-					{ label: "首页", href: "/" },
-					{ label: "荣誉资质", href: "/rong-yu-zi-zhi" },
-				]}
-			/>
 			<main className="pb-16">
 				<section className="bg-white">
-					<div className="container mx-auto px-4 py-10 md:py-14">
+					<PageTopNav
+						items={[
+							{ label: "首页", href: "/" },
+							{ label: "荣誉资质", href: "/rong-yu-zi-zhi" },
+						]}
+					/>
+					<div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
 						<p className="font-semibold text-primary text-sm">荣誉资质</p>
 						<h1 className="mt-3 max-w-4xl text-balance font-bold text-4xl text-slate-950 leading-tight md:text-5xl">
 							戴氏教育高考总部荣誉证书展示
@@ -151,7 +151,7 @@ export default function HonorsPage() {
 					</div>
 				</section>
 
-				<section className="container mx-auto px-4 pt-6 md:pt-8">
+				<section className="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 md:pt-8 lg:px-8">
 					<div>
 						{HONOR_CERTIFICATES.map((_, index) => (
 							<HonorCard index={index} key={HONOR_CERTIFICATES[index]?.id} />

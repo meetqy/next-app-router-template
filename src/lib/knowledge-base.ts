@@ -1,5 +1,11 @@
 import fs from "node:fs";
 import path from "node:path";
+import {
+	CONTENT_CENTER_SECTIONS,
+	getContentCenterArticleSources,
+	getContentCenterSection,
+	type ContentCenterSectionId,
+} from "@/lib/content-center";
 import { SITE_HOTLINE_TEXT } from "@/lib/constants/site";
 
 // content/ 下的 markdown 会被 Next.js 的 file tracing 自动收进函数包，
@@ -16,58 +22,6 @@ const CATEGORY_LABELS: Record<string, string> = {
 	knowledge: "知识库文档",
 	news: "资讯动态",
 	teacher: "教师资料",
-};
-
-const CATEGORY_FILTER_META: Record<
-	string,
-	Omit<KnowledgeArticleFilter, "count" | "kind">
-> = {
-	about: {
-		description: "查看品牌介绍、办学信息和戴氏相关内容。",
-		id: "guan-yu-dai-shi",
-		title: "关于戴氏",
-	},
-	activity: {
-		description: "查看课程活动、阶段安排和学习服务内容。",
-		id: "ke-cheng-huo-dong",
-		title: "课程活动",
-	},
-	campus: {
-		description: "查看校区地址、路线、环境和到访信息。",
-		id: "xiao-qu-zi-liao",
-		title: "校区资料",
-	},
-	course: {
-		description: "查看课程体系、班型设置和教学安排。",
-		id: "ke-cheng-ti-xi",
-		title: "课程体系",
-	},
-	hot: {
-		description: "查看家长关注较多的热点问题和升学话题。",
-		id: "re-dian-guan-zhu",
-		title: "热点关注",
-	},
-	knowledge: {
-		description: "查看课程、服务和升学相关资料。",
-		id: "zhi-shi-ku-wen-dang",
-		title: "知识库文档",
-	},
-	news: {
-		description: "查看考试资讯、政策时间和学习动态。",
-		id: "zi-xun-dong-tai",
-		title: "资讯动态",
-	},
-	teacher: {
-		description: "查看教师团队、教学特色和师资相关内容。",
-		id: "jiao-shi-zi-liao",
-		title: "教师资料",
-	},
-};
-
-const OTHER_CATEGORY_FILTER: Omit<KnowledgeArticleFilter, "count" | "kind"> = {
-	description: "查看课程、服务和升学规划相关的综合资料。",
-	id: "zong-he-zi-liao",
-	title: "综合资料",
 };
 
 const CITY_BY_SEGMENT: Record<string, string> = {
@@ -102,6 +56,9 @@ export type KnowledgeArticle = {
 	originalPath: string;
 	publishedAt?: string;
 	relatedLatestHref?: string;
+	schema?: "faq";
+	section: ContentCenterSectionId;
+	sectionLabel: string;
 	slug: string;
 	sourceUrl?: string;
 	summary: string;
@@ -111,18 +68,11 @@ export type KnowledgeArticle = {
 
 export type KnowledgeArticleSummary = Omit<KnowledgeArticle, "content">;
 
-export type KnowledgeTopicGroup = {
-	count: number;
-	description: string;
-	id: string;
-	title: string;
-};
-
 export type KnowledgeArticleFilter = {
 	count: number;
 	description: string;
 	id: string;
-	kind: "category" | "topic";
+	kind: "section";
 	title: string;
 };
 
@@ -652,7 +602,7 @@ export function resolveKnowledgeHref(href: string) {
 	}
 
 	if (legacyPath === "/course") {
-		return "/zhao-sheng-jian-zhang";
+		return "/zi-liao-ku/fen-lei/zhao-sheng-jian-zhang";
 	}
 
 	const campus = getKnowledgeCampuses().find((item) =>
@@ -692,7 +642,7 @@ function isHistorical(title: string, body: string, publishedAt?: string) {
 
 function relatedLatestHref(title: string) {
 	if (/收费|价格|费用|价目|优惠/.test(title)) {
-		return "/jia-ge-biao";
+		return "/zi-liao-ku/fen-lei/shou-fei-shuo-ming";
 	}
 
 	if (/校区|地址|电话|联系/.test(title)) {
@@ -700,10 +650,10 @@ function relatedLatestHref(title: string) {
 	}
 
 	if (/招生简章|复读|全日制/.test(title)) {
-		return "/zhao-sheng-jian-zhang";
+		return "/zi-liao-ku/fen-lei/zhao-sheng-jian-zhang";
 	}
 
-	return "/jia-zhang-fu-wu";
+	return "/zi-liao-ku";
 }
 
 function parseKnowledgeArticle(filePath: string): KnowledgeArticle | null {
@@ -737,6 +687,8 @@ function parseKnowledgeArticle(filePath: string): KnowledgeArticle | null {
 				normalizeLegacyPhoneText(frontmatter.description, legacyPhones),
 			)
 		: undefined;
+	const section = inferSectionId({ summary: extractSummary(content, description), title });
+	const sectionMeta = getContentCenterSection(section);
 
 	return {
 		category,
@@ -750,6 +702,8 @@ function parseKnowledgeArticle(filePath: string): KnowledgeArticle | null {
 		originalPath: relativePath,
 		publishedAt,
 		relatedLatestHref: relatedLatestHref(title),
+		section,
+		sectionLabel: sectionMeta?.label ?? "备考指南",
 		slug:
 			createFrontmatterSlug(frontmatter.slug) ??
 			createPublicSlug(title, relativePath),
@@ -796,6 +750,8 @@ function parseTopLevelKnowledgeArticle(
 				normalizeLegacyPhoneText(frontmatter.description, legacyPhones),
 			)
 		: undefined;
+	const section = inferSectionId({ summary: extractSummary(content, description), title });
+	const sectionMeta = getContentCenterSection(section);
 
 	return {
 		category: "knowledge",
@@ -809,12 +765,40 @@ function parseTopLevelKnowledgeArticle(
 		originalPath: relativePath,
 		publishedAt,
 		relatedLatestHref: relatedLatestHref(title),
+		section,
+		sectionLabel: sectionMeta?.label ?? "备考指南",
 		slug:
 			createFrontmatterSlug(frontmatter.slug) ??
 			createPublicSlug(title, relativePath),
 		sourceUrl: frontmatter.url,
 		summary: extractSummary(content, description),
 		title,
+		year,
+	};
+}
+
+function createContentCenterArticle(
+	source: ReturnType<typeof getContentCenterArticleSources>[number],
+): KnowledgeArticle {
+	const sectionMeta = getContentCenterSection(source.section);
+	const year = extractYear(source.title, source.publishedAt, source.content);
+
+	return {
+		category: "content-center",
+		categoryLabel: "资讯中心",
+		content: source.content,
+		historical: source.historical ?? false,
+		legacyPhones: [],
+		legacySlug: source.slug,
+		originalPath: `资讯中心/${source.slug}.md`,
+		publishedAt: source.publishedAt,
+		relatedLatestHref: undefined,
+		schema: source.schema,
+		section: source.section,
+		sectionLabel: sectionMeta?.label ?? "备考指南",
+		slug: source.slug,
+		summary: source.summary,
+		title: source.title,
 		year,
 	};
 }
@@ -857,7 +841,6 @@ function withUniqueArticleSlugs(articles: KnowledgeArticle[]) {
 
 let allKnowledgeArticleRecordsCache: KnowledgeArticle[] | null = null;
 let knowledgeArticleSummariesCache: KnowledgeArticleSummary[] | null = null;
-let knowledgeTopicGroupsCache: KnowledgeTopicGroup[] | null = null;
 let knowledgeArticleFiltersCache: KnowledgeArticleFilter[] | null = null;
 
 function getAllKnowledgeArticleRecords() {
@@ -871,8 +854,12 @@ function getAllKnowledgeArticleRecords() {
 	const topLevelArticles = walkMarkdownFiles(KNOWLEDGE_CONTENT_DIR)
 		.map(parseTopLevelKnowledgeArticle)
 		.filter((article): article is KnowledgeArticle => Boolean(article));
+	const contentCenterArticles = getContentCenterArticleSources().map(
+		createContentCenterArticle,
+	);
 
 	allKnowledgeArticleRecordsCache = withUniqueArticleSlugs([
+		...contentCenterArticles,
 		...topLevelArticles,
 		...crawledArticles,
 	]);
@@ -940,100 +927,23 @@ export function getKnowledgeArticleByAnySlug(slug: string) {
 	return null;
 }
 
-function getTopicGroupId(article: KnowledgeArticleSummary) {
+function inferSectionId(
+	article: Pick<KnowledgeArticleSummary, "summary" | "title">,
+): ContentCenterSectionId {
 	const text = `${article.title} ${article.summary}`;
 
-	if (/收费|价格|费用|价目|学费|优惠/.test(text)) {
-		return "shou-fei-jia-ge";
+	if (/收费|价格|费用|价目|学费|优惠/.test(text)) return "shou-fei-shuo-ming";
+	if (/校区|地址|电话|联系/.test(text)) return "xiao-qu-zi-liao";
+	if (/口碑|怎么样|靠谱吗|好不好|评价|推荐|排名|排行|对比/.test(text)) {
+		return "ze-xiao-dui-bi";
 	}
-	if (/校区|地址|电话|联系/.test(text)) {
-		return "xiao-qu-di-zhi";
-	}
-	if (/口碑|怎么样|靠谱吗|好不好|评价|推荐|排名|排行/.test(text)) {
-		return "kou-bei-ping-jia";
-	}
-	if (/艺考|艺术|文化课/.test(text)) {
-		return "yi-kao-wen-hua-ke";
-	}
-	if (/复读|全日制|冲刺|高考中心|高三/.test(text)) {
-		return "gao-kao-fu-du";
-	}
-	if (/中考|小升初|小学|初中|高一|高二|高三/.test(text)) {
-		return "xue-duan-ke-cheng";
-	}
-	if (/一诊|二诊|三诊|单招|志愿|分数线|政策|考试时间|出分/.test(text)) {
+	if (/招生简章|招生对象|报名说明/.test(text)) return "zhao-sheng-jian-zhang";
+	if (/问答|常见问题|师资|住宿|退费/.test(text)) return "jia-zhang-wen-da";
+	if (/一诊|二诊|三诊|单招|志愿|分数线|政策|考试时间|出分|手续/.test(text)) {
 		return "kao-shi-zheng-ce";
 	}
 
-	return "qi-ta-zi-liao";
-}
-
-const TOPIC_GROUP_META: Record<string, Omit<KnowledgeTopicGroup, "count">> = {
-	"gao-kao-fu-du": {
-		description: "集中查看高考全日制、复读、冲刺、艺考文化课等相关内容。",
-		id: "gao-kao-fu-du",
-		title: "高考复读与全日制专题",
-	},
-	"kao-shi-zheng-ce": {
-		description: "集中查看考试时间、分数线、志愿填报、单招政策等信息。",
-		id: "kao-shi-zheng-ce",
-		title: "考试政策与时间专题",
-	},
-	"kou-bei-ping-jia": {
-		description: "集中查看口碑评价、机构对比、排名推荐等家长常关注内容。",
-		id: "kou-bei-ping-jia",
-		title: "口碑评价与机构对比专题",
-	},
-	"qi-ta-zi-liao": {
-		description: "查看课程、服务和升学规划相关的其他资料。",
-		id: "qi-ta-zi-liao",
-		title: "其他资料",
-	},
-	"shou-fei-jia-ge": {
-		description:
-			"集中查看收费、价格表、优惠活动和费用说明，具体以电话确认为准。",
-		id: "shou-fei-jia-ge",
-		title: "收费价格专题",
-	},
-	"xiao-qu-di-zhi": {
-		description: "集中查看校区地址、电话、路线和城市校区信息。",
-		id: "xiao-qu-di-zhi",
-		title: "校区地址与电话专题",
-	},
-	"xue-duan-ke-cheng": {
-		description: "集中查看小学、初中、高中课程和衔接课程相关信息。",
-		id: "xue-duan-ke-cheng",
-		title: "学段课程专题",
-	},
-	"yi-kao-wen-hua-ke": {
-		description: "集中查看艺考文化课集训、冲刺、收费和机构选择相关内容。",
-		id: "yi-kao-wen-hua-ke",
-		title: "艺考文化课专题",
-	},
-};
-
-export function getKnowledgeTopicGroups(): KnowledgeTopicGroup[] {
-	if (knowledgeTopicGroupsCache) {
-		return knowledgeTopicGroupsCache;
-	}
-
-	const counts = new Map<string, number>();
-
-	for (const article of getKnowledgeArticles()) {
-		const groupId = getTopicGroupId(article);
-		counts.set(groupId, (counts.get(groupId) ?? 0) + 1);
-	}
-
-	knowledgeTopicGroupsCache = [...counts.entries()]
-		.map(([id, count]) => ({
-			...TOPIC_GROUP_META[id],
-			count,
-			id,
-		}))
-		.filter((group): group is KnowledgeTopicGroup => Boolean(group.title))
-		.sort((a, b) => b.count - a.count);
-
-	return knowledgeTopicGroupsCache;
+	return "bei-kao-zhi-nan";
 }
 
 export function getKnowledgeArticleCategoryStats() {
@@ -1056,30 +966,7 @@ export function getKnowledgeArticleCategoryStats() {
 }
 
 export function getArticleCategoryFilterId(article: KnowledgeArticleSummary) {
-	return CATEGORY_FILTER_META[article.category]?.id ?? OTHER_CATEGORY_FILTER.id;
-}
-
-function getCategoryFilterById(id: string) {
-	const matchedCategory = Object.entries(CATEGORY_FILTER_META).find(
-		([, meta]) => meta.id === id,
-	);
-
-	if (matchedCategory) {
-		const [category, meta] = matchedCategory;
-		return {
-			category,
-			meta,
-		};
-	}
-
-	if (id === OTHER_CATEGORY_FILTER.id) {
-		return {
-			category: null,
-			meta: OTHER_CATEGORY_FILTER,
-		};
-	}
-
-	return null;
+	return article.section;
 }
 
 export function getKnowledgeArticleFilters(): KnowledgeArticleFilter[] {
@@ -1087,34 +974,14 @@ export function getKnowledgeArticleFilters(): KnowledgeArticleFilter[] {
 		return knowledgeArticleFiltersCache;
 	}
 
-	const topicFilters = getKnowledgeTopicGroups().map((group) => ({
-		count: group.count,
-		description: group.description,
-		id: group.id,
-		kind: "topic" as const,
-		title: group.title,
-	}));
-	const categoryCounts = new Map<string, KnowledgeArticleFilter>();
-
-	for (const article of getKnowledgeArticles()) {
-		const meta =
-			CATEGORY_FILTER_META[article.category] ?? OTHER_CATEGORY_FILTER;
-		const current = categoryCounts.get(meta.id) ?? {
-			count: 0,
-			description: meta.description,
-			id: meta.id,
-			kind: "category" as const,
-			title: meta.title,
-		};
-		current.count += 1;
-		categoryCounts.set(meta.id, current);
-	}
-
-	const categoryFilters = [...categoryCounts.values()].sort(
-		(a, b) => b.count - a.count || a.title.localeCompare(b.title, "zh-CN"),
-	);
-
-	knowledgeArticleFiltersCache = [...topicFilters, ...categoryFilters];
+	const articles = getKnowledgeArticles();
+	knowledgeArticleFiltersCache = CONTENT_CENTER_SECTIONS.map((section) => ({
+		count: articles.filter((article) => article.section === section.id).length,
+		description: section.description,
+		id: section.id,
+		kind: "section" as const,
+		title: section.label,
+	})).filter((section) => section.count > 0);
 
 	return knowledgeArticleFiltersCache;
 }
@@ -1137,25 +1004,7 @@ export function getKnowledgeArticlesByFilter(filterId?: string) {
 		return null;
 	}
 
-	if (filter.kind === "topic") {
-		return articles.filter((article) => getTopicGroupId(article) === filter.id);
-	}
-
-	const categoryFilter = getCategoryFilterById(filter.id);
-	if (!categoryFilter) {
-		return null;
-	}
-
-	if (categoryFilter.category) {
-		return articles.filter(
-			(article) => article.category === categoryFilter.category,
-		);
-	}
-
-	return articles.filter(
-		(article) =>
-			getArticleCategoryFilterId(article) === OTHER_CATEGORY_FILTER.id,
-	);
+	return articles.filter((article) => article.section === filter.id);
 }
 
 function getCampusCityAndDistrict(relativePath: string, title: string) {
@@ -1340,7 +1189,7 @@ function getTitleKeywords(title: string) {
 }
 
 export function getRelatedKnowledgeArticles(
-	article: Pick<KnowledgeArticleSummary, "category" | "slug" | "title">,
+	article: Pick<KnowledgeArticleSummary, "section" | "slug" | "title">,
 	limit = 9,
 ) {
 	const baseKeywords = getTitleKeywords(article.title);
@@ -1356,7 +1205,7 @@ export function getRelatedKnowledgeArticles(
 				}
 			}
 
-			if (candidate.category === article.category) {
+			if (candidate.section === article.section) {
 				score += 1;
 			}
 

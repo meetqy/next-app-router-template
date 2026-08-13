@@ -2230,16 +2230,3 @@ export const JIA_ZHANG_ARTICLES: JiaZhangArticle[] = [
 		},
 	},
 ];
-
-// =========================== 兼容旧接口：所有 FAQ 项扁平化 ===========================
-
-/**
- * 把所有家长问答详情里的 FAQ 项扁平化为一个数组，
- * 供首页"家长最常问的几个问题"组件复用。
- */
-export function getAllJiaZhangFaqItems(): FaqItem[] {
-	return JIA_ZHANG_ARTICLES.flatMap((article) => {
-		if (article.content.kind !== "faq") return [];
-		return article.content.sections.flatMap((section) => section.items);
-	});
-}

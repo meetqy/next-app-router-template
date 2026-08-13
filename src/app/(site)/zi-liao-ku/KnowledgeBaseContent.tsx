@@ -118,7 +118,7 @@ function Pagination({
 
 	return (
 		<nav
-			aria-label="资料分页"
+		aria-label="资讯分页"
 			className="mt-6 flex flex-wrap items-center justify-center gap-2"
 		>
 			{currentPage > 1 ? (
@@ -193,36 +193,38 @@ export function KnowledgeBaseContent({
 
 	return (
 		<div className="min-h-screen bg-slate-50 pb-16 md:pb-24">
-			<PageTopNav
-				items={[
-					{ label: "首页", href: "/" },
-					{ label: "资料库", href: "/zi-liao-ku" },
-				]}
-			/>
-			<PageHero
-				actions={
-					<PhoneButton className="h-12 rounded-xl px-6 font-semibold">
-						电话咨询：{SITE_HOTLINE_TEXT}
-					</PhoneButton>
-				}
-				badge={`${SITE_FULL_NAME} · 家长资料`}
-				description={
-					activeFilter
-						? activeFilter.description
-						: "这里集中展示课程、校区、收费、考试时间与升学服务相关信息，方便家长按主题快速查找。"
-				}
-				title={activeFilter ? activeFilter.title : "资料库"}
-			/>
+			<div className="bg-white">
+				<PageTopNav
+					items={[
+						{ label: "首页", href: "/" },
+						{ label: "资讯中心", href: "/zi-liao-ku" },
+					]}
+				/>
+				<PageHero
+					actions={
+						<PhoneButton className="h-12 rounded-xl px-6 font-semibold">
+							电话咨询：{SITE_HOTLINE_TEXT}
+						</PhoneButton>
+					}
+					badge={`${SITE_FULL_NAME} · 资讯中心`}
+					description={
+						activeFilter
+							? activeFilter.description
+							: "集中查看招生简章、收费说明、考试政策、备考建议、择校对比与家长问答。"
+					}
+					title={activeFilter ? activeFilter.title : "戴氏招生与备考资讯中心"}
+				/>
+			</div>
 
-			<section className="container mx-auto px-4 py-10">
+			<section className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
 				<div className="border-slate-200 border-b">
 					<div className="-mx-4 overflow-x-auto px-4 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 						<nav
-							aria-label="资料分类"
+							aria-label="资讯分类"
 							className="flex w-max min-w-full items-center gap-2"
 						>
 							<CategoryTab active={!activeFilterId} href="/zi-liao-ku">
-								全部资料（{allArticles.length}）
+								全部资讯（{allArticles.length}）
 							</CategoryTab>
 							{filters.map((filter) => (
 								<CategoryTab
@@ -238,7 +240,7 @@ export function KnowledgeBaseContent({
 				</div>
 			</section>
 
-			<section className="container mx-auto px-4">
+			<section className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="divide-y divide-slate-200 border-slate-200 border-y">
 					{visibleArticles.map((article) => (
 						<Link

@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "./typeset.css";
+@import "react-photo-album/rows.css";
+@import "yet-another-react-lightbox/styles.css";
 @plugin "@tailwindcss/typography";
 
 html {
@@ -148,9 +150,4 @@ html {
 		--typeset-leading: 1.9;
 		--typeset-flow: 1.25em;
 	}
-}
-
-/* 在招生简章页面禁用全局 Header 的吸顶效果，避免遮挡顶部的返回栏 */
-body:has(.brochure-page-container) header {
-	position: relative;
 }

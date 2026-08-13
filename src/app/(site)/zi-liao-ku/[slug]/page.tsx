@@ -66,7 +66,7 @@ export async function generateMetadata({
 		openGraphType: "article",
 		path: `/zi-liao-ku/${article.slug}`,
 		publishedTime: normalizeSeoDate(article.publishedAt),
-		title: `${article.title} - 资料库`,
+		title: `${article.title} - 资讯中心`,
 	});
 }
 
@@ -127,7 +127,7 @@ export default async function KnowledgeArticlePage({ params }: PageProps) {
 	const articleJsonLd = {
 		"@context": "https://schema.org",
 		"@type": "Article",
-		articleSection: article.categoryLabel,
+		articleSection: article.sectionLabel,
 		author: {
 			"@type": "Organization",
 			name: SITE_BRAND_NAME,
@@ -151,17 +151,35 @@ export default async function KnowledgeArticlePage({ params }: PageProps) {
 		},
 		url: pageUrl,
 	};
+	const faqJsonLd =
+		article.schema === "faq"
+			? {
+					"@context": "https://schema.org",
+					"@type": "FAQPage",
+					mainEntity: [...article.content.matchAll(/^###\s+(.+)\n\n([^#\n][\s\S]*?)(?=\n\n#{2,3}\s|$)/gm)].map(
+						([, question, answer]) => ({
+							"@type": "Question",
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: answer.trim(),
+							},
+							name: question.trim(),
+						}),
+					),
+				}
+			: null;
 
 	return (
 		<div className="min-h-screen bg-muted/40">
 			<JsonLd data={articleJsonLd} />
+			{faqJsonLd?.mainEntity.length ? <JsonLd data={faqJsonLd} /> : null}
 			<PageTopNav
 				containerClassName="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8"
 				items={[
 					{ label: "首页", href: "/" },
-					{ label: "资料库", href: "/zi-liao-ku" },
+					{ label: "资讯中心", href: "/zi-liao-ku" },
 					{
-						label: article.categoryLabel,
+						label: article.sectionLabel,
 						href: `/zi-liao-ku/fen-lei/${categoryFilterId}`,
 					},
 					{ label: article.title, href: `/zi-liao-ku/${article.slug}` },
@@ -193,7 +211,7 @@ export default async function KnowledgeArticlePage({ params }: PageProps) {
 										)}
 									</span>
 									<Separator className="h-4" orientation="vertical" />
-									<span>{article.categoryLabel}</span>
+									<span>{article.sectionLabel}</span>
 									{article.year ? (
 										<Badge variant="secondary">{article.year} 年资料</Badge>
 									) : null}
@@ -270,7 +288,7 @@ export default async function KnowledgeArticlePage({ params }: PageProps) {
 					<aside className="space-y-5 lg:sticky lg:top-16 lg:self-start">
 						<SidebarCard title="阅读提示">
 							<div className="space-y-1.5 text-muted-foreground text-sm leading-7">
-								<p>分类：{article.categoryLabel}</p>
+								<p>栏目：{article.sectionLabel}</p>
 								<p>发布日期：{publishedDate}</p>
 								<p>统一咨询电话：{SITE_HOTLINE_TEXT}</p>
 							</div>
@@ -291,7 +309,7 @@ export default async function KnowledgeArticlePage({ params }: PageProps) {
 						</SidebarCard>
 
 						{relatedArticles.length > 0 ? (
-							<SidebarCard moreHref="/zi-liao-ku" title="相关资料">
+							<SidebarCard moreHref="/zi-liao-ku" title="相关文章">
 								<ul className="divide-y divide-border text-sm">
 									{relatedArticles.map((related) => (
 										<li key={related.slug}>

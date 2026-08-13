@@ -3,7 +3,7 @@
 import { ChevronDownIcon, MenuIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { PhoneButton, PhoneLink } from "@/components/phone-action";
+import { PhoneButton } from "@/components/phone-action";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -21,12 +21,7 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-	PRIMARY_LINKS,
-	SITE_BRAND_NAME,
-	SITE_HOTLINE_TEXT,
-	UTILITY_LINKS,
-} from "@/lib/constants/site";
+import { PRIMARY_LINKS, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
 import { imageUrl } from "@/lib/image-url";
 
 export function GlobalHeader() {
@@ -38,33 +33,6 @@ export function GlobalHeader() {
 
 	return (
 		<header className="sticky top-0 z-80 border-slate-200/80 border-b bg-white/90 backdrop-blur">
-			<div className="border-slate-200/80 border-b bg-slate-50/95">
-				<div className="mx-auto flex min-h-10 w-full max-w-7xl items-center justify-between gap-3 px-4 py-2 text-slate-600 text-sm sm:px-6 lg:px-8">
-					<nav
-						aria-label="辅助导航"
-						className="flex min-w-0 items-center gap-x-3 gap-y-1"
-					>
-						<Link
-							className="font-medium text-slate-800 transition-colors hover:text-slate-950"
-							href="/"
-						>
-							{SITE_BRAND_NAME}
-						</Link>
-						{UTILITY_LINKS.map((link) => (
-							<Link
-								className="hidden transition-colors hover:text-slate-950 lg:inline-flex"
-								href={link.href}
-								key={`utility-${link.label}`}
-							>
-								{link.label}
-							</Link>
-						))}
-					</nav>
-					<PhoneLink className="shrink-0 whitespace-nowrap text-right text-slate-500 text-xs transition-colors hover:text-slate-950 sm:text-sm">
-						24 小时免费热线：{SITE_HOTLINE_TEXT}
-					</PhoneLink>
-				</div>
-			</div>
 			<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 				<div className="flex min-h-20 items-center justify-between gap-4 py-3">
 					<Link
@@ -129,8 +97,11 @@ export function GlobalHeader() {
 
 					<div className="flex items-center gap-2">
 						<div className="hidden items-center sm:flex">
-							<PhoneButton className="bg-primary hover:bg-primary/90" size="lg">
-								立即咨询
+							<PhoneButton
+								className="bg-primary hover:bg-primary/90"
+								size="lg"
+							>
+								24 小时免费热线：{SITE_HOTLINE_TEXT}
 							</PhoneButton>
 						</div>
 						<Sheet>
@@ -149,8 +120,8 @@ export function GlobalHeader() {
 									<SheetTitle className="truncate whitespace-nowrap">
 										站点导航
 									</SheetTitle>
-									<SheetDescription className="truncate whitespace-nowrap">
-										查看课程、校区和升学相关信息
+								<SheetDescription className="truncate whitespace-nowrap">
+									查看教师、校区、案例与招生备考资讯
 									</SheetDescription>
 								</SheetHeader>
 
@@ -208,25 +179,6 @@ export function GlobalHeader() {
 												);
 											})}
 										</div>
-
-										<div className="flex flex-col gap-2 border-slate-200 border-t pt-4">
-											<p className="font-medium text-slate-950 text-sm">
-												快捷入口
-											</p>
-											{UTILITY_LINKS.map((link) => (
-												<SheetClose
-													asChild
-													key={`mobile-utility-${link.label}`}
-												>
-													<Link
-														className="rounded-2xl px-3 py-3 text-slate-600 text-sm transition-colors hover:bg-slate-100 hover:text-slate-950"
-														href={link.href}
-													>
-														{link.label}
-													</Link>
-												</SheetClose>
-											))}
-										</div>
 									</nav>
 								</div>
 
@@ -236,11 +188,8 @@ export function GlobalHeader() {
 										linkClassName="w-full"
 										size="lg"
 									>
-										立即咨询
-									</PhoneButton>
-									<PhoneLink className="text-center text-slate-500 text-sm transition-colors hover:text-slate-950">
 										24 小时免费热线：{SITE_HOTLINE_TEXT}
-									</PhoneLink>
+									</PhoneButton>
 								</SheetFooter>
 							</SheetContent>
 						</Sheet>

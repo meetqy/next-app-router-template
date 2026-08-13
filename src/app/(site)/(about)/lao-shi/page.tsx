@@ -39,10 +39,10 @@ export async function generateMetadata({
 	return createPageMetadata({
 		description:
 			selectedCampus === "全部"
-				? `查看${SITE_FULL_NAME}核心老师的教学背景、教研方向与代表性成果。`
-				: `查看${selectedCampus}老师团队的教学背景、学科方向与代表性成果。`,
+				? `查看${SITE_FULL_NAME}核心教师的教学背景、教研方向与代表性成果。`
+				: `查看${selectedCampus}教师团队的教学背景、学科方向与代表性成果。`,
 		path,
-		title: selectedCampus === "全部" ? "老师团队" : `${selectedCampus}老师团队`,
+		title: selectedCampus === "全部" ? "教师团队" : `${selectedCampus}教师团队`,
 	});
 }
 
@@ -77,16 +77,16 @@ export default async function TeachersPage({ searchParams }: PageProps) {
 
 	return (
 		<div className="min-h-screen bg-slate-50">
-			<PageTopNav
-				items={[
-					{ label: "首页", href: "/" },
-					{ label: "老师团队", href: "/lao-shi" },
-				]}
-			/>
 			<main className="pb-16">
 				<section className="bg-white">
-					<div className="container mx-auto px-4 py-10 md:py-14">
-						<p className="font-semibold text-primary text-sm">老师团队</p>
+					<PageTopNav
+						items={[
+							{ label: "首页", href: "/" },
+							{ label: "教师团队", href: "/lao-shi" },
+						]}
+					/>
+					<div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
+						<p className="font-semibold text-primary text-sm">教师团队</p>
 						<h1 className="mt-3 max-w-4xl font-bold text-4xl text-slate-950 leading-tight md:text-5xl">
 							核心老师介绍与教学履历
 						</h1>
@@ -102,7 +102,7 @@ export default async function TeachersPage({ searchParams }: PageProps) {
 					</div>
 				</section>
 
-				<section className="container mx-auto px-4 pt-6 md:pt-8">
+				<section className="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 md:pt-8 lg:px-8">
 					{/* 校区筛选标签 */}
 					<div className="mb-8 flex flex-wrap gap-3">
 						{allCampuses.map((campus) => (

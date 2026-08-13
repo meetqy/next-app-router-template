@@ -48,7 +48,7 @@ export function BrandOverview() {
               <PhoneButton className="h-12 rounded-full px-7 text-base">先打电话咨询老师</PhoneButton>
               <Link
                 className="inline-flex h-12 items-center justify-center rounded-full border border-slate-200 px-7 font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950"
-                href="/zhao-sheng-jian-zhang"
+						href="/zi-liao-ku/fen-lei/zhao-sheng-jian-zhang"
               >
                 查看招生简章
               </Link>

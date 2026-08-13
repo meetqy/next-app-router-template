@@ -1,29 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
-import { imageUrl } from "@/lib/image-url";
+import { getKnowledgeArticlesByFilter } from "@/lib/knowledge-base";
+
+const NEWS_ARTICLES = (getKnowledgeArticlesByFilter("kao-shi-zheng-ce") ?? []).slice(
+	0,
+	3,
+);
 
 export function ExamNews() {
-	const news = [
-		{
-			date: "2026-05-20",
-			title: "2026 年高考政策新变化，家长和学生需要重点关注什么？",
-			category: "政策",
-			image: "/assets/资讯配图占图1.jpg",
-		},
-		{
-			date: "2026-05-15",
-			title: "高考冲刺阶段如何高效复习？这 5 个方法值得参考",
-			category: "备考",
-			image: "/assets/资讯配图占图2.jpg",
-		},
-		{
-			date: "2026-05-10",
-			title: "重点院校最新招生信息发布，志愿规划要提前准备",
-			category: "招生",
-			image: "/assets/资讯配图占图3.jpeg",
-		},
-	];
-
 	return (
 		<section className="bg-white py-20" id="xin-wen">
 			<div className="container mx-auto px-4">
@@ -38,32 +21,32 @@ export function ExamNews() {
 					</div>
 					<Link
 						className="font-semibold text-primary hover:underline"
-						href="/#xin-wen"
+								href="/zi-liao-ku/fen-lei/kao-shi-zheng-ce"
 					>
 						查看更多
 					</Link>
 				</div>
 
 				<div className="grid gap-8 md:grid-cols-3">
-					{news.map((item) => (
-						<div key={item.title}>
-							<div className="relative mb-4 aspect-video overflow-hidden rounded-xl">
-								<Image
-									alt={item.title}
-									className="object-cover"
-									fill
-									sizes="(min-width: 768px) 33vw, 100vw"
-									src={imageUrl(item.image)}
-								/>
-							</div>
-							<div className="mb-2 flex items-center gap-3">
+					{NEWS_ARTICLES.map((item) => (
+						<Link
+							className="rounded-2xl border border-slate-200 bg-slate-50 p-6 transition-colors hover:border-primary/30 hover:bg-primary/5"
+							href={`/zi-liao-ku/${item.slug}`}
+							key={item.slug}
+						>
+							<div className="mb-3 flex items-center gap-3">
 								<span className="font-bold text-primary text-xs uppercase tracking-wider">
-									{item.category}
+									考试政策
 								</span>
-								<span className="text-slate-400 text-xs">{item.date}</span>
+								<span className="text-slate-400 text-xs">
+									{item.publishedAt ?? item.crawledAt ?? "时间待更新"}
+								</span>
 							</div>
 							<h3 className="font-bold text-lg leading-tight">{item.title}</h3>
-						</div>
+							<p className="mt-3 line-clamp-3 text-slate-600 text-sm leading-7">
+								{item.summary}
+							</p>
+						</Link>
 					))}
 				</div>
 			</div>

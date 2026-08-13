@@ -24,31 +24,33 @@ export default function CampusListPage() {
 
 	return (
 		<div className="min-h-screen bg-slate-50">
-			<PageTopNav
-				items={[
-					{ label: "首页", href: "/" },
-					{ label: "校区查询", href: "/xiao-qu-cha-xun" },
-				]}
-			/>
 			<main className="pb-16">
-				<PageHero
-					actions={
-						<PhoneButton className="h-12 rounded-xl px-6 font-semibold">
-							电话咨询校区安排：{SITE_HOTLINE_TEXT}
-						</PhoneButton>
-					}
-					badge={`${SITE_FULL_NAME} · 校区查询`}
-					description={
-						<>
-							这里集中展示 {SITE_FULL_NAME}
-							目前展示的校区信息，方便家长先对比校区定位、课程方向、学习环境与到校方式，再决定进一步咨询。
-						</>
-					}
-					title="校区查询"
-				/>
+				<div className="bg-white">
+					<PageTopNav
+						items={[
+							{ label: "首页", href: "/" },
+							{ label: "校区查询", href: "/xiao-qu-cha-xun" },
+						]}
+					/>
+					<PageHero
+						actions={
+							<PhoneButton className="h-12 rounded-xl px-6 font-semibold">
+								电话咨询校区安排：{SITE_HOTLINE_TEXT}
+							</PhoneButton>
+						}
+						badge={`${SITE_FULL_NAME} · 校区查询`}
+						description={
+							<>
+								这里集中展示 {SITE_FULL_NAME}
+								目前展示的校区信息，方便家长先对比校区定位、课程方向、学习环境与到校方式，再决定进一步咨询。
+							</>
+						}
+						title="校区查询"
+					/>
+				</div>
 
 				<section className="pb-12 md:pb-20">
-					<div className="container mx-auto px-4 pt-8 md:pt-12">
+					<div className="mx-auto w-full max-w-7xl px-4 pt-8 sm:px-6 md:pt-12 lg:px-8">
 						<div className="mb-8">
 							<h2 className="font-bold text-2xl text-slate-950">重点校区</h2>
 							<p className="mt-2 text-slate-600 leading-7">
@@ -76,7 +78,7 @@ export default function CampusListPage() {
 					</div>
 				</section>
 
-				<section className="container mx-auto px-4 pb-12 md:pb-20">
+				<section className="mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 md:pb-20 lg:px-8">
 					<div className="mb-8">
 						<div className="text-primary text-sm">更多校区信息</div>
 						<h2 className="mt-1 font-bold text-2xl text-slate-950">
@@ -121,7 +123,7 @@ export default function CampusListPage() {
 					</div>
 				</section>
 
-				<section className="container mx-auto px-4 pt-10">
+				<section className="mx-auto w-full max-w-7xl px-4 pt-10 sm:px-6 lg:px-8">
 					<div className="grid gap-6 rounded-2xl bg-white p-6 md:grid-cols-3 md:p-8">
 						<div className="rounded-2xl bg-slate-50 p-5">
 							<div className="inline-flex rounded-full bg-primary/10 p-2 text-primary">

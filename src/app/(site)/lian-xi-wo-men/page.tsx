@@ -57,17 +57,16 @@ export default function LianXiWoMenPage() {
 
 	return (
 		<div className="min-h-screen bg-slate-50 pb-16 md:pb-24">
-			<PageTopNav
-				items={[
-					{ label: "首页", href: "/" },
-					{ label: "联系我们", href: "/lian-xi-wo-men" },
-				]}
-			/>
-
 			<JsonLd data={jsonLd} />
 
 			<section className="bg-white">
-				<div className="container mx-auto px-4 py-12 md:py-16">
+				<PageTopNav
+					items={[
+						{ label: "首页", href: "/" },
+						{ label: "联系我们", href: "/lian-xi-wo-men" },
+					]}
+				/>
+				<div className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
 					<div className="max-w-4xl">
 						<div className="inline-flex rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 font-medium text-primary text-sm">
 							{CONTACT_PAGE_INTRO.badge}
@@ -101,7 +100,7 @@ export default function LianXiWoMenPage() {
 			</section>
 
 			<section className="py-12 md:py-16">
-				<div className="container mx-auto px-4">
+				<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 					<div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]">
 						<div className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 md:p-8">
 							<div className="flex items-start gap-4">

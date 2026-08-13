@@ -33,7 +33,7 @@ export async function generateMetadata({
 	const activeFilter = getKnowledgeArticleFilterById(filter);
 
 	if (!activeFilter) {
-		return createNoIndexMetadata("资料库");
+		return createNoIndexMetadata("资讯中心");
 	}
 
 	const resolvedSearchParams = await searchParams;
@@ -53,8 +53,8 @@ export async function generateMetadata({
 		path,
 		title:
 			safePage > 1
-				? `${activeFilter.title} 第${safePage}页 - 资料库`
-				: `${activeFilter.title} - 资料库`,
+				? `${activeFilter.title} 第${safePage}页 - 资讯中心`
+				: `${activeFilter.title} - 资讯中心`,
 	});
 }
 

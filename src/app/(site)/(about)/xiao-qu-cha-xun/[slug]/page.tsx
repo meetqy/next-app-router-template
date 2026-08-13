@@ -193,15 +193,16 @@ export default async function CampusDetailPage({ params }: PageProps) {
 
 		return (
 			<div className="min-h-screen bg-white">
-				<PageTopNav
-					items={[
-						{ label: "首页", href: "/" },
-						{ label: "校区查询", href: "/xiao-qu-cha-xun" },
-						{ label: archiveCampus.title, href: `/xiao-qu-cha-xun/${slug}` },
-					]}
-				/>
-				<main className="container mx-auto px-4 py-10 md:py-14">
-					<div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
+				<main>
+					<PageTopNav
+						items={[
+							{ label: "首页", href: "/" },
+							{ label: "校区查询", href: "/xiao-qu-cha-xun" },
+							{ label: archiveCampus.title, href: `/xiao-qu-cha-xun/${slug}` },
+						]}
+					/>
+					<div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
+						<div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
 						<article>
 							<header className="border-slate-200 border-b pb-8">
 								<div className="flex flex-wrap gap-2">
@@ -267,6 +268,7 @@ export default async function CampusDetailPage({ params }: PageProps) {
 								</div>
 							</div>
 						</aside>
+						</div>
 					</div>
 				</main>
 			</div>
@@ -286,16 +288,16 @@ export default async function CampusDetailPage({ params }: PageProps) {
 				campus={campus}
 				url={`/xiao-qu-cha-xun/${campus.slug}`}
 			/>
-			<PageTopNav
-				items={[
-					{ label: "首页", href: "/" },
-					{ label: "校区查询", href: "/xiao-qu-cha-xun" },
-					{ label: campus.name, href: `/xiao-qu-cha-xun/${campus.slug}` },
-				]}
-			/>
 			<main className="pb-16">
 				<section className="bg-white">
-					<div className="container mx-auto px-4 py-10 md:py-14">
+					<PageTopNav
+						items={[
+							{ label: "首页", href: "/" },
+							{ label: "校区查询", href: "/xiao-qu-cha-xun" },
+							{ label: campus.name, href: `/xiao-qu-cha-xun/${campus.slug}` },
+						]}
+					/>
+					<div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
 						<div className="overflow-hidden rounded-[2rem] bg-slate-50">
 							<div className="grid gap-8 p-6 md:p-8 lg:grid-cols-[minmax(0,1.05fr)_420px] lg:items-center lg:gap-12 lg:p-10">
 								<div>
@@ -390,7 +392,7 @@ export default async function CampusDetailPage({ params }: PageProps) {
 					</div>
 				</section>
 
-				<div className="container mx-auto px-4 py-10 md:py-14">
+				<div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
 					<div className="grid gap-12 lg:grid-cols-[240px_minmax(0,1fr)]">
 						<TableOfContents items={tocItems} title="校区目录" />
 

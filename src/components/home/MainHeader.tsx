@@ -37,9 +37,9 @@ export function MainHeader() {
 					</Link>
 					<Link
 						className="text-slate-600 transition-colors hover:text-primary"
-						href="/xiao-qu-cha-xun"
+						href="/jiao-xue-huan-jing"
 					>
-						校区查询
+						教学环境
 					</Link>
 				</nav>
 

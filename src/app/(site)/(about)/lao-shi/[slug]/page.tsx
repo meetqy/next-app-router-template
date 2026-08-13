@@ -117,16 +117,16 @@ export default async function TeacherDetailPage({ params }: PageProps) {
 				teacher={teacher}
 				url={`/lao-shi/${teacher.slug}`}
 			/>
-			<PageTopNav
-				items={[
-					{ label: "首页", href: "/" },
-					{ label: "老师团队", href: "/lao-shi" },
-					{ label: teacher.name, href: `/lao-shi/${teacher.slug}` },
-				]}
-			/>
 			<main className="pb-16">
 				<section className="bg-white">
-					<div className="container mx-auto px-4 py-10 md:py-14">
+					<PageTopNav
+						items={[
+							{ label: "首页", href: "/" },
+							{ label: "教师团队", href: "/lao-shi" },
+							{ label: teacher.name, href: `/lao-shi/${teacher.slug}` },
+						]}
+					/>
+					<div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
 						<div className="overflow-hidden rounded-[2rem] bg-slate-50">
 							<div className="grid gap-8 p-6 md:p-8 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-12 lg:p-10">
 								<div className="relative aspect-4/5 overflow-hidden rounded-2xl bg-slate-100">
@@ -189,7 +189,7 @@ export default async function TeacherDetailPage({ params }: PageProps) {
 				</section>
 
 				<section className="bg-white">
-					<div className="container mx-auto px-4 pb-16">
+					<div className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
 						<div className="mx-auto max-w-6xl">
 							<div className="grid gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
 								<section>

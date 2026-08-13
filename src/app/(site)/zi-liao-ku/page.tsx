@@ -8,7 +8,7 @@ import {
 import { getKnowledgeArticles } from "@/lib/knowledge-base";
 import { createPageMetadata } from "@/lib/seo";
 
-const KNOWLEDGE_DESCRIPTION = `${SITE_FULL_NAME}资料库，集中展示课程、校区、收费、考试时间与升学服务相关信息，方便家长按主题查询参考。`;
+const KNOWLEDGE_DESCRIPTION = `${SITE_FULL_NAME}资讯中心，集中展示招生简章、收费说明、考试政策、备考建议、择校对比与家长问答。`;
 
 export async function generateMetadata({
 	searchParams,
@@ -24,7 +24,7 @@ export async function generateMetadata({
 	return createPageMetadata({
 		description: KNOWLEDGE_DESCRIPTION,
 		path,
-		title: safePage > 1 ? `资料库 第${safePage}页` : "资料库",
+		title: safePage > 1 ? `资讯中心 第${safePage}页` : "资讯中心",
 	});
 }
 

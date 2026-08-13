@@ -1,9 +1,7 @@
 import { env } from "@/env";
-import { getAllBrochures } from "@/lib/brochures";
 import { getVisibleCampuses } from "@/lib/constants/campuses";
 import { SITE_FULL_NAME } from "@/lib/constants/site";
 import { TEACHERS } from "@/lib/constants/teachers";
-import { getAllJiaZhangArticles } from "@/lib/jia-zhang-fu-wu";
 import {
 	getKnowledgeArticles,
 	getKnowledgeArticleFilters,
@@ -40,60 +38,17 @@ const STATIC_SITE_ROUTES: SiteRoute[] = [
 	},
 	{
 		changeFrequency: "weekly",
-		description: `查看${SITE_FULL_NAME}历年大学录取喜报图片，支持按年份浏览与分页查看。`,
+		description: `查看${SITE_FULL_NAME}历年大学录取案例图片，支持按年份浏览与分页查看。`,
 		path: "/sheng-xue-xi-bao",
 		priority: 0.8,
-		title: "升学喜报",
+		title: "升学案例",
 	},
 	{
 		changeFrequency: "weekly",
-		description: `查看${SITE_FULL_NAME}历年高考全日制招生简章列表。`,
-		path: "/zhao-sheng-jian-zhang",
-		priority: 0.9,
-		title: "招生简章",
-	},
-	{
-		changeFrequency: "weekly",
-		description: `查看${SITE_FULL_NAME}各校区各类课程价格表与优惠政策。`,
-		path: "/jia-ge-biao",
-		priority: 0.9,
-		title: "价格表",
-	},
-	{
-		changeFrequency: "weekly",
-		description: `${SITE_FULL_NAME}总部校区（世贸）2027 届高考复读、高三全日制全科班最新优惠政策与收费标准官方公示。`,
-		path: "/jia-ge-biao/shi-mao-gao-kao-fu-du",
-		priority: 0.9,
-		title: "总部校区（世贸）高考复读优惠政策",
-	},
-	{
-		changeFrequency: "weekly",
-		description: `${SITE_FULL_NAME}家长服务中心：学管服务流程、教学管理规范、家长指南、备考攻略与高考资讯集中呈现。`,
-		path: "/jia-zhang-fu-wu",
-		priority: 0.8,
-		title: "家长服务",
-	},
-	{
-		changeFrequency: "monthly",
-		description:
-			"从合规、教学、管理、收费与服务等维度，对比公立高中、民办高中和培训机构三类复读路径。",
-		path: "/jia-zhang-fu-wu/fu-du-ji-gou-duo-wei-du-dui-bi",
-		priority: 0.8,
-		title: "复读机构多维度对比",
-	},
-	{
-		changeFrequency: "weekly",
-		description: `${SITE_FULL_NAME}资料库：集中展示课程、校区、收费、考试时间与升学服务相关信息，方便家长按主题查询参考。`,
+		description: `${SITE_FULL_NAME}资讯中心：集中展示招生简章、收费说明、考试政策、备考建议、择校对比与家长问答。`,
 		path: "/zi-liao-ku",
 		priority: 0.7,
-		title: "资料库",
-	},
-	{
-		changeFrequency: "monthly",
-		description: `2026高考复读学校选购科普：多维度盘点市面合规优质复读机构，帮助家长科学避坑、精准择校。`,
-		path: "/jia-zhang-fu-wu/2026-fu-du-xuan-xiao-zhi-nan",
-		priority: 0.8,
-		title: "2026高考复读择校指南",
+		title: "资讯中心",
 	},
 	{
 		changeFrequency: "weekly",
@@ -111,10 +66,17 @@ const STATIC_SITE_ROUTES: SiteRoute[] = [
 	},
 	{
 		changeFrequency: "weekly",
+		description: `查看${SITE_FULL_NAME}课堂教学、学习日常、考试测评和空间环境实景照片。`,
+		path: "/jiao-xue-huan-jing",
+		priority: 0.8,
+		title: "教学环境",
+	},
+	{
+		changeFrequency: "weekly",
 		description: `查看${SITE_FULL_NAME}核心老师介绍、教学履历与教学成果。`,
 		path: "/lao-shi",
 		priority: 0.8,
-		title: "老师团队",
+		title: "教师团队",
 	},
 	{
 		changeFrequency: "weekly",
@@ -130,22 +92,12 @@ export function getSiteOrigin() {
 }
 
 export function getSiteRoutes(): SiteRoute[] {
-	const brochureRoutes: SiteRoute[] = getAllBrochures().map(
-		(brochure, index) => ({
-			changeFrequency: "monthly",
-			description: `查看${brochure.year}届${SITE_FULL_NAME}招生简章与备考安排。`,
-			path: `/zhao-sheng-jian-zhang/${brochure.year}`,
-			priority: index === 0 ? 0.9 : 0.7,
-			title: brochure.title,
-		}),
-	);
-
 	const teacherRoutes: SiteRoute[] = TEACHERS.map((teacher) => ({
 		changeFrequency: "monthly",
-		description: `查看${teacher.name}老师的教学履历、荣誉任职与教学成果。`,
+		description: `查看${teacher.name}教师的教学履历、荣誉任职与教学成果。`,
 		path: `/lao-shi/${teacher.slug}`,
 		priority: 0.7,
-		title: `${teacher.name}老师介绍`,
+		title: `${teacher.name}教师介绍`,
 	}));
 	const teacherCampuses = [
 		...new Set(
@@ -156,22 +108,11 @@ export function getSiteRoutes(): SiteRoute[] {
 	];
 	const teacherFilterRoutes: SiteRoute[] = teacherCampuses.map((campus) => ({
 		changeFrequency: "monthly",
-		description: `查看${campus}老师团队的教学背景、学科方向与代表性成果。`,
+		description: `查看${campus}教师团队的教学背景、学科方向与代表性成果。`,
 		path: `/lao-shi?xiaoqu=${encodeURIComponent(campus)}`,
 		priority: 0.5,
-		title: `${campus}老师团队`,
+		title: `${campus}教师团队`,
 	}));
-
-	const jiaZhangRoutes: SiteRoute[] = getAllJiaZhangArticles().map(
-		(article) => ({
-			changeFrequency: "monthly",
-			description: article.summary,
-			lastModified: normalizeSeoDate(article.publishedAt),
-			path: `/jia-zhang-fu-wu/${article.slug}`,
-			priority: 0.7,
-			title: article.title,
-		}),
-	);
 
 	const campusRoutes: SiteRoute[] = getVisibleCampuses().map((campus) => ({
 		changeFrequency: "monthly",
@@ -202,7 +143,7 @@ export function getSiteRoutes(): SiteRoute[] {
 				normalizeSeoDate(article.crawledAt),
 			path: `/zi-liao-ku/${article.slug}`,
 			priority: article.historical ? 0.35 : 0.45,
-			title: `${article.title}资料`,
+			title: `${article.title}资讯`,
 		}),
 	);
 	const knowledgeArticles = getKnowledgeArticles();
@@ -213,10 +154,10 @@ export function getSiteRoutes(): SiteRoute[] {
 			const page = index + 2;
 			return {
 				changeFrequency: "weekly" as const,
-				description: `${SITE_FULL_NAME}资料库第${page}页。`,
+				description: `${SITE_FULL_NAME}资讯中心第${page}页。`,
 				path: `/zi-liao-ku?page=${page}`,
 				priority: 0.4,
-				title: `资料库第${page}页`,
+				title: `资讯中心第${page}页`,
 			};
 		},
 	);
@@ -231,7 +172,7 @@ export function getSiteRoutes(): SiteRoute[] {
 				description: filter.description,
 				path: `/zi-liao-ku/fen-lei/${filter.id}`,
 				priority: 0.5,
-				title: `${filter.title}资料库`,
+				title: `${filter.title}资讯中心`,
 			};
 			const pageRoutes: SiteRoute[] = Array.from(
 				{ length: Math.max(0, pageCount - 1) },
@@ -252,12 +193,10 @@ export function getSiteRoutes(): SiteRoute[] {
 
 	const routes = [
 		...STATIC_SITE_ROUTES,
-		...brochureRoutes,
 		...teacherRoutes,
 		...teacherFilterRoutes,
 		...campusRoutes,
 		...archiveCampusRoutes,
-		...jiaZhangRoutes,
 		...knowledgeRoutes,
 		...knowledgeListRoutes,
 		...knowledgeFilterRoutes,

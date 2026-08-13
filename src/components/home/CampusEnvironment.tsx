@@ -1,38 +1,36 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { SITE_FULL_NAME } from "@/lib/constants/site";
 import { imageUrl } from "@/lib/image-url";
+import { getTeachingEnvironmentCategoryImages } from "@/lib/teaching-environment";
 
-const campusImages = [
-	{ src: "/assets/校区环境1.png", alt: "校区环境展示一" },
-	{ src: "/assets/校区环境2.jpg", alt: "校区环境展示二" },
-	{ src: "/assets/校区环境3.jpg", alt: "校区环境展示三" },
-	{ src: "/assets/校区环境4.jpg", alt: "校区环境展示四" },
-	{ src: "/assets/校区环境5.jpg", alt: "校区环境展示五" },
-	{ src: "/assets/校区环境6.png", alt: "校区环境展示六" },
+const featuredImages = [
+	...getTeachingEnvironmentCategoryImages("classroom").slice(0, 2),
+	...getTeachingEnvironmentCategoryImages("daily-study").slice(0, 2),
+	...getTeachingEnvironmentCategoryImages("assessment").slice(0, 2),
+	...getTeachingEnvironmentCategoryImages("space").slice(0, 2),
 ];
 
 export function CampusEnvironment() {
 	return (
-		<section className="bg-slate-50 py-20" id="xiao-qu">
+		<section className="bg-slate-50 py-20" id="jiao-xue-huan-jing">
 			<div className="container mx-auto px-4">
 				<div className="mb-16 text-center">
 					<h2 className="mb-4 font-bold text-3xl text-slate-900 md:text-4xl">
-						孩子在{SITE_FULL_NAME}的学习环境
+						看得见的教学环境
 					</h2>
 					<p className="mx-auto max-w-2xl text-slate-600">
-						先看学习环境，再结合校区地址、课程方向和到校安排做进一步判断，会更方便家长筛选合适校区。
+						从课堂教学、学习日常、考试测评和空间环境四个方面，了解孩子在戴氏教育的真实学习场景。
 					</p>
 					<div className="mt-6 flex justify-center">
 						<Button asChild className="rounded-xl px-6">
-							<Link href="/xiao-qu-cha-xun">查看校区查询</Link>
+							<Link href="/jiao-xue-huan-jing">查看全部教学环境</Link>
 						</Button>
 					</div>
 				</div>
 
-				<div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-					{campusImages.map((image) => (
+				<div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+					{featuredImages.map((image) => (
 						<div
 							className="relative aspect-video overflow-hidden rounded-lg"
 							key={image.src}
@@ -41,7 +39,7 @@ export function CampusEnvironment() {
 								alt={image.alt}
 								className="object-cover"
 								fill
-								sizes="(min-width: 768px) 33vw, 50vw"
+								sizes="(min-width: 1280px) 304px, (min-width: 768px) 25vw, 50vw"
 								src={imageUrl(image.src)}
 							/>
 						</div>

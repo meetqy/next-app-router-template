@@ -1,4 +1,5 @@
 import path from "node:path";
+import ADMISSION_CELEBRATION_MANIFEST from "@/lib/generated/admission-celebration-manifest.json";
 import IMAGE_MANIFEST from "@/lib/generated/image-manifest.json";
 
 const CELEBRATIONS_PATH_PREFIX = "/喜报/";
@@ -6,7 +7,15 @@ const CELEBRATIONS_PATH_PREFIX = "/喜报/";
 export type AdmissionCelebrationImage = {
 	alt: string;
 	fileName: string;
+	height: number;
 	src: string;
+	width: number;
+};
+
+type GeneratedAdmissionCelebrationImage = {
+	height: number;
+	path: string;
+	width: number;
 };
 
 export type AdmissionCelebrationYear = {
@@ -39,6 +48,12 @@ function sortYearsDescending(a: string, b: string) {
 	return b.localeCompare(a, "zh-Hans-CN", { numeric: true });
 }
 
+const ADMISSION_CELEBRATION_IMAGE_BY_PATH = new Map(
+	(ADMISSION_CELEBRATION_MANIFEST as GeneratedAdmissionCelebrationImage[]).map(
+		(image) => [image.path, image],
+	),
+);
+
 export async function getAdmissionCelebrationYears(): Promise<
 	AdmissionCelebrationYear[]
 > {
@@ -67,12 +82,22 @@ export async function getAdmissionCelebrationYears(): Promise<
 		.map((year) => ({
 			images: (fileNamesByYear.get(year) ?? [])
 				.sort(sortByNumericFileName)
-				.map((fileName, index) => ({
-					alt: `${year}年大学录取喜报第${index + 1}张`,
-					fileName,
-					src: `/喜报/${year}/${fileName}`,
-				})),
-			label: `${year}年大学录取喜报`,
+				.flatMap((fileName, index) => {
+					const src = `/喜报/${year}/${fileName}`;
+					const manifestImage = ADMISSION_CELEBRATION_IMAGE_BY_PATH.get(src);
+					if (!manifestImage) return [];
+
+					return [
+						{
+							alt: `${year}年大学录取案例第${index + 1}张`,
+							fileName,
+							height: manifestImage.height,
+							src,
+							width: manifestImage.width,
+						},
+					];
+				}),
+			label: `${year}年大学录取案例`,
 			year,
 		}))
 		.filter((item) => item.images.length > 0);

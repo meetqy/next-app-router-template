@@ -20,7 +20,7 @@ import { createPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createPageMetadata({
 	description:
-		"成都戴氏教育高考中心官网，查看高考全日制、复读、教学管理、师资、校区环境、招生简章与家长问答。",
+		"成都戴氏教育高考中心官网，查看教师团队、校区查询、升学案例、招生简章、收费说明与备考资讯。",
 	path: "/",
 	title: "成都戴氏教育高考中心官网",
 });
@@ -38,9 +38,9 @@ export default function HomePage() {
         <TeachingSystem />
         <FacultyTeam />
         <ManagementSystem />
+        <CampusEnvironment />
         <HomeSchoolService />
         <AIDiagnosis />
-        <CampusEnvironment />
         <StudentParentFeedback />
         <AdmissionsEntry />
         <FAQ />

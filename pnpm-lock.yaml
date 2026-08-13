@@ -32,9 +32,15 @@ dependencies:
   react-dom:
     specifier: ^19.2.8
     version: 19.2.8(react@19.2.8)
+  react-photo-album:
+    specifier: ^3.6.1
+    version: 3.6.1(@types/react@19.2.18)(react@19.2.8)
   tailwind-merge:
     specifier: ^3.3.1
     version: 3.6.0
+  yet-another-react-lightbox:
+    specifier: ^3.32.2
+    version: 3.32.2(@types/react-dom@19.2.4)(@types/react@19.2.18)(react-dom@19.2.8)(react@19.2.8)
   zod:
     specifier: ^3.24.2
     version: 3.25.76
@@ -70,6 +76,9 @@ devDependencies:
   shadcn:
     specifier: ^4.16.2
     version: 4.16.2(typescript@5.9.3)
+  sharp:
+    specifier: ^0.35.3
+    version: 0.35.3(@types/node@20.19.43)
   tailwindcss:
     specifier: ^4.3.3
     version: 4.3.3
@@ -406,7 +415,6 @@ packages:
     requiresBuild: true
     dependencies:
       tslib: 2.8.1
-    dev: false
     optional: true
 
   /@emnapi/wasi-threads@1.2.1:
@@ -574,8 +582,6 @@ packages:
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
     engines: {node: '>=18'}
     requiresBuild: true
-    dev: false
-    optional: true
 
   /@img/sharp-darwin-arm64@0.35.3:
     resolution: {integrity: sha512-RMnFX7YQsMoh7lWfcM4NEHHymBX/rLuKNPVM84XE9ONPcaSCDgE7CHIHpSgPcO2xcRthgBy1HfNO319mwhIAkg==}
@@ -585,7 +591,6 @@ packages:
     requiresBuild: true
     optionalDependencies:
       '@img/sharp-libvips-darwin-arm64': 1.3.2
-    dev: false
     optional: true
 
   /@img/sharp-darwin-x64@0.35.3:
@@ -596,7 +601,6 @@ packages:
     requiresBuild: true
     optionalDependencies:
       '@img/sharp-libvips-darwin-x64': 1.3.2
-    dev: false
     optional: true
 
   /@img/sharp-freebsd-wasm32@0.35.3:
@@ -606,7 +610,6 @@ packages:
     requiresBuild: true
     dependencies:
       '@img/sharp-wasm32': 0.35.3
-    dev: false
     optional: true
 
   /@img/sharp-libvips-darwin-arm64@1.3.2:
@@ -614,7 +617,6 @@ packages:
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@img/sharp-libvips-darwin-x64@1.3.2:
@@ -622,7 +624,6 @@ packages:
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@img/sharp-libvips-linux-arm64@1.3.2:
@@ -630,7 +631,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@img/sharp-libvips-linux-arm@1.3.2:
@@ -638,7 +638,6 @@ packages:
     cpu: [arm]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@img/sharp-libvips-linux-ppc64@1.3.2:
@@ -646,7 +645,6 @@ packages:
     cpu: [ppc64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@img/sharp-libvips-linux-riscv64@1.3.2:
@@ -654,7 +652,6 @@ packages:
     cpu: [riscv64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@img/sharp-libvips-linux-s390x@1.3.2:
@@ -662,7 +659,6 @@ packages:
     cpu: [s390x]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@img/sharp-libvips-linux-x64@1.3.2:
@@ -670,7 +666,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@img/sharp-libvips-linuxmusl-arm64@1.3.2:
@@ -678,7 +673,6 @@ packages:
     cpu: [arm64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@img/sharp-libvips-linuxmusl-x64@1.3.2:
@@ -686,7 +680,6 @@ packages:
     cpu: [x64]
     os: [linux]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@img/sharp-linux-arm64@0.35.3:
@@ -697,7 +690,6 @@ packages:
     requiresBuild: true
     optionalDependencies:
       '@img/sharp-libvips-linux-arm64': 1.3.2
-    dev: false
     optional: true
 
   /@img/sharp-linux-arm@0.35.3:
@@ -708,7 +700,6 @@ packages:
     requiresBuild: true
     optionalDependencies:
       '@img/sharp-libvips-linux-arm': 1.3.2
-    dev: false
     optional: true
 
   /@img/sharp-linux-ppc64@0.35.3:
@@ -719,7 +710,6 @@ packages:
     requiresBuild: true
     optionalDependencies:
       '@img/sharp-libvips-linux-ppc64': 1.3.2
-    dev: false
     optional: true
 
   /@img/sharp-linux-riscv64@0.35.3:
@@ -730,7 +720,6 @@ packages:
     requiresBuild: true
     optionalDependencies:
       '@img/sharp-libvips-linux-riscv64': 1.3.2
-    dev: false
     optional: true
 
   /@img/sharp-linux-s390x@0.35.3:
@@ -741,7 +730,6 @@ packages:
     requiresBuild: true
     optionalDependencies:
       '@img/sharp-libvips-linux-s390x': 1.3.2
-    dev: false
     optional: true
 
   /@img/sharp-linux-x64@0.35.3:
@@ -752,7 +740,6 @@ packages:
     requiresBuild: true
     optionalDependencies:
       '@img/sharp-libvips-linux-x64': 1.3.2
-    dev: false
     optional: true
 
   /@img/sharp-linuxmusl-arm64@0.35.3:
@@ -763,7 +750,6 @@ packages:
     requiresBuild: true
     optionalDependencies:
       '@img/sharp-libvips-linuxmusl-arm64': 1.3.2
-    dev: false
     optional: true
 
   /@img/sharp-linuxmusl-x64@0.35.3:
@@ -774,7 +760,6 @@ packages:
     requiresBuild: true
     optionalDependencies:
       '@img/sharp-libvips-linuxmusl-x64': 1.3.2
-    dev: false
     optional: true
 
   /@img/sharp-wasm32@0.35.3:
@@ -783,7 +768,6 @@ packages:
     requiresBuild: true
     dependencies:
       '@emnapi/runtime': 1.11.3
-    dev: false
     optional: true
 
   /@img/sharp-webcontainers-wasm32@0.35.3:
@@ -793,7 +777,6 @@ packages:
     requiresBuild: true
     dependencies:
       '@img/sharp-wasm32': 0.35.3
-    dev: false
     optional: true
 
   /@img/sharp-win32-arm64@0.35.3:
@@ -802,7 +785,6 @@ packages:
     cpu: [arm64]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@img/sharp-win32-ia32@0.35.3:
@@ -811,7 +793,6 @@ packages:
     cpu: [ia32]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@img/sharp-win32-x64@0.35.3:
@@ -820,7 +801,6 @@ packages:
     cpu: [x64]
     os: [win32]
     requiresBuild: true
-    dev: false
     optional: true
 
   /@jridgewell/gen-mapping@0.3.13:
@@ -6058,6 +6038,20 @@ packages:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: true
 
+  /react-photo-album@3.6.1(@types/react@19.2.18)(react@19.2.8):
+    resolution: {integrity: sha512-m4pTIpgEpdAJgRnf3DfISHfIHMjJkouWJdKUyGy9UaFBBePv1kolqKTzAmZrfQcoZBVfT/g9vvcc39o1RfwZgA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/react': ^18 || ^19
+      react: ^18 || ^19
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@types/react': 19.2.18
+      react: 19.2.8
+    dev: false
+
   /react-remove-scroll-bar@2.3.8(@types/react@19.2.18)(react@19.2.8):
     resolution: {integrity: sha512-9r+yi9+mgU33AKcj6IbT9oRCO78WriSj6t/cF8DWBZJ9aOGPOTEDvdUDz1FwKim7QXWwmHqtdHnRJfhAxEG46Q==}
     engines: {node: '>=10'}
@@ -6418,8 +6412,6 @@ packages:
       '@img/sharp-win32-arm64': 0.35.3
       '@img/sharp-win32-ia32': 0.35.3
       '@img/sharp-win32-x64': 0.35.3
-    dev: false
-    optional: true
 
   /shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
@@ -7111,6 +7103,26 @@ packages:
 
   /yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
+
+  /yet-another-react-lightbox@3.32.2(@types/react-dom@19.2.4)(@types/react@19.2.18)(react-dom@19.2.8)(react@19.2.8):
+    resolution: {integrity: sha512-F4HtHQfUNpvkj+AmECgWM4XRdCqMY5gXpKgOUx39+T+FyxLe8II4SK/pwMyYj2X54KH9lFSQeHYY1/GfYf3SdA==}
+    engines: {node: '>=14'}
+    peerDependencies:
+      '@types/react': ^16 || ^17 || ^18 || ^19
+      '@types/react-dom': ^16 || ^17 || ^18 || ^19
+      react: ^16.8.0 || ^17 || ^18 || ^19
+      react-dom: ^16.8.0 || ^17 || ^18 || ^19
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@types/react': 19.2.18
+      '@types/react-dom': 19.2.4(@types/react@19.2.18)
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+    dev: false
 
   /yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}

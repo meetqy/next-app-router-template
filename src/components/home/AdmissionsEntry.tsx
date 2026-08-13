@@ -13,7 +13,7 @@ export function AdmissionsEntry() {
 				</p>
 				<Link
 					className="inline-block rounded-full bg-white px-10 py-4 font-bold text-lg text-primary transition-colors hover:bg-slate-100"
-					href="/zhao-sheng-jian-zhang"
+					href="/zi-liao-ku/fen-lei/zhao-sheng-jian-zhang"
 				>
 					查看招生简章
 				</Link>

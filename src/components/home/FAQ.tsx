@@ -3,7 +3,7 @@ import Link from "next/link";
 import { JsonLd } from "@/components/JsonLd";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { getAllJiaZhangFaqItems } from "@/lib/constants/jia-zhang-fu-wu";
+import { getHomeFaqs } from "@/lib/content-center";
 
 const HOME_FAQ_QUESTIONS = [
   "成都戴氏教育办学多少年了？",
@@ -13,7 +13,9 @@ const HOME_FAQ_QUESTIONS = [
   "成都戴氏教育有真实提分案例吗？",
 ];
 
-const HOME_FAQS = getAllJiaZhangFaqItems().filter((item) => HOME_FAQ_QUESTIONS.includes(item.question));
+const HOME_FAQS = getHomeFaqs().filter((item) =>
+  HOME_FAQ_QUESTIONS.includes(item.question),
+);
 
 export function FAQ() {
 	const jsonLd = {
@@ -59,7 +61,7 @@ export function FAQ() {
         </Accordion>
         <div className="mt-10 text-center">
           <Button asChild size="lg">
-            <Link href="/jia-zhang-fu-wu/jia-zhang-wen-ti">查看全部家长问答</Link>
+            <Link href="/zi-liao-ku/jia-zhang-wen-ti">查看全部家长问答</Link>
           </Button>
         </div>
       </div>
