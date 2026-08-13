@@ -1,7 +1,9 @@
 import "@/styles/globals.css";
 
+import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Geist, Inter } from "next/font/google";
+import Script from "next/script";
 import { FloatingToolbar } from "@/components/floating-toolbar";
 import { GlobalHeader } from "@/components/global-header";
 import { Footer } from "@/components/home/Footer";
@@ -63,6 +65,10 @@ export default function SiteLayout({
 			lang="zh-CN"
 		>
 			<body className="min-h-screen bg-slate-50 text-slate-950 antialiased">
+				<Script
+					id="ttzz"
+					src="https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?c85c4569b226fdb39e4f45bc961f18c591f3c26992111e3ff0a04eb7671022ea3871f0d6a9220c04b06cd03d5ba8e733fe66d20303562cd119c1d6f449af6378"
+				/>
 				<JsonLd
 					data={{
 						"@context": "https://schema.org",
@@ -97,6 +103,7 @@ export default function SiteLayout({
 					<FloatingToolbar />
 				</div>
 			</body>
+			<GoogleAnalytics gaId="G-6ZW8V4ESJH" />
 		</html>
 	);
 }
