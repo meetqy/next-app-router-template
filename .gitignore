@@ -36,6 +36,7 @@ yarn-error.log*
 
 # COS image source files (uploaded via pnpm images:upload, served from CDN)
 /cos-assets/
+/public/local-assets/
 
 # local extraction artifacts
 /tmp/

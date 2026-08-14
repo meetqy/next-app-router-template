@@ -1,7 +1,7 @@
 import { ArrowRightIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound, permanentRedirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import {
 	ArticleDetailLayout,
 	DetailSidebarCard,
@@ -80,10 +80,6 @@ export default async function KnowledgeArticlePage({ params }: PageProps) {
 
 	if (!articleResult) {
 		notFound();
-	}
-
-	if (!articleResult.isCanonical) {
-		permanentRedirect(encodeURI(`/zi-liao-ku/${articleResult.article.slug}`));
 	}
 
 	const { article } = articleResult;

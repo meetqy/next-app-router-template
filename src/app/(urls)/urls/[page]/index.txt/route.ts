@@ -31,3 +31,13 @@ export async function GET(_request: Request, context: RouteContext) {
 		urls.slice(pageStart, pageStart + URLS_PER_PAGE),
 	);
 }
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+	const totalPages = Math.ceil(getSiteUrls().length / URLS_PER_PAGE);
+
+	return Array.from({ length: totalPages }, (_, index) => ({
+		page: String(index + 1),
+	}));
+}

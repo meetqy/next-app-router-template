@@ -3,9 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
+    "dev": "node scripts/link-local-assets.mjs && next dev --turbopack",
+    "build": "node scripts/unlink-local-assets.mjs && next build --turbopack",
     "lint": "eslint",
     "images:manifest": "node scripts/generate-image-manifest.mjs",
     "images:upload": "node scripts/upload-images.mjs",

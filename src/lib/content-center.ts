@@ -431,22 +431,6 @@ export function getContentCenterSection(
 	);
 }
 
-export function getParentArticleDestination(slug: string) {
-	return getParentArticleSources().some((article) => article.slug === slug)
-		? `/zi-liao-ku/${slug}`
-		: null;
-}
-
-export function getBrochureDestination(year: string) {
-	return getBrochureSources().find((article) => article.slug.startsWith(`${year}-`))
-		? `/zi-liao-ku/${year}-zhao-sheng-jian-zhang`
-		: null;
-}
-
-export function getPriceArticleDestination() {
-	return `/zi-liao-ku/${PRICE_ARTICLE.slug}`;
-}
-
 export function getHomeFaqs() {
 	const questions = new Set([
 		"成都戴氏教育办学多少年了？",

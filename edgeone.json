@@ -1,9 +1,169 @@
 {
+	"buildCommand": "pnpm build",
+	"outputDirectory": "out",
 	"redirects": [
 		{
 			"source": "$host",
 			"destination": "$wwwhost",
 			"statusCode": 301
+		},
+		{
+			"source": "/about",
+			"destination": "/zi-liao-ku",
+			"statusCode": 301
+		},
+		{
+			"source": "/about/*",
+			"destination": "/zi-liao-ku",
+			"statusCode": 301
+		},
+		{
+			"source": "/activity/*",
+			"destination": "/zi-liao-ku",
+			"statusCode": 301
+		},
+		{
+			"source": "/activity",
+			"destination": "/zi-liao-ku",
+			"statusCode": 301
+		},
+		{
+			"source": "/campus/*",
+			"destination": "/xiao-qu-cha-xun",
+			"statusCode": 301
+		},
+		{
+			"source": "/campus",
+			"destination": "/xiao-qu-cha-xun",
+			"statusCode": 301
+		},
+		{
+			"source": "/course/*",
+			"destination": "/zi-liao-ku/fen-lei/zhao-sheng-jian-zhang",
+			"statusCode": 301
+		},
+		{
+			"source": "/course",
+			"destination": "/zi-liao-ku/fen-lei/zhao-sheng-jian-zhang",
+			"statusCode": 301
+		},
+		{
+			"source": "/hot/*",
+			"destination": "/zi-liao-ku",
+			"statusCode": 301
+		},
+		{
+			"source": "/hot",
+			"destination": "/zi-liao-ku",
+			"statusCode": 301
+		},
+		{
+			"source": "/news/*",
+			"destination": "/zi-liao-ku",
+			"statusCode": 301
+		},
+		{
+			"source": "/news",
+			"destination": "/zi-liao-ku",
+			"statusCode": 301
+		},
+		{
+			"source": "/teacher/*",
+			"destination": "/lao-shi",
+			"statusCode": 301
+		},
+		{
+			"source": "/teacher",
+			"destination": "/lao-shi",
+			"statusCode": 301
+		},
+		{
+			"source": "/jia-zhang-fu-wu",
+			"destination": "/zi-liao-ku",
+			"statusCode": 301
+		},
+		{
+			"source": "/jia-zhang-fu-wu/*",
+			"destination": "/zi-liao-ku/:splat",
+			"statusCode": 301
+		},
+		{
+			"source": "/zhao-sheng-jian-zhang/*",
+			"destination": "/zi-liao-ku/fen-lei/zhao-sheng-jian-zhang",
+			"statusCode": 301
+		},
+		{
+			"source": "/zhao-sheng-jian-zhang",
+			"destination": "/zi-liao-ku/fen-lei/zhao-sheng-jian-zhang",
+			"statusCode": 301
+		},
+		{
+			"source": "/jia-ge-biao/*",
+			"destination": "/zi-liao-ku/shi-mao-gao-kao-fu-du-shou-fei-you-hui",
+			"statusCode": 301
+		},
+		{
+			"source": "/jia-ge-biao",
+			"destination": "/zi-liao-ku/fen-lei/shou-fei-shuo-ming",
+			"statusCode": 301
+		}
+	],
+	"rewrites": [
+		{
+			"source": "/lao-shi",
+			"destination": "/lao-shi.html"
+		},
+		{
+			"source": "/lao-shi/*",
+			"destination": "/lao-shi/:splat.html"
+		},
+		{
+			"source": "/xiao-qu-cha-xun",
+			"destination": "/xiao-qu-cha-xun.html"
+		},
+		{
+			"source": "/xiao-qu-cha-xun/*",
+			"destination": "/xiao-qu-cha-xun/:splat.html"
+		},
+		{
+			"source": "/ti-fen-an-li",
+			"destination": "/ti-fen-an-li.html"
+		},
+		{
+			"source": "/ti-fen-an-li/*",
+			"destination": "/ti-fen-an-li/:splat.html"
+		},
+		{
+			"source": "/zi-liao-ku",
+			"destination": "/zi-liao-ku.html"
+		},
+		{
+			"source": "/zi-liao-ku/fen-lei/*",
+			"destination": "/zi-liao-ku/fen-lei/:splat.html"
+		},
+		{
+			"source": "/zi-liao-ku/*",
+			"destination": "/zi-liao-ku/:splat.html"
+		},
+		{
+			"source": "/rong-yu-zi-zhi",
+			"destination": "/rong-yu-zi-zhi.html"
+		},
+		{
+			"source": "/sheng-xue-xi-bao",
+			"destination": "/sheng-xue-xi-bao.html"
+		},
+		{
+			"source": "/jiao-xue-huan-jing",
+			"destination": "/jiao-xue-huan-jing.html"
+		},
+		{
+			"source": "/lian-xi-wo-men",
+			"destination": "/lian-xi-wo-men.html"
+		},
+		{
+			"source": "/urls",
+			"destination": "/urls.html"
 		}
 	]
 }

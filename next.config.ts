@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 import "./src/env.js";
 
 const nextConfig: NextConfig = {
+	output: "export",
+	trailingSlash: false,
 	images: {
 		loader: "custom",
 		loaderFile: "./src/lib/tencent-image-loader.ts",

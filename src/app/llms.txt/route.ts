@@ -1,6 +1,8 @@
 import { getSiteOrigin, getSiteRoutes } from "@/lib/site-routes";
 import { SITE_FULL_NAME } from "@/lib/constants/site";
 
+export const dynamic = "force-static";
+
 function buildLlmsText() {
 	const siteOrigin = getSiteOrigin();
 	const routeLines = getSiteRoutes().map((route) => {

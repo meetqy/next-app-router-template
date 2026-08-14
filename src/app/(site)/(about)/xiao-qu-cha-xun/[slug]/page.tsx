@@ -10,7 +10,7 @@ import {
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound, permanentRedirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import {
 	ArticleDetailLayout,
 	DetailSidebarCard,
@@ -49,6 +49,8 @@ type PageProps = {
 	params: Promise<{ slug: string }>;
 };
 
+export const dynamicParams = false;
+
 type TocItem = {
 	id: string;
 	title: string;
@@ -62,7 +64,14 @@ export async function generateStaticParams() {
 		slug: campus.slug,
 	}));
 
-	return [...projectCampuses, ...archiveCampuses];
+	return Array.from(
+		new Map(
+			[...projectCampuses, ...archiveCampuses].map((campus) => [
+				campus.slug,
+				campus,
+			]),
+		).values(),
+	);
 }
 
 export async function generateMetadata({
@@ -192,12 +201,6 @@ export default async function CampusDetailPage({ params }: PageProps) {
 	const campus = getCampusBySlug(slug);
 	const archiveCampusResult = getKnowledgeCampusByAnySlug(slug);
 	const archiveCampus = archiveCampusResult?.campus ?? null;
-
-	if (!campus && archiveCampusResult && !archiveCampusResult.isCanonical) {
-		permanentRedirect(
-			encodeURI(`/xiao-qu-cha-xun/${archiveCampusResult.campus.slug}`),
-		);
-	}
 
 	if (!campus) {
 		if (!archiveCampus) {

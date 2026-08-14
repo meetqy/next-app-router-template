@@ -62,7 +62,7 @@ import { imageUrl } from "@/lib/image-url";
 <Image src={imageUrl("/assets/校区环境1.png")} alt="校区环境" fill />;
 ```
 
-开发环境下，`imageUrl()` 会通过 `/local-assets/` 只读加载 `cos-assets/` 中的图片，缺失文件回退到 `public/`；生产环境会拼接 `NEXT_PUBLIC_IMAGE_BASE_URL` 与资源前缀。`next.config.ts` 中配置的自定义 loader 会为 COS 图片追加 `imageMogr2` 参数，由 COS 完成缩放与 WebP 转换。
+开发环境下，`pnpm dev` 会创建被 Git 忽略的 `public/local-assets` 软链接，让 `imageUrl()` 从本地 `cos-assets/` 只读加载图片；`pnpm build` 会先移除该软链接，避免素材进入部署包。生产环境会拼接 `NEXT_PUBLIC_IMAGE_BASE_URL` 与资源前缀。`next.config.ts` 中配置的自定义 loader 会为 COS 图片追加 `imageMogr2` 参数，由 COS 完成缩放与 WebP 转换。
 
 ## 环境变量
 
@@ -89,6 +89,8 @@ import { imageUrl } from "@/lib/image-url";
 | `pnpm lint` | ESLint 检查 |
 | `pnpm images:manifest` | 扫描 `cos-assets/` 与 `public/`，生成主图片清单、教学环境分类清单和升学案例尺寸清单。**增删图片后必须执行**，否则升学案例图库、教学环境图库和 Markdown 配图不会显示 |
 | `pnpm images:upload` | 把 `cos-assets/` 下的图片上传到 COS，对象前缀 `site-assets/v1/`。只上传不删除远端文件。加 `--dry-run` 可先列出待上传对象，`--source <目录>` 可指定其他源目录 |
+
+网站使用静态导出，EdgeOne 部署目录为 `out/`。新增 Markdown 后执行 `pnpm build` 并部署，正式拼音 URL 会在构建时自动生成；Markdown 不需要上传到 COS。
 | `pnpm submit:baidu` | 向百度站长平台推送 URL，从文本文件读取（默认 `1.txt`，每行一个 URL）。可用 `--file`、`--site`、`--token` 覆盖，或用环境变量 `BAIDU_PUSH_SITE` / `BAIDU_PUSH_TOKEN` |
 | `pnpm submit:indexnow` | 向 IndexNow 推送 URL（必应、Yandex 等）。不传文件时自动读取线上 `/sitemap.xml`，也可传文件路径。加 `--dry-run` 只预览不提交 |
 
