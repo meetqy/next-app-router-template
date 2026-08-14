@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { PaginatedImageGallery } from "@/components/gallery/PaginatedImageGallery";
 import { JsonLd } from "@/components/JsonLd";
 import { PageHeader } from "@/components/PageHeader";
@@ -6,6 +7,7 @@ import { getAdmissionCelebrationYears } from "@/lib/admission-celebrations";
 import { SITE_FULL_NAME } from "@/lib/constants/site";
 import { getSiteOrigin } from "@/lib/site-routes";
 import { createPageMetadata } from "@/lib/seo";
+import { AdmissionCelebrationGallery } from "./AdmissionCelebrationGallery";
 
 export const metadata: Metadata = createPageMetadata({
 	description: `查看${SITE_FULL_NAME}历年大学录取案例图片展示，支持按年份查看与分页浏览，方便家长快速了解升学成果。`,
@@ -13,25 +15,10 @@ export const metadata: Metadata = createPageMetadata({
 	title: "升学案例",
 });
 
-type PageProps = {
-	searchParams?: Promise<{
-		page?: string;
-		year?: string;
-	}>;
-};
-
-export default async function ShengXueXiBaoPage({ searchParams }: PageProps) {
-	const resolvedSearchParams = await searchParams;
+export default async function ShengXueXiBaoPage() {
 	const celebrationYears = await getAdmissionCelebrationYears();
-	const activeYear = celebrationYears.some(
-		(item) => item.year === resolvedSearchParams?.year,
-	)
-		? resolvedSearchParams?.year
-		: celebrationYears[0]?.year;
-	const activeGroup = celebrationYears.find((item) => item.year === activeYear);
-	const parsedPage = Number.parseInt(resolvedSearchParams?.page ?? "1", 10);
-	const activePage = Number.isFinite(parsedPage) ? parsedPage : 1;
 	const pageUrl = new URL("/sheng-xue-xi-bao", getSiteOrigin()).toString();
+	const defaultYear = celebrationYears[0];
 
 	const jsonLd = {
 		"@context": "https://schema.org",
@@ -66,21 +53,27 @@ export default async function ShengXueXiBaoPage({ searchParams }: PageProps) {
 
 			<JsonLd data={jsonLd} />
 
-			<PaginatedImageGallery
-				activeFilter={activeYear}
-				activePage={activePage}
-				basePath="/sheng-xue-xi-bao"
-				emptyMessage="暂未上传升学案例图片"
-				filterAriaLabel="升学案例年份"
-				filterParam="year"
-				filters={celebrationYears.map((year) => ({
-					count: year.images.length,
-					label: `${year.year}年`,
-					value: year.year,
-				}))}
-				images={activeGroup?.images ?? []}
-				paginationAriaLabel="升学案例图片分页"
-			/>
+			<Suspense
+				fallback={
+					<PaginatedImageGallery
+						activeFilter={defaultYear?.year}
+						activePage={1}
+						basePath="/sheng-xue-xi-bao"
+						emptyMessage="暂未上传升学案例图片"
+						filterAriaLabel="升学案例年份"
+						filterParam="year"
+						filters={celebrationYears.map((year) => ({
+							count: year.images.length,
+							label: `${year.year}年`,
+							value: year.year,
+						}))}
+						images={defaultYear?.images ?? []}
+						paginationAriaLabel="升学案例图片分页"
+					/>
+				}
+			>
+				<AdmissionCelebrationGallery years={celebrationYears} />
+			</Suspense>
 		</div>
 	);
 }

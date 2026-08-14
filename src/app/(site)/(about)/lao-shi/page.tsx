@@ -1,80 +1,20 @@
-import Link from "next/link";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import { PhoneButton } from "@/components/phone-action";
 import { TeacherCard } from "@/components/teachers/TeacherCard";
 import { SITE_FULL_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
 import { TEACHERS } from "@/lib/constants/teachers";
 import { createPageMetadata } from "@/lib/seo";
+import { TeacherDirectory } from "./TeacherDirectory";
 
-// 提取所有校区名称
-const campuses = Array.from(
-	new Set(TEACHERS.map((t) => t.campus).filter(Boolean) as string[]),
-);
-const allCampuses = ["全部", ...campuses];
-const CAMPUS_PARAM_KEY = "xiaoqu";
+export const metadata: Metadata = createPageMetadata({
+	description: `查看${SITE_FULL_NAME}核心教师的教学背景、教研方向与代表性成果。`,
+	path: "/lao-shi",
+	title: "教师团队",
+});
 
-type PageProps = {
-	searchParams?: Promise<{
-		[CAMPUS_PARAM_KEY]?: string | string[];
-	}>;
-};
-
-export async function generateMetadata({
-	searchParams,
-}: PageProps): Promise<Metadata> {
-	const resolvedSearchParams = await searchParams;
-	const campusFromParams = resolvedSearchParams?.[CAMPUS_PARAM_KEY];
-	const currentCampus =
-		typeof campusFromParams === "string"
-			? campusFromParams
-			: campusFromParams?.[0];
-	const selectedCampus =
-		currentCampus && campuses.includes(currentCampus) ? currentCampus : "全部";
-	const path =
-		selectedCampus === "全部"
-			? "/lao-shi"
-			: `/lao-shi?${CAMPUS_PARAM_KEY}=${encodeURIComponent(selectedCampus)}`;
-
-	return createPageMetadata({
-		description:
-			selectedCampus === "全部"
-				? `查看${SITE_FULL_NAME}核心教师的教学背景、教研方向与代表性成果。`
-				: `查看${selectedCampus}教师团队的教学背景、学科方向与代表性成果。`,
-		path,
-		title: selectedCampus === "全部" ? "教师团队" : `${selectedCampus}教师团队`,
-	});
-}
-
-function getCampusHref(campus: string) {
-	if (campus === "全部") {
-		return "/lao-shi";
-	}
-
-	return {
-		pathname: "/lao-shi",
-		query: {
-			[CAMPUS_PARAM_KEY]: campus,
-		},
-	};
-}
-
-export default async function TeachersPage({ searchParams }: PageProps) {
-	const resolvedSearchParams = await searchParams;
-	const campusFromParams = resolvedSearchParams?.[CAMPUS_PARAM_KEY];
-	const currentCampus =
-		typeof campusFromParams === "string"
-			? campusFromParams
-			: campusFromParams?.[0];
-	const selectedCampus =
-		currentCampus && campuses.includes(currentCampus) ? currentCampus : "全部";
-
-	// 筛选老师
-	const filteredTeachers = TEACHERS.filter((teacher) => {
-		if (selectedCampus === "全部") return true;
-		return teacher.campus === selectedCampus;
-	});
-
+export default function TeachersPage() {
 	return (
 		<div className="min-h-screen bg-slate-50">
 			<main className="pb-16">
@@ -99,37 +39,21 @@ export default async function TeachersPage({ searchParams }: PageProps) {
 				/>
 
 				<section className="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 md:pt-8 lg:px-8">
-					{/* 校区筛选标签 */}
-					<div className="mb-8 flex flex-wrap gap-3">
-						{allCampuses.map((campus) => (
-							<Link
-								aria-current={selectedCampus === campus ? "page" : undefined}
-								className={`rounded-full px-5 py-2 font-medium text-sm transition-colors ${
-									selectedCampus === campus
-										? "bg-primary text-white"
-										: "border border-slate-200 bg-white text-slate-700 hover:border-primary/30"
-								}`}
-								href={getCampusHref(campus)}
-								key={campus}
-							>
-								{campus}
-							</Link>
-						))}
-					</div>
-
-					<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-						{filteredTeachers.map((teacher) => (
-							<TeacherCard key={teacher.slug} teacher={teacher} />
-						))}
-					</div>
-
-					{filteredTeachers.length === 0 && (
-						<div className="py-16 text-center text-slate-500">
-							暂无该校区的老师信息
-						</div>
-					)}
+					<Suspense fallback={<TeacherDirectoryFallback />}>
+						<TeacherDirectory />
+					</Suspense>
 				</section>
 			</main>
+		</div>
+	);
+}
+
+function TeacherDirectoryFallback() {
+	return (
+		<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+			{TEACHERS.map((teacher) => (
+				<TeacherCard key={teacher.slug} teacher={teacher} />
+			))}
 		</div>
 	);
 }
