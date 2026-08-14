@@ -111,9 +111,3 @@ export function getTeachingEnvironmentCategoryImages(
 		(image) => image.category === category,
 	);
 }
-
-export function getTeachingEnvironmentCategoryCount(
-	category: TeachingEnvironmentCategoryId,
-) {
-	return getTeachingEnvironmentCategoryImages(category).length;
-}

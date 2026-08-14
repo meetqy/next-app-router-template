@@ -2,15 +2,19 @@ import { ArrowRightIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
+import {
+	ArticleDetailLayout,
+	DetailSidebarCard,
+	RelatedLinksCard,
+} from "@/components/ArticleDetailLayout";
 import { JsonLd } from "@/components/JsonLd";
 import { MarkdownContent } from "@/components/MarkdownContent";
-import { PageTopNav } from "@/components/PageTopNav";
+import { PageHeader } from "@/components/PageHeader";
 import { PhoneButton, PhoneLink } from "@/components/phone-action";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
-	CardAction,
 	CardContent,
 	CardDescription,
 	CardHeader,
@@ -68,37 +72,6 @@ export async function generateMetadata({
 		publishedTime: normalizeSeoDate(article.publishedAt),
 		title: `${article.title} - 资讯中心`,
 	});
-}
-
-function SidebarCard({
-	children,
-	moreHref,
-	title,
-}: {
-	children: React.ReactNode;
-	moreHref?: string;
-	title: string;
-}) {
-	return (
-		<Card>
-			<CardHeader className="border-b">
-				<CardTitle className="border-primary border-l-4 pl-3">
-					{title}
-				</CardTitle>
-				{moreHref ? (
-					<CardAction>
-						<Link
-							className="text-muted-foreground text-xs hover:text-primary"
-							href={moreHref}
-						>
-							更多+
-						</Link>
-					</CardAction>
-				) : null}
-			</CardHeader>
-			<CardContent>{children}</CardContent>
-		</Card>
-	);
 }
 
 export default async function KnowledgeArticlePage({ params }: PageProps) {
@@ -173,8 +146,8 @@ export default async function KnowledgeArticlePage({ params }: PageProps) {
 		<div className="min-h-screen bg-muted/40">
 			<JsonLd data={articleJsonLd} />
 			{faqJsonLd?.mainEntity.length ? <JsonLd data={faqJsonLd} /> : null}
-			<PageTopNav
-				containerClassName="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8"
+			<PageHeader
+				breadcrumbOnly
 				items={[
 					{ label: "首页", href: "/" },
 					{ label: "资讯中心", href: "/zi-liao-ku" },
@@ -185,10 +158,54 @@ export default async function KnowledgeArticlePage({ params }: PageProps) {
 					{ label: article.title, href: `/zi-liao-ku/${article.slug}` },
 				]}
 			/>
-			<main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 md:py-8 lg:px-8">
-				<div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
-					<div className="space-y-5">
-						<Card className="[--card-spacing:--spacing(6)]">
+			<ArticleDetailLayout
+				next={
+					next
+						? { href: `/zi-liao-ku/${next.slug}`, title: next.title }
+						: null
+				}
+				previous={
+					previous
+						? { href: `/zi-liao-ku/${previous.slug}`, title: previous.title }
+						: null
+				}
+				sidebar={
+					<>
+						<DetailSidebarCard title="阅读提示">
+							<div className="space-y-1.5 text-muted-foreground text-sm leading-7">
+								<p>栏目：{article.sectionLabel}</p>
+								<p>发布日期：{publishedDate}</p>
+								<p>统一咨询电话：{SITE_HOTLINE_TEXT}</p>
+							</div>
+							<div className="mt-4 flex flex-col gap-2">
+								<PhoneButton>电话确认最新信息</PhoneButton>
+								{article.relatedLatestHref ? (
+									<Button asChild variant="outline">
+										<Link href={article.relatedLatestHref}>
+											查看相关页面
+											<ArrowRightIcon className="size-4" />
+										</Link>
+									</Button>
+								) : null}
+								<Button asChild variant="outline">
+									<PhoneLink>咨询热线：{SITE_HOTLINE_TEXT}</PhoneLink>
+								</Button>
+							</div>
+						</DetailSidebarCard>
+
+						<RelatedLinksCard
+							items={relatedArticles.map((related) => ({
+								href: `/zi-liao-ku/${related.slug}`,
+								title: related.title,
+							}))}
+							moreHref="/zi-liao-ku"
+							title="相关文章"
+						/>
+					</>
+				}
+				siblingAriaLabel="上下篇资料"
+			>
+				<Card className="[--card-spacing:--spacing(6)]">
 							<CardHeader className="border-b">
 								<CardTitle className="text-center font-bold text-xl leading-relaxed md:text-2xl">
 									<h1>{article.title}</h1>
@@ -246,88 +263,8 @@ export default async function KnowledgeArticlePage({ params }: PageProps) {
 									resolveHref={resolveKnowledgeHref}
 								/>
 							</CardContent>
-						</Card>
-
-						<Card size="sm">
-							<CardContent>
-								<nav
-									aria-label="上下篇资料"
-									className="divide-y divide-border text-sm"
-								>
-									<p className="flex gap-2 py-2 text-muted-foreground">
-										<span className="shrink-0">上一篇：</span>
-										{previous ? (
-											<Link
-												className="line-clamp-1 text-foreground hover:text-primary"
-												href={`/zi-liao-ku/${previous.slug}`}
-											>
-												{previous.title}
-											</Link>
-										) : (
-											<span>没有了</span>
-										)}
-									</p>
-									<p className="flex gap-2 py-2 text-muted-foreground">
-										<span className="shrink-0">下一篇：</span>
-										{next ? (
-											<Link
-												className="line-clamp-1 text-foreground hover:text-primary"
-												href={`/zi-liao-ku/${next.slug}`}
-											>
-												{next.title}
-											</Link>
-										) : (
-											<span>没有了</span>
-										)}
-									</p>
-								</nav>
-							</CardContent>
-						</Card>
-					</div>
-
-					<aside className="space-y-5 lg:sticky lg:top-16 lg:self-start">
-						<SidebarCard title="阅读提示">
-							<div className="space-y-1.5 text-muted-foreground text-sm leading-7">
-								<p>栏目：{article.sectionLabel}</p>
-								<p>发布日期：{publishedDate}</p>
-								<p>统一咨询电话：{SITE_HOTLINE_TEXT}</p>
-							</div>
-							<div className="mt-4 flex flex-col gap-2">
-								<PhoneButton>电话确认最新信息</PhoneButton>
-								{article.relatedLatestHref ? (
-									<Button asChild variant="outline">
-										<Link href={article.relatedLatestHref}>
-											查看相关页面
-											<ArrowRightIcon className="size-4" />
-										</Link>
-									</Button>
-								) : null}
-								<Button asChild variant="outline">
-									<PhoneLink>咨询热线：{SITE_HOTLINE_TEXT}</PhoneLink>
-								</Button>
-							</div>
-						</SidebarCard>
-
-						{relatedArticles.length > 0 ? (
-							<SidebarCard moreHref="/zi-liao-ku" title="相关文章">
-								<ul className="divide-y divide-border text-sm">
-									{relatedArticles.map((related) => (
-										<li key={related.slug}>
-											<Link
-												className="block truncate py-2 text-muted-foreground hover:text-primary"
-												href={`/zi-liao-ku/${related.slug}`}
-												title={related.title}
-											>
-												{related.title}
-											</Link>
-										</li>
-									))}
-								</ul>
-							</SidebarCard>
-						) : null}
-					</aside>
-				</div>
-			</main>
+				</Card>
+			</ArticleDetailLayout>
 		</div>
 	);
 }

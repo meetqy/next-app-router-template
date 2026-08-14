@@ -2,7 +2,7 @@ import { CalendarIcon } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { PageTopNav } from "@/components/PageTopNav";
+import { PageHeader } from "@/components/PageHeader";
 import { PhoneButton } from "@/components/phone-action";
 import { HONOR_CERTIFICATES } from "@/lib/constants/honor-certificates";
 import { imageUrl } from "@/lib/image-url";
@@ -109,23 +109,9 @@ export default function HonorsPage() {
 	return (
 		<div className="bg-slate-50">
 			<main className="pb-16">
-				<section className="bg-white">
-					<PageTopNav
-						items={[
-							{ label: "首页", href: "/" },
-							{ label: "荣誉资质", href: "/rong-yu-zi-zhi" },
-						]}
-					/>
-					<div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
-						<p className="font-semibold text-primary text-sm">荣誉资质</p>
-						<h1 className="mt-3 max-w-4xl text-balance font-bold text-4xl text-slate-950 leading-tight md:text-5xl">
-							戴氏教育高考总部荣誉证书展示
-						</h1>
-						<p className="mt-5 max-w-4xl text-lg text-slate-600 leading-8">
-							这里集中展示戴氏教育高考总部的办学资质、版权登记、质量认证、行业任职、品牌荣誉与媒体报道。
-							从长期办学到多维背书，让家长与学生更直观看见品牌沉淀与办学实力。
-						</p>
-						<div className="mt-8 flex flex-col gap-4 sm:flex-row">
+				<PageHeader
+					actions={
+						<>
 							<PhoneButton className="h-12 rounded-xl px-6 font-semibold">
 								立即咨询：{SITE_HOTLINE_TEXT}
 							</PhoneButton>
@@ -135,23 +121,32 @@ export default function HonorsPage() {
 							>
 								返回首页荣誉区
 							</Link>
-						</div>
-
-						<div className="mt-10 flex flex-wrap gap-3 border-slate-200 border-t pt-6">
-							{HONOR_CERTIFICATES.map((honor) => (
-								<Link
-									className="rounded-full border border-slate-200 bg-white px-4 py-2 text-slate-700 text-sm transition-colors hover:border-primary/30 hover:text-primary"
-									href={`#rong-yu-${honor.id}`}
-									key={honor.id}
-								>
-									{honor.id}. {honor.category}
-								</Link>
-							))}
-						</div>
-					</div>
-				</section>
+						</>
+					}
+					badge="荣誉资质"
+					description="这里集中展示戴氏教育高考总部的办学资质、版权登记、质量认证、行业任职、品牌荣誉与媒体报道。从长期办学到多维背书，让家长与学生更直观看见品牌沉淀与办学实力。"
+					items={[
+						{ label: "首页", href: "/" },
+						{ label: "荣誉资质", href: "/rong-yu-zi-zhi" },
+					]}
+					title="戴氏教育高考总部荣誉证书展示"
+				/>
 
 				<section className="mx-auto w-full max-w-7xl px-4 pt-6 sm:px-6 md:pt-8 lg:px-8">
+					<nav
+						aria-label="荣誉分类"
+						className="flex flex-wrap justify-center gap-3 border-slate-200 border-b pb-6"
+					>
+						{HONOR_CERTIFICATES.map((honor) => (
+							<Link
+								className="rounded-full border border-slate-200 bg-white px-4 py-2 text-slate-700 text-sm transition-colors hover:border-primary/30 hover:text-primary"
+								href={`#rong-yu-${honor.id}`}
+								key={honor.id}
+							>
+								{honor.id}. {honor.category}
+							</Link>
+						))}
+					</nav>
 					<div>
 						{HONOR_CERTIFICATES.map((_, index) => (
 							<HonorCard index={index} key={HONOR_CERTIFICATES[index]?.id} />

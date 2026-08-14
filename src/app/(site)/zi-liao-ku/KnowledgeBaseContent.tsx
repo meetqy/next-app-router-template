@@ -1,7 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
-import { PageHero } from "@/components/PageHero";
-import { PageTopNav } from "@/components/PageTopNav";
+import { ArticleList } from "@/components/ArticleList";
+import { PageHeader } from "@/components/PageHeader";
 import { PhoneButton } from "@/components/phone-action";
 import { SITE_FULL_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
 import {
@@ -193,28 +193,24 @@ export function KnowledgeBaseContent({
 
 	return (
 		<div className="min-h-screen bg-slate-50 pb-16 md:pb-24">
-			<div className="bg-white">
-				<PageTopNav
-					items={[
-						{ label: "首页", href: "/" },
-						{ label: "资讯中心", href: "/zi-liao-ku" },
-					]}
-				/>
-				<PageHero
-					actions={
-						<PhoneButton className="h-12 rounded-xl px-6 font-semibold">
-							电话咨询：{SITE_HOTLINE_TEXT}
-						</PhoneButton>
-					}
-					badge={`${SITE_FULL_NAME} · 资讯中心`}
-					description={
-						activeFilter
-							? activeFilter.description
-							: "集中查看招生简章、收费说明、考试政策、备考建议、择校对比与家长问答。"
-					}
-					title={activeFilter ? activeFilter.title : "戴氏招生与备考资讯中心"}
-				/>
-			</div>
+			<PageHeader
+				actions={
+					<PhoneButton className="h-12 rounded-xl px-6 font-semibold">
+						电话咨询：{SITE_HOTLINE_TEXT}
+					</PhoneButton>
+				}
+				badge={`${SITE_FULL_NAME} · 资讯中心`}
+				description={
+					activeFilter
+						? activeFilter.description
+						: "集中查看招生简章、收费说明、考试政策、备考建议、择校对比与家长问答。"
+				}
+				items={[
+					{ label: "首页", href: "/" },
+					{ label: "资讯中心", href: "/zi-liao-ku" },
+				]}
+				title={activeFilter ? activeFilter.title : "戴氏招生与备考资讯中心"}
+			/>
 
 			<section className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
 				<div className="border-slate-200 border-b">
@@ -241,22 +237,13 @@ export function KnowledgeBaseContent({
 			</section>
 
 			<section className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-				<div className="divide-y divide-slate-200 border-slate-200 border-y">
-					{visibleArticles.map((article) => (
-						<Link
-							className="group grid gap-1 px-2 py-3 transition-colors hover:bg-slate-100/70 sm:grid-cols-[minmax(0,1fr)_9rem] sm:items-center sm:px-3"
-							href={`/zi-liao-ku/${article.slug}`}
-							key={article.slug}
-						>
-							<h3 className="line-clamp-2 font-medium text-slate-950 text-sm leading-6 transition-colors group-hover:text-primary sm:text-base">
-								{article.title}
-							</h3>
-							<time className="text-slate-500 text-xs sm:text-right sm:text-sm">
-								{formatArticleDate(article)}
-							</time>
-						</Link>
-					))}
-				</div>
+				<ArticleList
+					items={visibleArticles.map((article) => ({
+						href: `/zi-liao-ku/${article.slug}`,
+						meta: <time>{formatArticleDate(article)}</time>,
+						title: article.title,
+					}))}
+				/>
 				<Pagination
 					basePath={basePath}
 					currentPage={safeCurrentPage}

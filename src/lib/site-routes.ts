@@ -9,6 +9,7 @@ import {
 	getKnowledgeCampuses,
 } from "@/lib/knowledge-base";
 import { normalizeSeoDate } from "@/lib/seo";
+import { SCORE_IMPROVEMENT_CASES } from "@/lib/score-improvement-cases";
 
 export type SiteRoute = {
 	changeFrequency: "daily" | "weekly" | "monthly" | "yearly";
@@ -42,6 +43,13 @@ const STATIC_SITE_ROUTES: SiteRoute[] = [
 		path: "/sheng-xue-xi-bao",
 		priority: 0.8,
 		title: "升学案例",
+	},
+	{
+		changeFrequency: "monthly",
+		description: `查看${SITE_FULL_NAME}学生阶段成绩变化、学习过程与帮扶措施。`,
+		path: "/ti-fen-an-li",
+		priority: 0.8,
+		title: "提分案例",
 	},
 	{
 		changeFrequency: "weekly",
@@ -146,6 +154,15 @@ export function getSiteRoutes(): SiteRoute[] {
 			title: `${article.title}资讯`,
 		}),
 	);
+	const scoreImprovementCaseRoutes: SiteRoute[] = SCORE_IMPROVEMENT_CASES.map(
+		(item) => ({
+			changeFrequency: "yearly",
+			description: item.summary,
+			path: `/ti-fen-an-li/${item.slug}`,
+			priority: 0.6,
+			title: item.title,
+		}),
+	);
 	const knowledgeArticles = getKnowledgeArticles();
 	const knowledgePageCount = Math.max(1, Math.ceil(knowledgeArticles.length / 10));
 	const knowledgeListRoutes: SiteRoute[] = Array.from(
@@ -198,6 +215,7 @@ export function getSiteRoutes(): SiteRoute[] {
 		...campusRoutes,
 		...archiveCampusRoutes,
 		...knowledgeRoutes,
+		...scoreImprovementCaseRoutes,
 		...knowledgeListRoutes,
 		...knowledgeFilterRoutes,
 	];

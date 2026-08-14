@@ -11,12 +11,23 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
+import {
+	ArticleDetailLayout,
+	DetailSidebarCard,
+} from "@/components/ArticleDetailLayout";
 import { JsonLd } from "@/components/JsonLd";
 import { MarkdownContent } from "@/components/MarkdownContent";
-import { PageTopNav } from "@/components/PageTopNav";
+import { PageHeader } from "@/components/PageHeader";
 import { PhoneButton, PhoneLink } from "@/components/phone-action";
-import { TableOfContents, type TocItem } from "@/components/TableOfContents";
 import { Button } from "@/components/ui/button";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { env } from "@/env";
 import { imageUrl } from "@/lib/image-url";
 import {
@@ -36,6 +47,11 @@ import { createNoIndexMetadata, createPageMetadata } from "@/lib/seo";
 
 type PageProps = {
 	params: Promise<{ slug: string }>;
+};
+
+type TocItem = {
+	id: string;
+	title: string;
 };
 
 export async function generateStaticParams() {
@@ -192,38 +208,55 @@ export default async function CampusDetailPage({ params }: PageProps) {
 		);
 
 		return (
-			<div className="min-h-screen bg-white">
-				<main>
-					<PageTopNav
-						items={[
-							{ label: "首页", href: "/" },
-							{ label: "校区查询", href: "/xiao-qu-cha-xun" },
-							{ label: archiveCampus.title, href: `/xiao-qu-cha-xun/${slug}` },
-						]}
-					/>
-					<div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
-						<div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_320px]">
-						<article>
-							<header className="border-slate-200 border-b pb-8">
-								<div className="flex flex-wrap gap-2">
-									<span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600 text-sm">
-										{archiveCampus.city}校区
-									</span>
-								</div>
-								<h1 className="mt-5 font-bold text-4xl text-slate-950 leading-tight md:text-5xl">
-									{archiveCampus.title}
-								</h1>
-								<p className="mt-5 text-slate-600 leading-8">
-									校区地址：
+			<div className="min-h-screen bg-muted/40">
+				<PageHeader
+					breadcrumbOnly
+					items={[
+						{ label: "首页", href: "/" },
+						{ label: "校区查询", href: "/xiao-qu-cha-xun" },
+						{ label: archiveCampus.title, href: `/xiao-qu-cha-xun/${slug}` },
+					]}
+				/>
+				<ArticleDetailLayout
+					sidebar={
+						<DetailSidebarCard title="到访提示">
+							<div className="space-y-3 text-muted-foreground text-sm leading-7">
+								<p>城市：{archiveCampus.city}</p>
+								<p>
+									地址：
 									<AddressLink
 										address={archiveCampus.address}
-										className="font-medium text-slate-900 transition-colors hover:text-primary"
 										href={archiveMapHref}
 									/>
 								</p>
-							</header>
-
-							<div className="my-8 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-amber-900 leading-8">
+								{archiveCampus.route ? <p>路线：{archiveCampus.route}</p> : null}
+								<p>统一咨询电话：{SITE_HOTLINE_TEXT}</p>
+							</div>
+							<div className="mt-5 flex flex-col gap-2">
+								<PhoneButton>电话咨询校区安排</PhoneButton>
+								<Button asChild variant="outline">
+									<Link href="/xiao-qu-cha-xun">返回全部校区</Link>
+								</Button>
+							</div>
+						</DetailSidebarCard>
+					}
+				>
+					<Card className="[--card-spacing:--spacing(6)]">
+						<CardHeader className="border-b">
+							<CardTitle className="text-center font-bold text-xl leading-relaxed md:text-2xl">
+								<h1>{archiveCampus.title}</h1>
+							</CardTitle>
+							<CardDescription className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+								<span>{archiveCampus.city}校区</span>
+								<Separator className="h-4" orientation="vertical" />
+								<AddressLink
+									address={archiveCampus.address}
+									href={archiveMapHref}
+								/>
+							</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-900 text-sm leading-7">
 								如需了解校区路线、课程和到访安排，可以先拨打统一咨询电话：
 								{SITE_HOTLINE_TEXT}
 								{archiveCampus.legacyPhones.length > 0
@@ -234,43 +267,14 @@ export default async function CampusDetailPage({ params }: PageProps) {
 											.join("、")}`
 									: null}
 							</div>
-
 							<MarkdownContent
+								className="mt-4"
 								content={archiveCampus.content}
 								resolveHref={resolveKnowledgeHref}
 							/>
-						</article>
-
-						<aside className="lg:sticky lg:top-32 lg:self-start">
-							<div className="rounded-2xl bg-slate-50 p-6">
-								<h2 className="font-semibold text-slate-950">到访提示</h2>
-								<div className="mt-4 space-y-4 text-slate-600 text-sm leading-7">
-									<p>城市：{archiveCampus.city}</p>
-									<p>
-										地址：
-										<AddressLink
-											address={archiveCampus.address}
-											href={archiveMapHref}
-										/>
-									</p>
-									{archiveCampus.route ? (
-										<p>路线：{archiveCampus.route}</p>
-									) : null}
-									<p>统一咨询电话：{SITE_HOTLINE_TEXT}</p>
-								</div>
-								<div className="mt-6 flex flex-col gap-3">
-									<PhoneButton className="h-11 rounded-xl">
-										电话咨询校区安排
-									</PhoneButton>
-									<Button asChild className="h-11 rounded-xl" variant="outline">
-										<Link href="/xiao-qu-cha-xun">返回全部校区</Link>
-									</Button>
-								</div>
-							</div>
-						</aside>
-						</div>
-					</div>
-				</main>
+						</CardContent>
+					</Card>
+				</ArticleDetailLayout>
 			</div>
 		);
 	}
@@ -283,120 +287,120 @@ export default async function CampusDetailPage({ params }: PageProps) {
 			: null;
 
 	return (
-		<div className="min-h-screen bg-white">
+		<div className="min-h-screen bg-muted/40">
 			<CampusStructuredData
 				campus={campus}
 				url={`/xiao-qu-cha-xun/${campus.slug}`}
 			/>
-			<main className="pb-16">
-				<section className="bg-white">
-					<PageTopNav
-						items={[
-							{ label: "首页", href: "/" },
-							{ label: "校区查询", href: "/xiao-qu-cha-xun" },
-							{ label: campus.name, href: `/xiao-qu-cha-xun/${campus.slug}` },
-						]}
-					/>
-					<div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
-						<div className="overflow-hidden rounded-[2rem] bg-slate-50">
-							<div className="grid gap-8 p-6 md:p-8 lg:grid-cols-[minmax(0,1.05fr)_420px] lg:items-center lg:gap-12 lg:p-10">
-								<div>
-									<p className="font-semibold text-primary text-sm">
-										{campus.subtitle}
-									</p>
-									<h1 className="mt-3 font-bold text-4xl text-slate-950 leading-tight md:text-5xl">
-										{campus.title}
-									</h1>
-									<p className="mt-5 text-lg text-slate-600 leading-8">
-										{campus.intro}
-									</p>
-									<div className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-slate-600 text-sm">
-										<MapPinIcon className="size-4 text-primary" />
-										<AddressLink
-											address={campus.address}
+			<PageHeader
+				breadcrumbOnly
+				items={[
+					{ label: "首页", href: "/" },
+					{ label: "校区查询", href: "/xiao-qu-cha-xun" },
+					{ label: campus.name, href: `/xiao-qu-cha-xun/${campus.slug}` },
+				]}
+			/>
+			<ArticleDetailLayout
+				sidebar={
+					<>
+						<DetailSidebarCard title="校区信息">
+							<div className="space-y-3 text-muted-foreground text-sm leading-7">
+								<p>校区定位：{campus.subtitle}</p>
+								<p>
+									地址：
+									<AddressLink address={campus.address} href={campus.mapHref} />
+								</p>
+								<p>重点课程：{campus.programs.length} 类</p>
+								<p>
+									公开师资：
+									{stats.teacherCount > 0
+										? `${stats.teacherCount} 位，${stats.subjectCount} 个学科方向`
+										: "持续更新中"}
+								</p>
+							</div>
+							<div className="mt-5 flex flex-col gap-2">
+								<PhoneButton>电话咨询到校安排</PhoneButton>
+								{campus.mapHref ? (
+									<Button asChild variant="outline">
+										<a
 											href={campus.mapHref}
-										/>
-									</div>
+											rel="noopener noreferrer"
+											target="_blank"
+										>
+											查看导航
+										</a>
+									</Button>
+								) : null}
+								{campusTeacherHref ? (
+									<Button asChild variant="outline">
+										<Link href={campusTeacherHref}>查看该校区老师</Link>
+									</Button>
+								) : null}
+								<Button asChild variant="outline">
+									<Link href="/xiao-qu-cha-xun">返回校区列表</Link>
+								</Button>
+							</div>
+						</DetailSidebarCard>
 
-									<div className="mt-8 grid gap-4 sm:grid-cols-3">
-										<div className="rounded-2xl bg-white px-4 py-4">
-											<p className="text-slate-500 text-sm">服务方向</p>
-											<p className="mt-2 font-bold text-2xl text-slate-950">
-												{campus.serviceTags.length}
-											</p>
-											<p className="mt-1 text-slate-500 text-sm">项服务</p>
-										</div>
-										<div className="rounded-2xl bg-white px-4 py-4">
-											<p className="text-slate-500 text-sm">重点课程</p>
-											<p className="mt-2 font-bold text-2xl text-slate-950">
-												{campus.programs.length}
-											</p>
-											<p className="mt-1 text-slate-500 text-sm">类可参考</p>
-										</div>
-										<div className="rounded-2xl bg-white px-4 py-4">
-											<p className="text-slate-500 text-sm">公开师资</p>
-											<p className="mt-2 font-bold text-2xl text-slate-950">
-												{stats.teacherCount || "待补充"}
-											</p>
-											<p className="mt-1 text-slate-500 text-sm">
-												{stats.teacherCount > 0
-													? `${stats.subjectCount} 个学科方向`
-													: "持续更新中"}
-											</p>
-										</div>
-									</div>
-
-									<div className="mt-8 flex flex-col gap-3 sm:flex-row">
-										<PhoneButton className="h-12 rounded-xl px-6 font-semibold">
-											电话咨询到校安排：{SITE_HOTLINE_TEXT}
-										</PhoneButton>
-										{campus.mapHref ? (
-											<Button
-												asChild
-												className="h-12 rounded-xl px-6"
-												variant="outline"
-											>
-												<a
-													href={campus.mapHref}
-													rel="noopener noreferrer"
-													target="_blank"
-												>
-													查看导航
-												</a>
-											</Button>
-										) : null}
-										{campusTeacherHref ? (
-											<Button
-												asChild
-												className="h-12 rounded-xl px-6"
-												variant="outline"
-											>
-												<Link href={campusTeacherHref}>查看该校区老师</Link>
-											</Button>
-										) : null}
-									</div>
-								</div>
-
-								<div className="relative aspect-[4/3] overflow-hidden rounded-[1.75rem] bg-slate-100">
-									<Image
-										alt={campus.title}
-										className="object-cover"
-										fill
-										priority
-										sizes="(max-width: 1024px) 100vw, 420px"
-										src={imageUrl(campus.coverImage)}
-									/>
-								</div>
+						<DetailSidebarCard title="校区目录">
+							<nav className="flex flex-col gap-y-3 text-sm">
+								{tocItems.map((item) => (
+									<Link
+										className="text-muted-foreground hover:text-primary"
+										href={`#${item.id}`}
+										key={item.id}
+									>
+										{item.title}
+									</Link>
+								))}
+							</nav>
+						</DetailSidebarCard>
+					</>
+				}
+			>
+				<Card className="[--card-spacing:--spacing(6)]">
+					<CardHeader className="border-b">
+						<CardTitle className="text-center font-bold text-xl leading-relaxed md:text-2xl">
+							<h1>{campus.title}</h1>
+						</CardTitle>
+						<CardDescription className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+							<span>{campus.subtitle}</span>
+							<Separator className="h-4" orientation="vertical" />
+							<AddressLink address={campus.address} href={campus.mapHref} />
+						</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<p className="rounded-lg bg-muted p-4 text-muted-foreground text-sm leading-7">
+							{campus.intro}
+						</p>
+						<div className="relative mt-6 aspect-[4/3] overflow-hidden rounded-xl bg-slate-100">
+							<Image
+								alt={campus.title}
+								className="object-cover"
+								fill
+								priority
+								sizes="(max-width: 1024px) 100vw, 800px"
+								src={imageUrl(campus.coverImage)}
+							/>
+						</div>
+						<div className="mt-6 grid gap-3 sm:grid-cols-3">
+							<div className="rounded-xl bg-muted p-4 text-center">
+								<p className="font-bold text-xl">{campus.serviceTags.length}</p>
+								<p className="mt-1 text-muted-foreground text-xs">项服务方向</p>
+							</div>
+							<div className="rounded-xl bg-muted p-4 text-center">
+								<p className="font-bold text-xl">{campus.programs.length}</p>
+								<p className="mt-1 text-muted-foreground text-xs">类重点课程</p>
+							</div>
+							<div className="rounded-xl bg-muted p-4 text-center">
+								<p className="font-bold text-xl">
+									{stats.teacherCount || "待补充"}
+								</p>
+								<p className="mt-1 text-muted-foreground text-xs">公开师资</p>
 							</div>
 						</div>
-					</div>
-				</section>
 
-				<div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
-					<div className="grid gap-12 lg:grid-cols-[240px_minmax(0,1fr)]">
-						<TableOfContents items={tocItems} title="校区目录" />
-
-						<div className="space-y-20">
+						<div className="mt-12 space-y-16">
 							<section className="scroll-mt-48 py-2" id="ji-ben-xin-xi">
 								<SectionHeading
 									description="先看这所校区的定位、地址和适合咨询的人群，家长能更快判断是否值得安排到校了解。"
@@ -682,9 +686,9 @@ export default async function CampusDetailPage({ params }: PageProps) {
 								</div>
 							</section>
 						</div>
-					</div>
-				</div>
-			</main>
+					</CardContent>
+				</Card>
+			</ArticleDetailLayout>
 		</div>
 	);
 }

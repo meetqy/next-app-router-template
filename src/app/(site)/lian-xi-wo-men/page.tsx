@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import type { Metadata } from "next";
 import { JsonLd } from "@/components/JsonLd";
-import { PageTopNav } from "@/components/PageTopNav";
+import { PageHeader } from "@/components/PageHeader";
 import { PhoneButton, PhoneLink } from "@/components/phone-action";
 import {
 	CONTACT_CHANNELS,
@@ -59,45 +59,35 @@ export default function LianXiWoMenPage() {
 		<div className="min-h-screen bg-slate-50 pb-16 md:pb-24">
 			<JsonLd data={jsonLd} />
 
-			<section className="bg-white">
-				<PageTopNav
-					items={[
-						{ label: "首页", href: "/" },
-						{ label: "联系我们", href: "/lian-xi-wo-men" },
-					]}
-				/>
-				<div className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
-					<div className="max-w-4xl">
-						<div className="inline-flex rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 font-medium text-primary text-sm">
-							{CONTACT_PAGE_INTRO.badge}
-						</div>
-						<h1 className="mt-5 font-bold text-3xl text-slate-900 leading-tight md:text-5xl">
-							{CONTACT_PAGE_INTRO.title}
-						</h1>
-						<p className="mt-5 max-w-3xl text-base text-slate-600 leading-8 md:text-lg">
-							{CONTACT_PAGE_INTRO.description}
-						</p>
-						<div className="mt-8 flex flex-col gap-3 sm:flex-row">
-							<PhoneButton
-								className="h-12 rounded-xl px-8 font-semibold"
-								size="lg"
+			<PageHeader
+				actions={
+					<>
+						<PhoneButton
+							className="h-12 rounded-xl px-8 font-semibold"
+							size="lg"
+						>
+							立即电话咨询：{SITE_HOTLINE_TEXT}
+						</PhoneButton>
+						{hasNavigation ? (
+							<a
+								className="inline-flex h-12 items-center justify-center rounded-xl border border-slate-200 bg-white px-8 font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950"
+								href={CONTACT_HEADQUARTERS.mapHref}
+								rel="noopener noreferrer"
+								target="_blank"
 							>
-								立即电话咨询：{SITE_HOTLINE_TEXT}
-							</PhoneButton>
-							{hasNavigation ? (
-								<a
-									className="inline-flex h-12 items-center justify-center rounded-xl border border-slate-200 bg-white px-8 font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950"
-									href={CONTACT_HEADQUARTERS.mapHref}
-									rel="noopener noreferrer"
-									target="_blank"
-								>
-									查看总部导航
-								</a>
-							) : null}
-						</div>
-					</div>
-				</div>
-			</section>
+								查看总部导航
+							</a>
+						) : null}
+					</>
+				}
+				badge={CONTACT_PAGE_INTRO.badge}
+				description={CONTACT_PAGE_INTRO.description}
+				items={[
+					{ label: "首页", href: "/" },
+					{ label: "联系我们", href: "/lian-xi-wo-men" },
+				]}
+				title={CONTACT_PAGE_INTRO.title}
+			/>
 
 			<section className="py-12 md:py-16">
 				<div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">

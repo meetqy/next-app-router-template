@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { PageTopNav } from "@/components/PageTopNav";
+import { PageHeader } from "@/components/PageHeader";
 import { getSiteUrls, URLS_PER_PAGE } from "@/lib/site-urls";
 import { createPageMetadata } from "@/lib/seo";
 
@@ -17,7 +17,8 @@ export default function UrlsPage() {
 
 	return (
 		<>
-			<PageTopNav
+			<PageHeader
+				breadcrumbOnly
 				items={[
 					{ href: "/", label: "首页" },
 					{ href: "/urls", label: "URL 目录" },

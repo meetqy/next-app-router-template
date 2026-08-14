@@ -62,7 +62,7 @@ import { imageUrl } from "@/lib/image-url";
 <Image src={imageUrl("/assets/校区环境1.png")} alt="校区环境" fill />;
 ```
 
-`imageUrl()` 会拼接 `NEXT_PUBLIC_IMAGE_BASE_URL` 与资源前缀；未配置该变量时回落到本地路径。`next.config.ts` 中配置的自定义 loader 会追加 `imageMogr2` 参数，由 COS 完成缩放与 WebP 转换。
+开发环境下，`imageUrl()` 会通过 `/local-assets/` 只读加载 `cos-assets/` 中的图片，缺失文件回退到 `public/`；生产环境会拼接 `NEXT_PUBLIC_IMAGE_BASE_URL` 与资源前缀。`next.config.ts` 中配置的自定义 loader 会为 COS 图片追加 `imageMogr2` 参数，由 COS 完成缩放与 WebP 转换。
 
 ## 环境变量
 

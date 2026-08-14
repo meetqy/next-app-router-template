@@ -885,18 +885,6 @@ export function getKnowledgeArticles(): KnowledgeArticleSummary[] {
 	return knowledgeArticleSummariesCache;
 }
 
-export function getKnowledgeArticleBySlug(slug: string) {
-	const normalizedSlug = decodeRouteSlug(slug);
-
-	for (const article of getAllKnowledgeArticleRecords()) {
-		if (article?.slug === normalizedSlug) {
-			return article;
-		}
-	}
-
-	return null;
-}
-
 function decodeRouteSlug(slug: string) {
 	try {
 		return decodeURIComponent(slug);
@@ -944,25 +932,6 @@ function inferSectionId(
 	}
 
 	return "bei-kao-zhi-nan";
-}
-
-export function getKnowledgeArticleCategoryStats() {
-	const articles = getKnowledgeArticles();
-	const stats = new Map<string, { count: number; label: string }>();
-
-	for (const article of articles) {
-		const current = stats.get(article.category) ?? {
-			count: 0,
-			label: article.categoryLabel,
-		};
-		current.count += 1;
-		stats.set(article.category, current);
-	}
-
-	return [...stats.entries()].map(([category, stat]) => ({
-		category,
-		...stat,
-	}));
 }
 
 export function getArticleCategoryFilterId(article: KnowledgeArticleSummary) {
@@ -1108,14 +1077,6 @@ export function getKnowledgeCampuses() {
 			slug,
 		};
 	});
-}
-
-export function getKnowledgeCampusBySlug(slug: string) {
-	const normalizedSlug = decodeRouteSlug(slug);
-	return (
-		getKnowledgeCampuses().find((campus) => campus.slug === normalizedSlug) ??
-		null
-	);
 }
 
 export function getKnowledgeCampusByAnySlug(slug: string) {

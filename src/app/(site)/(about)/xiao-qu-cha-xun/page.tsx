@@ -1,7 +1,6 @@
 import { GraduationCapIcon, MapPinIcon, SchoolIcon } from "lucide-react";
 import type { Metadata } from "next";
-import { PageHero } from "@/components/PageHero";
-import { PageTopNav } from "@/components/PageTopNav";
+import { PageHeader } from "@/components/PageHeader";
 import { PhoneButton } from "@/components/phone-action";
 import { SimpleCard } from "@/components/ui/simple-card";
 import { getVisibleCampuses } from "@/lib/constants/campuses";
@@ -25,29 +24,25 @@ export default function CampusListPage() {
 	return (
 		<div className="min-h-screen bg-slate-50">
 			<main className="pb-16">
-				<div className="bg-white">
-					<PageTopNav
-						items={[
-							{ label: "首页", href: "/" },
-							{ label: "校区查询", href: "/xiao-qu-cha-xun" },
-						]}
-					/>
-					<PageHero
-						actions={
-							<PhoneButton className="h-12 rounded-xl px-6 font-semibold">
-								电话咨询校区安排：{SITE_HOTLINE_TEXT}
-							</PhoneButton>
-						}
-						badge={`${SITE_FULL_NAME} · 校区查询`}
-						description={
-							<>
-								这里集中展示 {SITE_FULL_NAME}
-								目前展示的校区信息，方便家长先对比校区定位、课程方向、学习环境与到校方式，再决定进一步咨询。
-							</>
-						}
-						title="校区查询"
-					/>
-				</div>
+				<PageHeader
+					actions={
+						<PhoneButton className="h-12 rounded-xl px-6 font-semibold">
+							电话咨询校区安排：{SITE_HOTLINE_TEXT}
+						</PhoneButton>
+					}
+					badge={`${SITE_FULL_NAME} · 校区查询`}
+					description={
+						<>
+							这里集中展示 {SITE_FULL_NAME}
+							目前展示的校区信息，方便家长先对比校区定位、课程方向、学习环境与到校方式，再决定进一步咨询。
+						</>
+					}
+					items={[
+						{ label: "首页", href: "/" },
+						{ label: "校区查询", href: "/xiao-qu-cha-xun" },
+					]}
+					title="校区查询"
+				/>
 
 				<section className="pb-12 md:pb-20">
 					<div className="mx-auto w-full max-w-7xl px-4 pt-8 sm:px-6 md:pt-12 lg:px-8">

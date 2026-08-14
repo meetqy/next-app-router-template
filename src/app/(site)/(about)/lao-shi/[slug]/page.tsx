@@ -1,15 +1,31 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
+import {
+	ArticleDetailLayout,
+	DetailSidebarCard,
+	RelatedLinksCard,
+} from "@/components/ArticleDetailLayout";
 import { JsonLd } from "@/components/JsonLd";
-import { PageTopNav } from "@/components/PageTopNav";
+import { PageHeader } from "@/components/PageHeader";
 import { PhoneButton } from "@/components/phone-action";
+import { Button } from "@/components/ui/button";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { env } from "@/env";
 import { imageUrl } from "@/lib/image-url";
-import { SITE_BRAND_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
+import { SITE_BRAND_NAME } from "@/lib/constants/site";
 import {
 	getTeacherBySlug,
 	getTeacherDisplayTitle,
+	getRelatedTeachers,
 	TEACHERS,
 } from "@/lib/constants/teachers";
 import { createNoIndexMetadata, createPageMetadata } from "@/lib/seo";
@@ -47,8 +63,10 @@ function TeacherSection({ items, title }: { items: string[]; title: string }) {
 	}
 
 	return (
-		<section className="rounded-2xl bg-slate-50 p-6 md:p-8">
-			<p className="font-semibold text-primary text-sm">{title}</p>
+		<section className="border-slate-200 border-t pt-8">
+			<h2 className="border-primary border-l-4 pl-3 font-semibold text-xl text-slate-950">
+				{title}
+			</h2>
 			<ul className="mt-5 space-y-4 text-slate-700 leading-8">
 				{items.map((item) => (
 					<li className="flex gap-3" key={item}>
@@ -101,6 +119,7 @@ export default async function TeacherDetailPage({ params }: PageProps) {
 	if (!teacher) {
 		notFound();
 	}
+	const relatedTeachers = getRelatedTeachers(teacher.slug);
 
 	const profileFacts = [
 		teacher.campus ? { label: "所在校区", value: teacher.campus } : null,
@@ -112,89 +131,93 @@ export default async function TeacherDetailPage({ params }: PageProps) {
 	].filter((item): item is { label: string; value: string } => Boolean(item));
 
 	return (
-		<div className="min-h-screen bg-slate-50">
+		<div className="min-h-screen bg-muted/40">
 			<TeacherStructuredData
 				teacher={teacher}
 				url={`/lao-shi/${teacher.slug}`}
 			/>
-			<main className="pb-16">
-				<section className="bg-white">
-					<PageTopNav
-						items={[
-							{ label: "首页", href: "/" },
-							{ label: "教师团队", href: "/lao-shi" },
-							{ label: teacher.name, href: `/lao-shi/${teacher.slug}` },
-						]}
-					/>
-					<div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
-						<div className="overflow-hidden rounded-[2rem] bg-slate-50">
-							<div className="grid gap-8 p-6 md:p-8 lg:grid-cols-[360px_minmax(0,1fr)] lg:gap-12 lg:p-10">
-								<div className="relative aspect-4/5 overflow-hidden rounded-2xl bg-slate-100">
-									{teacher.image ? (
-										<Image
-											alt={`${teacher.name}老师`}
-											className="object-cover object-top"
-											fill
-											priority
-											sizes="(max-width: 1024px) 100vw, 360px"
-											src={imageUrl(teacher.image)}
-										/>
-									) : null}
-								</div>
+			<PageHeader
+				breadcrumbOnly
+				items={[
+					{ label: "首页", href: "/" },
+					{ label: "教师团队", href: "/lao-shi" },
+					{ label: teacher.name, href: `/lao-shi/${teacher.slug}` },
+				]}
+			/>
 
-								<div className="flex flex-col justify-center">
-									<p className="font-semibold text-primary text-sm">老师详情</p>
-									<h1 className="mt-3 font-bold text-4xl text-slate-950 leading-tight md:text-5xl">
-										{teacher.name}
-									</h1>
-									<div className="mt-3 flex flex-wrap items-center gap-3">
-										{teacher.campus ? (
-											<span className="rounded-full bg-white px-3 py-1.5 text-slate-600 text-sm">
-												{teacher.campus}
-											</span>
-										) : null}
-										<p className="font-medium text-primary text-xl">
-											{getTeacherDisplayTitle(teacher)}
-										</p>
+			<ArticleDetailLayout
+				sidebar={
+					<>
+						<DetailSidebarCard title="老师信息">
+							<p className="font-medium text-primary">
+								{getTeacherDisplayTitle(teacher)}
+							</p>
+							<dl className="mt-4 space-y-3 text-sm leading-7">
+								{profileFacts.map((fact) => (
+									<div key={fact.label}>
+										<dt className="text-muted-foreground">{fact.label}</dt>
+										<dd className="font-medium text-slate-900">{fact.value}</dd>
 									</div>
-									<p className="mt-6 max-w-3xl text-lg text-slate-600 leading-8">
-										{teacher.summary}
-									</p>
-
-									{profileFacts.length > 0 ? (
-										<div className="mt-8 flex flex-wrap gap-3">
-											{profileFacts.map((fact) => (
-												<div
-													className="rounded-full bg-white px-4 py-2 text-slate-700 text-sm"
-													key={fact.label}
-												>
-													<span className="text-slate-500">{fact.label}：</span>
-													<span className="font-medium text-slate-900">
-														{fact.value}
-													</span>
-												</div>
-											))}
-										</div>
-									) : null}
-
-									<div className="mt-8">
-										<PhoneButton className="h-12 rounded-xl px-6 font-semibold">
-											电话咨询老师安排：{SITE_HOTLINE_TEXT}
-										</PhoneButton>
-									</div>
-								</div>
+								))}
+							</dl>
+							<div className="mt-5 flex flex-col gap-2">
+								<PhoneButton>电话咨询老师安排</PhoneButton>
+								<Button asChild variant="outline">
+									<Link href="/lao-shi">返回教师团队</Link>
+								</Button>
 							</div>
-						</div>
-					</div>
-				</section>
+						</DetailSidebarCard>
 
-				<section className="bg-white">
-					<div className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-						<div className="mx-auto max-w-6xl">
-							<div className="grid gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
+						<RelatedLinksCard
+							items={relatedTeachers.map((related) => ({
+								href: `/lao-shi/${related.slug}`,
+								title: `${related.name}老师 · ${getTeacherDisplayTitle(related)}`,
+							}))}
+							moreHref="/lao-shi"
+							title="相关老师"
+						/>
+					</>
+				}
+			>
+				<Card className="[--card-spacing:--spacing(6)]">
+							<CardHeader className="border-b">
+								<CardTitle className="text-center font-bold text-xl leading-relaxed md:text-2xl">
+									<h1>{teacher.name}老师介绍</h1>
+								</CardTitle>
+								<CardDescription className="mt-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
+									<span>{getTeacherDisplayTitle(teacher)}</span>
+									<Separator className="h-4" orientation="vertical" />
+									<span>教师团队</span>
+									{teacher.campus ? (
+										<>
+											<Separator className="h-4" orientation="vertical" />
+											<span>{teacher.campus}</span>
+										</>
+									) : null}
+								</CardDescription>
+							</CardHeader>
+							<CardContent className="space-y-8">
+								<p className="rounded-lg bg-muted p-4 text-muted-foreground text-sm leading-7">
+									{teacher.summary}
+								</p>
+								{teacher.image ? (
+									<figure className="mx-auto max-w-md overflow-hidden rounded-2xl bg-slate-100">
+										<div className="relative aspect-4/5">
+											<Image
+												alt={`${teacher.name}老师`}
+												className="object-cover object-top"
+												fill
+												priority
+												sizes="(max-width: 768px) 100vw, 448px"
+												src={imageUrl(teacher.image)}
+											/>
+										</div>
+									</figure>
+								) : null}
+
 								<section>
 									<p className="font-semibold text-primary text-sm">老师简介</p>
-									<h2 className="mt-3 font-bold text-3xl text-slate-950">
+									<h2 className="mt-3 font-bold text-2xl text-slate-950">
 										围绕高考提分目标展开教学与陪伴
 									</h2>
 									<div className="mt-6 space-y-4 text-slate-700 leading-8">
@@ -204,18 +227,14 @@ export default async function TeacherDetailPage({ params }: PageProps) {
 									</div>
 								</section>
 
-								<div className="space-y-6">
-									<TeacherSection items={teacher.honors} title="荣誉与任职" />
-									<TeacherSection
-										items={teacher.achievements}
-										title="教学成果与经验"
-									/>
-								</div>
-							</div>
-						</div>
-					</div>
-				</section>
-			</main>
+								<TeacherSection items={teacher.honors} title="荣誉与任职" />
+								<TeacherSection
+									items={teacher.achievements}
+									title="教学成果与经验"
+								/>
+							</CardContent>
+				</Card>
+			</ArticleDetailLayout>
 		</div>
 	);
 }

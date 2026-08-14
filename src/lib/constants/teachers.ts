@@ -879,3 +879,29 @@ export function getTeacherBySlug(slug: string) {
 export function getTeacherDisplayTitle(teacher: TeacherProfile) {
 	return teacher.subject ? `${teacher.subject}老师` : teacher.title;
 }
+
+export function getRelatedTeachers(slug: string, limit = 9) {
+	const teacher = getTeacherBySlug(slug);
+
+	if (!teacher) {
+		return [];
+	}
+
+	return TEACHERS.map((candidate, index) => ({
+		candidate,
+		index,
+		priority:
+			teacher.subject && candidate.subject === teacher.subject
+				? 0
+				: teacher.campus && candidate.campus === teacher.campus
+					? 1
+					: 2,
+	}))
+		.filter(({ candidate }) => candidate.slug !== slug)
+		.sort(
+			(first, second) =>
+				first.priority - second.priority || first.index - second.index,
+		)
+		.slice(0, limit)
+		.map(({ candidate }) => candidate);
+}

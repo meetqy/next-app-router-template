@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { PaginatedImageGallery } from "@/components/gallery/PaginatedImageGallery";
 import { JsonLd } from "@/components/JsonLd";
-import { PageHero } from "@/components/PageHero";
-import { PageTopNav } from "@/components/PageTopNav";
+import { PageHeader } from "@/components/PageHeader";
 import { SITE_FULL_NAME } from "@/lib/constants/site";
 import {
 	TEACHING_ENVIRONMENT_CATEGORIES,
@@ -45,11 +44,14 @@ export default async function TeachingEnvironmentPage({
 
 	return (
 		<div className="min-h-screen bg-white">
-			<PageTopNav
+			<PageHeader
+				badge={`${SITE_FULL_NAME} · 教学环境`}
+				description="从课堂教学、学习日常、考试测评和空间环境四个方面，查看戴氏教育公开的教学环境实景照片。照片用于展示学习场景，具体课程、校区和到访安排请以咨询确认信息为准。"
 				items={[
 					{ label: "首页", href: "/" },
 					{ label: "教学环境", href: "/jiao-xue-huan-jing" },
 				]}
+				title="戴氏教学环境实景"
 			/>
 			<JsonLd
 				data={{
@@ -69,11 +71,6 @@ export default async function TeachingEnvironmentPage({
 					name: "戴氏教学环境实景",
 					url: pageUrl,
 				}}
-			/>
-			<PageHero
-				badge={`${SITE_FULL_NAME} · 教学环境`}
-				description="从课堂教学、学习日常、考试测评和空间环境四个方面，查看戴氏教育公开的教学环境实景照片。照片用于展示学习场景，具体课程、校区和到访安排请以咨询确认信息为准。"
-				title="戴氏教学环境实景"
 			/>
 			<PaginatedImageGallery
 				activeFilter={activeCategory}

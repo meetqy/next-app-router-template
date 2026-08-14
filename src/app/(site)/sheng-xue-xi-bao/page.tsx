@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { PaginatedImageGallery } from "@/components/gallery/PaginatedImageGallery";
 import { JsonLd } from "@/components/JsonLd";
-import { PageHero } from "@/components/PageHero";
-import { PageTopNav } from "@/components/PageTopNav";
+import { PageHeader } from "@/components/PageHeader";
 import { getAdmissionCelebrationYears } from "@/lib/admission-celebrations";
 import { SITE_FULL_NAME } from "@/lib/constants/site";
 import { getSiteOrigin } from "@/lib/site-routes";
@@ -55,20 +54,17 @@ export default async function ShengXueXiBaoPage({ searchParams }: PageProps) {
 
 	return (
 		<div className="min-h-screen bg-white">
-			<PageTopNav
+			<PageHeader
+				badge={`${SITE_FULL_NAME} · 升学案例`}
+				description="集中展示戴氏教育学生考入大学的历年喜报图片，并按年份整理，方便查看各年度升学成果。"
 				items={[
 					{ label: "首页", href: "/" },
 					{ label: "升学案例", href: "/sheng-xue-xi-bao" },
 				]}
+				title="历年大学录取案例"
 			/>
 
 			<JsonLd data={jsonLd} />
-
-			<PageHero
-				badge={`${SITE_FULL_NAME} · 升学案例`}
-				description="集中展示戴氏教育学生考入大学的历年喜报图片，并按年份整理，方便查看各年度升学成果。"
-				title="历年大学录取案例"
-			/>
 
 			<PaginatedImageGallery
 				activeFilter={activeYear}

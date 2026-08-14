@@ -17,6 +17,11 @@ export function imageUrl(path: string) {
 	}
 
 	const normalizedPath = path.replace(/^\/+/, "");
+
+	if (process.env.NODE_ENV === "development") {
+		return `/local-assets/${encodeAssetPath(normalizedPath)}`;
+	}
+
 	const imageBaseUrl = normalizeBaseUrl(process.env.NEXT_PUBLIC_IMAGE_BASE_URL);
 
 	if (!imageBaseUrl) {
