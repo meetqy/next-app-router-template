@@ -30,6 +30,7 @@ import {
 	formatKnowledgeArticleDate,
 	getArticleCategoryFilterId,
 	getKnowledgeArticleByAnySlug,
+	getKnowledgeArticles,
 	getKnowledgeArticleSiblings,
 	getRelatedKnowledgeArticles,
 	resolveKnowledgeHref,
@@ -46,11 +47,10 @@ type PageProps = {
 	params: Promise<{ slug: string }>;
 };
 
-// 资料库文章不在构建时预渲染：577 篇文章的预渲染产物（html/rsc/segments）
-// 约 103MB，会让 Cloud SSR 函数包超过 128MiB 上限。改为首次访问时按需渲染
-// 并长期缓存，内容只在重新部署时变化，因此不设置 revalidate。
-export async function generateStaticParams() {
-	return [];
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+	return getKnowledgeArticles().map((article) => ({ slug: article.slug }));
 }
 
 export async function generateMetadata({

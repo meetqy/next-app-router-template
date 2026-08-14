@@ -1,7 +1,6 @@
-import Image from "next/image";
-import Link from "next/link";
 import IMAGE_MANIFEST from "@/lib/generated/image-manifest.json";
 import { imageUrl } from "@/lib/image-url";
+import tencentImageLoader from "@/lib/tencent-image-loader";
 import { cn } from "@/lib/utils";
 
 type MarkdownContentProps = {
@@ -9,6 +8,20 @@ type MarkdownContentProps = {
 	content: string;
 	resolveHref?: (href: string) => string | null;
 };
+
+const MARKDOWN_IMAGE_PATTERN = /!\[[^\]]*]\([^)]+\)/g;
+const RESOURCE_PATH_PATTERN =
+	/(?:\/|public\/)?(?:assets|老师|校区|honors|address|daishi-site\/uploads)\/[^\s`，。；、）)\]]+\.(?:jpg|jpeg|png|webp|gif)/gi;
+const AVAILABLE_IMAGE_PATHS = new Set<string>(IMAGE_MANIFEST);
+
+function escapeHtml(value: string) {
+	return value
+		.replaceAll("&", "&amp;")
+		.replaceAll("<", "&lt;")
+		.replaceAll(">", "&gt;")
+		.replaceAll('"', "&quot;")
+		.replaceAll("'", "&#39;");
+}
 
 function cleanHeadingText(text: string) {
 	return text.replace(/^\s*\d+[\s.、．-]*/g, "").trim();
@@ -23,10 +36,6 @@ function createHeadingId(text: string, occurrence: number) {
 	return occurrence > 1 ? `${base}-${occurrence}` : base;
 }
 
-const MARKDOWN_IMAGE_PATTERN = /!\[[^\]]*]\([^)]+\)/g;
-const RESOURCE_PATH_PATTERN =
-	/(?:\/|public\/)?(?:assets|老师|校区|honors|address|daishi-site\/uploads)\/[^\s`，。；、）)\]]+\.(?:jpg|jpeg|png|webp|gif)/gi;
-
 function cleanInlineText(text: string) {
 	return text
 		.replace(MARKDOWN_IMAGE_PATTERN, "")
@@ -35,8 +44,6 @@ function cleanInlineText(text: string) {
 		.replace(/[：:]\s*$/g, "")
 		.trim();
 }
-
-const AVAILABLE_IMAGE_PATHS = new Set<string>(IMAGE_MANIFEST);
 
 function canRenderImage(src: string) {
 	if (/^https?:\/\//i.test(src)) {
@@ -54,85 +61,72 @@ function canRenderImage(src: string) {
 	}
 }
 
-function parseInline(
+function isSafeHref(href: string) {
+	return (
+		/^https?:\/\//i.test(href) ||
+		/^\/(?!\/)/.test(href) ||
+		href.startsWith("#") ||
+		href.startsWith("./") ||
+		href.startsWith("../")
+	);
+}
+
+function renderLink(
+	label: string,
+	href: string,
+	resolveHref: MarkdownContentProps["resolveHref"],
+) {
+	const resolvedHref = resolveHref ? resolveHref(href) : href;
+	const safeLabel = escapeHtml(label);
+
+	if (!resolvedHref || !isSafeHref(resolvedHref)) {
+		return safeLabel;
+	}
+
+	const externalAttributes = /^https?:\/\//i.test(resolvedHref)
+		? ' rel="noopener noreferrer" target="_blank"'
+		: "";
+
+	return `<a href="${escapeHtml(resolvedHref)}"${externalAttributes}>${safeLabel}</a>`;
+}
+
+function renderInline(
 	text: string,
 	resolveHref: MarkdownContentProps["resolveHref"],
 ) {
 	const cleanedText = cleanInlineText(text);
 	const parts = cleanedText.split(/(\*\*[^*]+\*\*|\[[^\]]+]\([^)]+\))/g);
-	const occurrences = new Map<string, number>();
 
-	return parts.map((part) => {
-		const occurrence = occurrences.get(part) ?? 0;
-		occurrences.set(part, occurrence + 1);
-		const key = `${part}-${occurrence}`;
-
-		if (part.startsWith("**") && part.endsWith("**")) {
-			const strongText = part.slice(2, -2);
-			const strongLinkMatch = strongText.match(/^\[([^\]]+)]\(([^)]+)\)$/);
-			if (strongLinkMatch) {
-				const [, label = "", href = ""] = strongLinkMatch;
-				const resolvedHref = resolveHref?.(href) ?? href;
-
-				if (resolvedHref.startsWith("http")) {
-					return (
-						<a
-							href={resolvedHref}
-							key={key}
-							rel="noopener noreferrer"
-							target="_blank"
-						>
-							{label}
-						</a>
-					);
+	return parts
+		.map((part) => {
+			if (part.startsWith("**") && part.endsWith("**")) {
+				const strongText = part.slice(2, -2);
+				const strongLinkMatch = strongText.match(
+					/^\[([^\]]+)]\(([^)]+)\)$/,
+				);
+				if (strongLinkMatch) {
+					const [, label = "", href = ""] = strongLinkMatch;
+					return renderLink(label, href, resolveHref);
 				}
 
-				return (
-					<Link href={resolvedHref} key={key}>
-						{label}
-					</Link>
-				);
+				return `<strong>${escapeHtml(strongText)}</strong>`;
 			}
 
-			return <strong key={key}>{strongText}</strong>;
-		}
-
-		const linkMatch = part.match(/^\[([^\]]+)]\(([^)]+)\)$/);
-		if (linkMatch) {
-			const [, label = "", href = ""] = linkMatch;
-			const resolvedHref = resolveHref?.(href) ?? href;
-
-			if (resolvedHref.startsWith("http")) {
-				return (
-					<a
-						href={resolvedHref}
-						key={key}
-						rel="noopener noreferrer"
-						target="_blank"
-					>
-						{label}
-					</a>
-				);
+			const linkMatch = part.match(/^\[([^\]]+)]\(([^)]+)\)$/);
+			if (linkMatch) {
+				const [, label = "", href = ""] = linkMatch;
+				return renderLink(label, href, resolveHref);
 			}
 
-			return (
-				<Link href={resolvedHref} key={key}>
-					{label}
-				</Link>
-			);
-		}
-
-		return part;
-	});
+			return escapeHtml(part);
+		})
+		.join("");
 }
 
-function MarkdownTable({
-	lines,
-	resolveHref,
-}: {
-	lines: string[];
-	resolveHref: MarkdownContentProps["resolveHref"];
-}) {
+function renderTable(
+	lines: string[],
+	resolveHref: MarkdownContentProps["resolveHref"],
+) {
 	const rows = lines
 		.map((line) =>
 			line
@@ -143,42 +137,40 @@ function MarkdownTable({
 				.map((cell) => cell.trim()),
 		)
 		.filter((cells) => !cells.every((cell) => /^:?-{3,}:?$/.test(cell)));
-
 	const [headers = [], ...bodyRows] = rows;
+	const headerHtml = headers
+		.map((header) => `<th>${renderInline(header, resolveHref)}</th>`)
+		.join("");
+	const bodyHtml = bodyRows
+		.map(
+			(row) =>
+				`<tr>${row
+					.map((cell) => `<td>${renderInline(cell, resolveHref)}</td>`)
+					.join("")}</tr>`,
+		)
+		.join("");
 
-	return (
-		<div className="typeset-scroll">
-			<table>
-				<thead>
-					<tr>
-						{headers.map((header) => (
-							<th key={header}>{header}</th>
-						))}
-					</tr>
-				</thead>
-				<tbody>
-					{bodyRows.map((row) => (
-						<tr key={row.join("|")}>
-							{row.map((cell) => (
-								<td key={`${row.join("|")}-${cell}`}>
-									{parseInline(cell, resolveHref)}
-								</td>
-							))}
-						</tr>
-					))}
-				</tbody>
-			</table>
-		</div>
-	);
+	return `<div class="typeset-scroll"><table><thead><tr>${headerHtml}</tr></thead><tbody>${bodyHtml}</tbody></table></div>`;
 }
 
-export function MarkdownContent({
-	className,
-	content,
-	resolveHref,
-}: MarkdownContentProps) {
+function renderImage(alt: string, src: string) {
+	const publicSrc = imageUrl(src);
+	const optimizedSrc = tencentImageLoader({
+		quality: 75,
+		src: publicSrc,
+		width: 1200,
+	});
+	const caption = alt ? `<figcaption>${escapeHtml(alt)}</figcaption>` : "";
+
+	return `<figure><img alt="${escapeHtml(alt)}" class="h-auto max-h-130 w-full object-contain" decoding="async" height="900" loading="lazy" src="${escapeHtml(optimizedSrc)}" width="1200">${caption}</figure>`;
+}
+
+function renderMarkdownHtml(
+	content: string,
+	resolveHref: MarkdownContentProps["resolveHref"],
+) {
 	const lines = content.split("\n");
-	const elements: React.ReactNode[] = [];
+	const html: string[] = [];
 	let index = 0;
 	let pendingAnchorId: string | null = null;
 	const headingOccurrences = new Map<string, number>();
@@ -199,7 +191,7 @@ export function MarkdownContent({
 		}
 
 		if (/^-{3,}$/.test(line.trim())) {
-			elements.push(<hr key={`divider-${index}`} />);
+			html.push("<hr>");
 			index += 1;
 			continue;
 		}
@@ -207,24 +199,9 @@ export function MarkdownContent({
 		const imageMatch = line.match(/^!\[([^\]]*)]\(([^)]+)\)$/);
 		if (imageMatch) {
 			const [, alt = "", src = ""] = imageMatch;
-			if (!canRenderImage(src)) {
-				index += 1;
-				continue;
+			if (canRenderImage(src)) {
+				html.push(renderImage(alt, src));
 			}
-
-			elements.push(
-				<figure key={`image-${index}`}>
-					<Image
-						alt={alt}
-						className="h-auto max-h-130 w-full object-contain"
-						height={900}
-						src={imageUrl(src)}
-						unoptimized
-						width={1200}
-					/>
-					{alt ? <figcaption>{alt}</figcaption> : null}
-				</figure>,
-			);
 			index += 1;
 			continue;
 		}
@@ -238,13 +215,7 @@ export function MarkdownContent({
 				tableLines.push(lines[index] ?? "");
 				index += 1;
 			}
-			elements.push(
-				<MarkdownTable
-					key={`table-${index}`}
-					lines={tableLines}
-					resolveHref={resolveHref}
-				/>,
-			);
+			html.push(renderTable(tableLines, resolveHref));
 			continue;
 		}
 
@@ -260,18 +231,13 @@ export function MarkdownContent({
 				}
 				index += 1;
 			}
-
-			if (items.length === 0) {
-				continue;
+			if (items.length > 0) {
+				html.push(
+					`<ul>${items
+						.map((item) => `<li>${renderInline(item, resolveHref)}</li>`)
+						.join("")}</ul>`,
+				);
 			}
-
-			elements.push(
-				<ul key={`list-${index}`}>
-					{items.map((item) => (
-						<li key={item}>{parseInline(item, resolveHref)}</li>
-					))}
-				</ul>,
-			);
 			continue;
 		}
 
@@ -289,35 +255,28 @@ export function MarkdownContent({
 				}
 				index += 1;
 			}
-
-			if (items.length === 0) {
-				continue;
+			if (items.length > 0) {
+				html.push(
+					`<ol>${items
+						.map((item) => `<li>${renderInline(item, resolveHref)}</li>`)
+						.join("")}</ol>`,
+				);
 			}
-
-			elements.push(
-				<ol key={`ordered-list-${index}`}>
-					{items.map((item) => (
-						<li key={item}>{parseInline(item, resolveHref)}</li>
-					))}
-				</ol>,
-			);
 			continue;
 		}
 
 		const headingMatch = line.match(/^(#{1,4})\s+(.+)$/);
 		if (headingMatch) {
 			const [, marks = "", heading = ""] = headingMatch;
-			const level = marks.length;
-			const Heading = `h${Math.min(level, 4)}` as "h1" | "h2" | "h3" | "h4";
+			const level = Math.min(marks.length, 4);
 			const cleanedHeading = cleanHeadingText(heading);
 			const occurrence = (headingOccurrences.get(cleanedHeading) ?? 0) + 1;
 			headingOccurrences.set(cleanedHeading, occurrence);
-			const headingId = pendingAnchorId ?? createHeadingId(cleanedHeading, occurrence);
+			const headingId =
+				pendingAnchorId ?? createHeadingId(cleanedHeading, occurrence);
 			pendingAnchorId = null;
-			elements.push(
-				<Heading id={headingId} key={`heading-${index}`}>
-					{parseInline(cleanedHeading, resolveHref)}
-				</Heading>,
+			html.push(
+				`<h${level} id="${escapeHtml(headingId)}">${renderInline(cleanedHeading, resolveHref)}</h${level}>`,
 			);
 			index += 1;
 			continue;
@@ -338,19 +297,26 @@ export function MarkdownContent({
 			index += 1;
 		}
 
-		const paragraph = paragraphLines.join(" ").trim();
-		const cleanParagraph = cleanInlineText(paragraph);
-		if (!cleanParagraph) {
-			continue;
+		const paragraph = cleanInlineText(paragraphLines.join(" ").trim());
+		if (paragraph) {
+			html.push(`<p>${renderInline(paragraph, resolveHref)}</p>`);
 		}
-		elements.push(
-			<p key={`paragraph-${index}`}>
-				{parseInline(cleanParagraph, resolveHref)}
-			</p>,
-		);
 	}
 
+	return html.join("");
+}
+
+export function MarkdownContent({
+	className,
+	content,
+	resolveHref,
+}: MarkdownContentProps) {
 	return (
-		<div className={cn("typeset typeset-article", className)}>{elements}</div>
+		<div
+			className={cn("typeset typeset-article", className)}
+			dangerouslySetInnerHTML={{
+				__html: renderMarkdownHtml(content, resolveHref),
+			}}
+		/>
 	);
 }
