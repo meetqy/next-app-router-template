@@ -14,14 +14,8 @@ const KNOWLEDGE_CONTENT_DIR = path.join(process.cwd(), "content");
 const CRAWLED_CONTENT_DIR = path.join(KNOWLEDGE_CONTENT_DIR, "抓取页面");
 
 const CATEGORY_LABELS: Record<string, string> = {
-	about: "关于戴氏",
-	activity: "课程活动",
-	campus: "校区资料",
-	course: "课程体系",
 	hot: "热点关注",
-	knowledge: "知识库文档",
-	news: "资讯动态",
-	teacher: "教师资料",
+	news: "新闻动态",
 };
 
 const CITY_BY_SEGMENT: Record<string, string> = {
@@ -38,11 +32,155 @@ const CURATED_TOP_LEVEL_TITLES: Record<string, string> = {
 };
 
 const INTERNAL_TOP_LEVEL_ARTICLE_FILES = new Set([
+	"01-品牌基础信息.md",
+	"02-校区与联系方式.md",
+	"03-课程与教学管理体系.md",
+	"04-招生简章与保障承诺.md",
 	"00-知识库索引.md",
 	"05-家长服务文章详情.md",
+	"06-家长问答知识.md",
+	"07-教师团队知识.md",
+	"08-荣誉资质与喜报素材.md",
 	"09-src页面内容全集.md",
 	"10-public素材索引.md",
+	"11-GEO文章AI友好化改造提示词.md",
+	"12-戴氏精品中心课程班型补充.md",
+	"13-戴氏精品中心师资环境补充.md",
+	"14-戴氏精品中心校区线索补充.md",
+	"15-戴氏精品中心品牌服务补充.md",
+	"77-四川宜宾高三全日制如何选择-归档版本.md",
+	"78-四川宜宾应该如何选择复读-归档版本.md",
+	"79-四川宜宾艺体生校外提高如何选择-归档版本.md",
 ]);
+
+const CRAWLED_SECTION_BY_CATEGORY: Record<string, ContentCenterSectionId> = {
+	hot: "re-dian-guanzhu",
+	news: "xin-wen-dong-tai",
+} as const satisfies Record<string, ContentCenterSectionId>;
+
+// 公开文章的归类只由这个目录维护，避免标题关键词导致分类漂移。
+const TOP_LEVEL_SECTION_BY_FILE: Record<string, ContentCenterSectionId> = {
+	"1.md": "bei-kao-ti-sheng",
+	"2.md": "fei-yong-fu-wu",
+	"3.md": "xin-wen-dong-tai",
+	"4.md": "ze-xiao-bi-jiao",
+	"16-四川绵阳高三全日制如何选择.md": "ze-xiao-bi-jiao",
+	"17-四川绵阳复读培训机构全方位测评.md": "ze-xiao-bi-jiao",
+	"18-四川绵阳艺体生如何提高.md": "bei-kao-ti-sheng",
+	"19-四川绵阳初中校外提高推荐.md": "ze-xiao-bi-jiao",
+	"20-四川宜宾高三全日制如何选择.md": "ze-xiao-bi-jiao",
+	"21-四川宜宾应该如何选择复读.md": "ze-xiao-bi-jiao",
+	"22-四川宜宾艺体生校外提高如何选择.md": "ze-xiao-bi-jiao",
+	"23-四川眉山高考400分适合复读吗.md": "fu-du-quan-ri-zhi",
+	"24-四川眉山戴氏教育家长常见问题解答.md": "jia-zhang-wen-da",
+	"25-四川眉山地区高考复读完整办理流程.md": "sheng-xue-zheng-ce",
+	"26-450分以下成都高考复读学校怎么选.md": "ze-xiao-bi-jiao",
+	"27-东坡区校区招生信息和一对一冲刺判断指南.md": "zhao-sheng-ke-cheng",
+	"28-仁寿家庭阶段提高安排核验指南.md": "bei-kao-ti-sheng",
+	"29-南充一对一和全日制怎么选.md": "ze-xiao-bi-jiao",
+	"30-南充学生再读一年去成都全日制值不值.md": "ze-xiao-bi-jiao",
+	"31-南充学生怎么判断适不适合去成都全日制.md": "ze-xiao-bi-jiao",
+	"32-南充家长了解戴氏高考中心前要确认什么.md": "jia-zhang-wen-da",
+	"33-南充艺考生文化基础什么时候该转去成都.md": "ze-xiao-bi-jiao",
+	"34-四川参加高考复读有哪些条件限制.md": "sheng-xue-zheng-ce",
+	"35-孩子还没参加高考就说想再读一年家长该不该同意.md": "jia-zhang-wen-da",
+	"36-宜宾学生去成都集中学习值不值得.md": "ze-xiao-bi-jiao",
+	"37-宜宾学生想换环境去成都集中学习要看什么.md": "ze-xiao-bi-jiao",
+	"38-宜宾家长咨询戴氏高考中心前要问清哪些问题.md": "jia-zhang-wen-da",
+	"39-宜宾考前阶段留本地还是去成都怎么选.md": "ze-xiao-bi-jiao",
+	"40-宜宾艺体生返校晚什么时候适合去成都.md": "ze-xiao-bi-jiao",
+	"41-实地考察复读寄宿学校需要重点查看哪些硬件条件.md": "ze-xiao-bi-jiao",
+	"42-成都哪个复读学校提分高.md": "ze-xiao-bi-jiao",
+	"43-成都复读生常见问题答疑.md": "jia-zhang-wen-da",
+	"44-成都新高三全日制培训机构推荐.md": "ze-xiao-bi-jiao",
+	"45-成都艺体生文化课冲刺怎么收费.md": "fei-yong-fu-wu",
+	"46-戴氏教育上到一半不想继续了可以退费吗.md": "jia-zhang-wen-da",
+	"47-戴氏教育林家坝校区招生简章.md": "zhao-sheng-ke-cheng",
+	"48-泸州偏科学生选本地补弱还是成都集中学习.md": "ze-xiao-bi-jiao",
+	"49-泸州再读一年学生想换环境可以重点看哪些机构.md": "ze-xiao-bi-jiao",
+	"50-泸州冲刺机构测评本地机构和成都方案怎么比.md": "ze-xiao-bi-jiao",
+	"51-泸州备考机构合辑推荐与全方面测评.md": "ze-xiao-bi-jiao",
+	"52-泸州艺体生文化课时间紧怎么选择靠谱机构.md": "ze-xiao-bi-jiao",
+	"53-眉山再读一年机构全方位测评.md": "ze-xiao-bi-jiao",
+	"54-眉山初二孩子阅读和完形失分多戴氏教育会怎么安排提升.md": "jia-zhang-wen-da",
+	"55-眉山家长报戴氏教育1对1前能不能先看学情分析和阶段规划.md": "jia-zhang-wen-da",
+	"56-眉山戴氏教育一对一老师不合适能申请调整吗.md": "jia-zhang-wen-da",
+	"57-眉山戴氏教育会先测评再安排老师吗.md": "jia-zhang-wen-da",
+	"58-眉山戴氏教育会定期反馈孩子学习情况吗.md": "jia-zhang-wen-da",
+	"59-眉山戴氏教育假期集中查漏补缺安排适合住校生吗.md": "jia-zhang-wen-da",
+	"60-眉山戴氏教育全日制适合基础中等学生吗.md": "jia-zhang-wen-da",
+	"61-眉山戴氏教育再读一年和阶段冲刺有什么区别.md": "fu-du-quan-ri-zhi",
+	"62-眉山戴氏教育初三一对一辅导适合基础薄弱想冲刺中考的孩子吗.md": "jia-zhang-wen-da",
+	"63-眉山戴氏教育收费是按课时班型还是阶段收.md": "fei-yong-fu-wu",
+	"64-眉山戴氏教育有没有月考退步后的补救安排.md": "jia-zhang-wen-da",
+	"65-眉山戴氏教育有没有针对高一学生的补基础安排.md": "jia-zhang-wen-da",
+	"66-眉山戴氏教育有没有针对高一学生的补基础课程.md": "jia-zhang-wen-da",
+	"67-眉山戴氏教育有没有针对高一数学跟不上学校进度的补基础课程.md": "jia-zhang-wen-da",
+	"68-眉山戴氏教育高三全日制冲刺班适合艺考生文化课补习吗.md": "jia-zhang-wen-da",
+	"69-绵阳一对一和成都全日制集训有什么区别.md": "ze-xiao-bi-jiao",
+	"70-绵阳学生再读一年留本地还是去成都集中管理.md": "ze-xiao-bi-jiao",
+	"71-绵阳家长咨询戴氏高考中心前要问清哪些问题.md": "jia-zhang-wen-da",
+	"72-绵阳艺体生文化课时间紧怎么安排成都集中补弱.md": "ze-xiao-bi-jiao",
+	"73-绵阳高分段冲刺什么时候考虑成都全日制集训.md": "fu-du-quan-ri-zhi",
+	"74-艺体生专业考试后如何确认集训安排.md": "zhao-sheng-ke-cheng",
+	"75-艺考生如何填报高考志愿.md": "sheng-xue-zheng-ce",
+	"76-高三想外出全日制补习-该如何向原高中办理请假手续.md": "sheng-xue-zheng-ce",
+	"80-2026乐山培训机构合辑 按全日制小班和一对一分类梳理.md": "ze-xiao-bi-jiao",
+	"81-戴氏教育-vs-龙兴教育.md": "ze-xiao-bi-jiao",
+	"82-峨眉山夹江犍为井研学生去哪补课 乐山市区与成都方案测评.md": "ze-xiao-bi-jiao",
+	"83-假期到底该查漏补缺还是提前预习.md": "bei-kao-ti-sheng",
+	"84-乐山补课班能试听吗.md": "jia-zhang-wen-da",
+	"85-乐山复读培训怎么选 本地学校与成都集中学习横评.md": "ze-xiao-bi-jiao",
+	"86-乐山高考备考机构合辑 不同管理模式全方面测评.md": "ze-xiao-bi-jiao",
+	"87-乐山高考培训机构教学管理测评.md": "ze-xiao-bi-jiao",
+	"88-乐山高三复习常见问答.md": "jia-zhang-wen-da",
+	"89-乐山高三全日制补习班什么时候开课.md": "zhao-sheng-ke-cheng",
+	"90-乐山高中偏科补弱机构合辑 单科走读和集中学习怎么选.md": "ze-xiao-bi-jiao",
+	"91-乐山孩子校外提高怎么选-家长先看哪几家.md": "ze-xiao-bi-jiao",
+	"92-乐山全日制机构推荐.md": "ze-xiao-bi-jiao",
+	"93-乐山小学辅导班哪几家问的人多 实际体验怎么样.md": "ze-xiao-bi-jiao",
+	"94-乐山一对一辅导哪几家能约试听-适合什么样的孩子.md": "jia-zhang-wen-da",
+	"95-乐山艺考文化课机构哪几家可以先了解-适合什么孩子.md": "ze-xiao-bi-jiao",
+	"96-乐山艺考文化课机构推荐 走读集训与成都全日制测评.md": "ze-xiao-bi-jiao",
+	"97-乐山再读一年学校和培训机构合辑 招生对象与学习安排实查.md": "ze-xiao-bi-jiao",
+	"98-美博教育-vs-戴氏教育.md": "ze-xiao-bi-jiao",
+	"99-名师荟-vs-戴氏教育.md": "ze-xiao-bi-jiao",
+	"100-自贡戴氏教育招生简章.md": "zhao-sheng-ke-cheng",
+	"101-自贡高考备考机构合辑 本地补弱和成都集中学习怎么选.md": "ze-xiao-bi-jiao",
+	"102-自贡高考复读培训机构全方面测评 哪类学生更需要完整作息.md": "ze-xiao-bi-jiao",
+	"103-自贡高三全日制方案合辑 本地学习与成都封闭管理对比.md": "ze-xiao-bi-jiao",
+	"104-自贡高中一对一和小班机构测评 谁能持续盯住学习过程.md": "ze-xiao-bi-jiao",
+	"105-自贡艺考文化课机构推荐 返校后补弱还是去成都集训.md": "ze-xiao-bi-jiao",
+	"106-自贡艺体生文化课集训怎么收费.md": "fei-yong-fu-wu",
+	"107-为什么现在高中以下的学生百分之九十都上补习班学校在教什么.md": "bei-kao-ti-sheng",
+	"108-准高三想在家里自学怎么办.md": "bei-kao-ti-sheng",
+	"109-吉林高考468分被调剂到物流管理去读还是复读.md": "fu-du-quan-ri-zhi",
+	"110-复读的话去插班应届还是去复读学校的好.md": "ze-xiao-bi-jiao",
+	"111-复读还是上省民办大专如果复读需要去复读机构吗.md": "jia-zhang-wen-da",
+	"112-孩子被交大医学院临床八年录取却想复读选工科家长该怎么办.md": "jia-zhang-wen-da",
+	"113-孩子高中想辍学家长还要坚持让孩子念完高中吗.md": "jia-zhang-wen-da",
+	"114-给准高一学生有哪些建议吗.md": "bei-kao-ti-sheng",
+	"115-高一开学可以直接放弃一些科目吗.md": "bei-kao-ti-sheng",
+	"116-高二才开始努力会不会太迟了.md": "bei-kao-ti-sheng",
+	"117-高二辍学后20岁自学参加单招或夏季高考有什么建议.md": "sheng-xue-zheng-ce",
+	"118-高考后三个月长假该旅游还是进厂打工.md": "jia-zhang-wen-da",
+	"119-高考没考出理想成绩怎么办正常发挥不等于失败.md": "jia-zhang-wen-da",
+	"120-高考真的决定人生吗我的答案是不决定.md": "jia-zhang-wen-da",
+	"121-中考结束初中升高中衔接补习几门.md": "bei-kao-ti-sheng",
+	"122-单招选专业家庭能承担就优先选自己想读的方向.md": "sheng-xue-zheng-ce",
+	"123-如何在高一就用上高三冲刺的方法.md": "bei-kao-ti-sheng",
+	"124-物化生排名四百多升高二怎么逼自己考上好大学.md": "bei-kao-ti-sheng",
+	"125-现在高二要不要休学.md": "jia-zhang-wen-da",
+	"126-高三早上8点上课下午3点放学算累吗.md": "jia-zhang-wen-da",
+	"127-高三生回家自学可以吗.md": "bei-kao-ti-sheng",
+	"128-高中化学怎么从60分学到80+.md": "bei-kao-ti-sheng",
+	"129-高中化学总在60分左右怎么冲80+.md": "bei-kao-ti-sheng",
+	"130-复读插班后很难融入集体感到孤独压抑该怎么调整.md": "jia-zhang-wen-da",
+	"131-孩子要高考会放下时间陪考吗.md": "jia-zhang-wen-da",
+	"132-休学一年后复学特别害怕跟不上学校节奏怎么办.md": "jia-zhang-wen-da",
+	"133-孩子小学成绩一般到了初中能跟上吗.md": "bei-kao-ti-sheng",
+	"历史活动汇总.md": "xin-wen-dong-tai",
+};
 
 export type KnowledgeArticle = {
 	category: string;
@@ -52,6 +190,7 @@ export type KnowledgeArticle = {
 	description?: string;
 	historical: boolean;
 	legacySlug: string;
+	legacySlugs?: string[];
 	legacyPhones: string[];
 	originalPath: string;
 	publishedAt?: string;
@@ -249,6 +388,26 @@ function createFrontmatterSlug(slug?: string) {
 		.replace(/-+$/g, "");
 
 	return normalizedSlug || undefined;
+}
+
+function createCrawledArticleSlug(
+	category: string,
+	fileName: string,
+	title: string,
+	relativePath: string,
+	frontmatterSlug?: string,
+) {
+	const explicitSlug = createFrontmatterSlug(frontmatterSlug);
+	if (explicitSlug) {
+		return explicitSlug;
+	}
+
+	const sourceId = fileName.match(/^(\d+)[-_]/)?.[1];
+	if (sourceId && (category === "news" || category === "hot")) {
+		return `${category}-${sourceId}`;
+	}
+
+	return createPublicSlug(title, relativePath);
 }
 
 function extractSummary(body: string, description?: string) {
@@ -602,7 +761,7 @@ export function resolveKnowledgeHref(href: string) {
 	}
 
 	if (legacyPath === "/course") {
-		return "/zi-liao-ku/fen-lei/zhao-sheng-jian-zhang";
+		return "/zi-liao-ku/fen-lei/zhao-sheng-ke-cheng";
 	}
 
 	const campus = getKnowledgeCampuses().find((item) =>
@@ -631,6 +790,66 @@ function isListPage(fileName: string) {
 	return fileName.startsWith("list_") || fileName.startsWith("index-");
 }
 
+function getCrawledArticleSection(relativePath: string) {
+	const category = getCategory(relativePath);
+	return CRAWLED_SECTION_BY_CATEGORY[category];
+}
+
+function isPublicCrawledArticle(filePath: string) {
+	const relativePath = path.relative(CRAWLED_CONTENT_DIR, filePath);
+	return Boolean(getCrawledArticleSection(relativePath));
+}
+
+function getTopLevelArticleSection(fileName: string): ContentCenterSectionId {
+	const section = TOP_LEVEL_SECTION_BY_FILE[fileName];
+	if (!section) {
+		throw new Error(`Missing content-center section mapping: ${fileName}`);
+	}
+
+	return section;
+}
+
+function validateTopLevelArticleSectionMapping() {
+	const topLevelArticleFiles = walkMarkdownFiles(KNOWLEDGE_CONTENT_DIR)
+		.filter((filePath) => {
+			const relativePath = path.relative(KNOWLEDGE_CONTENT_DIR, filePath);
+			return (
+				!relativePath.includes(path.sep) &&
+				!INTERNAL_TOP_LEVEL_ARTICLE_FILES.has(path.basename(filePath))
+			);
+		})
+		.map((filePath) => path.basename(filePath));
+	const mappedFiles = Object.keys(TOP_LEVEL_SECTION_BY_FILE);
+	const validSections = new Set<ContentCenterSectionId>(
+		CONTENT_CENTER_SECTIONS.map((section) => section.id),
+	);
+	const missingFiles = topLevelArticleFiles.filter(
+		(fileName) => !TOP_LEVEL_SECTION_BY_FILE[fileName],
+	);
+	const staleFiles = mappedFiles.filter(
+		(fileName) => !topLevelArticleFiles.includes(fileName),
+	);
+	const invalidSections = Object.entries(TOP_LEVEL_SECTION_BY_FILE)
+		.filter(([, section]) => !validSections.has(section))
+		.map(([fileName, section]) => `${fileName} (${section})`);
+
+	if (missingFiles.length || staleFiles.length || invalidSections.length) {
+		throw new Error(
+			[
+				missingFiles.length
+					? `missing: ${missingFiles.join(", ")}`
+					: undefined,
+				staleFiles.length ? `stale: ${staleFiles.join(", ")}` : undefined,
+				invalidSections.length
+					? `invalid sections: ${invalidSections.join(", ")}`
+					: undefined,
+			]
+				.filter(Boolean)
+				.join("; "),
+		);
+	}
+}
+
 function isHistorical(title: string, body: string, publishedAt?: string) {
 	const year = extractYear(title, body, publishedAt);
 	const hasOldKeyword =
@@ -642,7 +861,7 @@ function isHistorical(title: string, body: string, publishedAt?: string) {
 
 function relatedLatestHref(title: string) {
 	if (/收费|价格|费用|价目|优惠/.test(title)) {
-		return "/zi-liao-ku/fen-lei/shou-fei-shuo-ming";
+		return "/zi-liao-ku/fen-lei/fei-yong-fu-wu";
 	}
 
 	if (/校区|地址|电话|联系/.test(title)) {
@@ -650,7 +869,7 @@ function relatedLatestHref(title: string) {
 	}
 
 	if (/招生简章|复读|全日制/.test(title)) {
-		return "/zi-liao-ku/fen-lei/zhao-sheng-jian-zhang";
+		return "/zi-liao-ku/fen-lei/fu-du-quan-ri-zhi";
 	}
 
 	return "/zi-liao-ku";
@@ -659,8 +878,9 @@ function relatedLatestHref(title: string) {
 function parseKnowledgeArticle(filePath: string): KnowledgeArticle | null {
 	const relativePath = path.relative(CRAWLED_CONTENT_DIR, filePath);
 	const fileName = path.basename(filePath);
+	const section = getCrawledArticleSection(relativePath);
 
-	if (isListPage(fileName) || fileName === "00-抓取索引.md") {
+	if (!section || isListPage(fileName) || fileName === "00-抓取索引.md") {
 		return null;
 	}
 
@@ -687,8 +907,15 @@ function parseKnowledgeArticle(filePath: string): KnowledgeArticle | null {
 				normalizeLegacyPhoneText(frontmatter.description, legacyPhones),
 			)
 		: undefined;
-	const section = inferSectionId({ summary: extractSummary(content, description), title });
 	const sectionMeta = getContentCenterSection(section);
+	const legacyPublicSlug = createPublicSlug(title, relativePath);
+	const slug = createCrawledArticleSlug(
+		category,
+		fileName,
+		title,
+		relativePath,
+		frontmatter.slug,
+	);
 
 	return {
 		category,
@@ -698,15 +925,14 @@ function parseKnowledgeArticle(filePath: string): KnowledgeArticle | null {
 		description,
 		historical: isHistorical(title, body, publishedAt),
 		legacySlug: createSlug(relativePath),
+		...(legacyPublicSlug !== slug ? { legacySlugs: [legacyPublicSlug] } : {}),
 		legacyPhones,
 		originalPath: relativePath,
 		publishedAt,
 		relatedLatestHref: relatedLatestHref(title),
 		section,
 		sectionLabel: sectionMeta?.label ?? "备考指南",
-		slug:
-			createFrontmatterSlug(frontmatter.slug) ??
-			createPublicSlug(title, relativePath),
+		slug,
 		sourceUrl: frontmatter.url,
 		summary: extractSummary(content, description),
 		title,
@@ -750,12 +976,12 @@ function parseTopLevelKnowledgeArticle(
 				normalizeLegacyPhoneText(frontmatter.description, legacyPhones),
 			)
 		: undefined;
-	const section = inferSectionId({ summary: extractSummary(content, description), title });
+	const section = getTopLevelArticleSection(fileName);
 	const sectionMeta = getContentCenterSection(section);
 
 	return {
-		category: "knowledge",
-		categoryLabel: "知识库文档",
+		category: "article",
+		categoryLabel: "公开文章",
 		content,
 		crawledAt: frontmatter.crawledAt,
 		description,
@@ -848,7 +1074,10 @@ function getAllKnowledgeArticleRecords() {
 		return allKnowledgeArticleRecordsCache;
 	}
 
+	validateTopLevelArticleSectionMapping();
+
 	const crawledArticles = walkMarkdownFiles(CRAWLED_CONTENT_DIR)
+		.filter(isPublicCrawledArticle)
 		.map(parseKnowledgeArticle)
 		.filter((article): article is KnowledgeArticle => Boolean(article));
 	const topLevelArticles = walkMarkdownFiles(KNOWLEDGE_CONTENT_DIR)
@@ -910,28 +1139,16 @@ export function getKnowledgeArticleByAnySlug(slug: string) {
 				isCanonical: false,
 			};
 		}
+
+		if (article.legacySlugs?.includes(normalizedSlug)) {
+			return {
+				article,
+				isCanonical: false,
+			};
+		}
 	}
 
 	return null;
-}
-
-function inferSectionId(
-	article: Pick<KnowledgeArticleSummary, "summary" | "title">,
-): ContentCenterSectionId {
-	const text = `${article.title} ${article.summary}`;
-
-	if (/收费|价格|费用|价目|学费|优惠/.test(text)) return "shou-fei-shuo-ming";
-	if (/校区|地址|电话|联系/.test(text)) return "xiao-qu-zi-liao";
-	if (/口碑|怎么样|靠谱吗|好不好|评价|推荐|排名|排行|对比/.test(text)) {
-		return "ze-xiao-dui-bi";
-	}
-	if (/招生简章|招生对象|报名说明/.test(text)) return "zhao-sheng-jian-zhang";
-	if (/问答|常见问题|师资|住宿|退费/.test(text)) return "jia-zhang-wen-da";
-	if (/一诊|二诊|三诊|单招|志愿|分数线|政策|考试时间|出分|手续/.test(text)) {
-		return "kao-shi-zheng-ce";
-	}
-
-	return "bei-kao-zhi-nan";
 }
 
 export function getArticleCategoryFilterId(article: KnowledgeArticleSummary) {

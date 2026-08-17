@@ -4,7 +4,7 @@ export function AdmissionsEntry() {
 	return (
 		<section
 			className="bg-primary py-20 text-primary-foreground"
-			id="zhao-sheng-jian-zhang"
+			id="zhao-sheng-ke-cheng"
 		>
 			<div className="mx-auto w-full max-w-7xl px-4 text-center sm:px-6 lg:px-8">
 				<h2 className="mb-6 font-bold text-3xl md:text-5xl">想看招生简章？</h2>
@@ -13,7 +13,7 @@ export function AdmissionsEntry() {
 				</p>
 				<Link
 					className="inline-block rounded-full bg-white px-10 py-4 font-bold text-lg text-primary transition-colors hover:bg-slate-100"
-					href="/zi-liao-ku/fen-lei/zhao-sheng-jian-zhang"
+					href="/zi-liao-ku/fen-lei/zhao-sheng-ke-cheng"
 				>
 					查看招生简章
 				</Link>
