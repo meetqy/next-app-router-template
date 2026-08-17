@@ -98,7 +98,7 @@ export function KnowledgeBaseContent({
 				description={
 					activeFilter
 						? activeFilter.description
-						: "集中查看招生简章、收费说明、考试政策、备考建议、择校对比与家长问答。"
+						: "集中查看招生课程、复读全日制、备考提升、升学政策、择校对比、家长问答、费用服务、新闻动态与热点关注。"
 				}
 				items={[
 					{ label: "首页", href: "/" },

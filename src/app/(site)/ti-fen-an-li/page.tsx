@@ -29,7 +29,10 @@ export default function ScoreImprovementCasesPage() {
 				<ArticleList
 					items={SCORE_IMPROVEMENT_CASES.map((item) => ({
 						href: `/ti-fen-an-li/${item.slug}`,
-						meta: `${item.entryLabel} ${item.entryScore} 分 → 高考 ${item.finalScore} 分 · 提升 ${item.improvement} 分`,
+						meta:
+							item.entryScore !== undefined && item.improvement !== undefined
+								? `${item.entryLabel} ${item.entryScore} 分 → 高考 ${item.finalScore} 分 · 提升 ${item.improvement} 分`
+								: `高考 ${item.finalScore} 分`,
 						title: item.title,
 					}))}
 				/>

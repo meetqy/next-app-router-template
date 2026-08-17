@@ -50,7 +50,15 @@ type PageProps = {
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-	return getKnowledgeArticles().map((article) => ({ slug: article.slug }));
+	return Array.from(
+		new Set(
+			getKnowledgeArticles().flatMap((article) => [
+				article.slug,
+				article.legacySlug,
+				...(article.legacySlugs ?? []),
+			]),
+		),
+	).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({

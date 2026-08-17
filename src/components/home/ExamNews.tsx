@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getKnowledgeArticlesByFilter } from "@/lib/knowledge-base";
 
-const NEWS_ARTICLES = (getKnowledgeArticlesByFilter("kao-shi-zheng-ce") ?? []).slice(
+const NEWS_ARTICLES = (getKnowledgeArticlesByFilter("xin-wen-dong-tai") ?? []).slice(
 	0,
 	3,
 );
@@ -21,7 +21,7 @@ export function ExamNews() {
 					</div>
 					<Link
 						className="font-semibold text-primary hover:underline"
-								href="/zi-liao-ku/fen-lei/kao-shi-zheng-ce"
+							href="/zi-liao-ku/fen-lei/xin-wen-dong-tai"
 					>
 						查看更多
 					</Link>
@@ -36,7 +36,7 @@ export function ExamNews() {
 						>
 							<div className="mb-3 flex items-center gap-3">
 								<span className="font-bold text-primary text-xs uppercase tracking-wider">
-									考试政策
+									新闻动态
 								</span>
 								<span className="text-slate-400 text-xs">
 									{item.publishedAt ?? item.crawledAt ?? "时间待更新"}

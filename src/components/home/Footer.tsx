@@ -35,16 +35,16 @@ const FOOTER_LINK_GROUPS = [
 		align: "text-right",
 		links: [
 			{
-				href: "/zi-liao-ku/fen-lei/zhao-sheng-jian-zhang",
-				label: "招生简章",
+				href: "/zi-liao-ku/fen-lei/zhao-sheng-ke-cheng",
+				label: "招生课程",
 			},
 			{
-				href: "/zi-liao-ku/fen-lei/shou-fei-shuo-ming",
-				label: "收费说明",
+				href: "/zi-liao-ku/fen-lei/fei-yong-fu-wu",
+				label: "费用服务",
 			},
 			{
-				href: "/zi-liao-ku/fen-lei/kao-shi-zheng-ce",
-				label: "考试政策",
+				href: "/zi-liao-ku/fen-lei/sheng-xue-zheng-ce",
+				label: "升学政策",
 			},
 			{
 				href: "/zi-liao-ku/fen-lei/jia-zhang-wen-da",

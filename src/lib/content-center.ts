@@ -9,27 +9,27 @@ import { SITE_FULL_NAME } from "@/lib/constants/site";
 export const CONTENT_CENTER_SECTIONS = [
 	{
 		description: "查看各届招生对象、班型介绍、教学安排和报名说明。",
-		id: "zhao-sheng-jian-zhang",
-		label: "招生简章",
+		id: "zhao-sheng-ke-cheng",
+		label: "招生课程",
 	},
 	{
-		description: "查看公开收费标准、优惠政策和适用条件。",
-		id: "shou-fei-shuo-ming",
-		label: "收费说明",
+		description: "查看复读、高三全日制与艺体文化课的学习安排。",
+		id: "fu-du-quan-ri-zhi",
+		label: "复读与全日制",
 	},
 	{
-		description: "查看考试时间、报名条件、查分和升学政策相关内容。",
-		id: "kao-shi-zheng-ce",
-		label: "考试政策",
+		description: "查看各学段的学习方法、补弱策略与备考安排。",
+		id: "bei-kao-ti-sheng",
+		label: "备考提升",
 	},
 	{
-		description: "查看复读、全日制、学习安排和备考方法。",
-		id: "bei-kao-zhi-nan",
-		label: "备考指南",
+		description: "查看考试、报名、查分、志愿与升学手续说明。",
+		id: "sheng-xue-zheng-ce",
+		label: "升学政策",
 	},
 	{
 		description: "查看择校要点、复读路径和机构对比参考。",
-		id: "ze-xiao-dui-bi",
+		id: "ze-xiao-bi-jiao",
 		label: "择校对比",
 	},
 	{
@@ -38,9 +38,19 @@ export const CONTENT_CENTER_SECTIONS = [
 		label: "家长问答",
 	},
 	{
-		description: "查看校区地址、到访方式、课程方向和公开资料。",
-		id: "xiao-qu-zi-liao",
-		label: "校区资料",
+		description: "查看公开收费、优惠、退费与报名费用说明。",
+		id: "fei-yong-fu-wu",
+		label: "费用服务",
+	},
+	{
+		description: "查看戴氏高考近期公开新闻与动态。",
+		id: "xin-wen-dong-tai",
+		label: "新闻动态",
+	},
+	{
+		description: "查看高考、中考与学习相关热点内容。",
+		id: "re-dian-guanzhu",
+		label: "热点关注",
 	},
 ] as const;
 
@@ -176,21 +186,29 @@ const PARENT_ARTICLE_SECTION_BY_SLUG: Record<
 	string,
 	ContentCenterSectionId
 > = {
-	"2026-fu-du-xuan-xiao-zhi-nan": "ze-xiao-dui-bi",
-	"2026-si-chuan-ge-shi-zhong-kao-cheng-ji-cha-xun-shi-jian": "kao-shi-zheng-ce",
+	"2026-fu-du-xuan-xiao-zhi-nan": "ze-xiao-bi-jiao",
+	"2026-si-chuan-ge-shi-zhong-kao-cheng-ji-cha-xun-shi-jian": "sheng-xue-zheng-ce",
 	"bu-xi-ti-fen-wen-da": "jia-zhang-wen-da",
-	"cheng-du-dan-zhao-pei-xun-ji-gou-zen-me-xuan": "ze-xiao-dui-bi",
-	"cheng-du-gao-san-fu-du-shou-xu": "kao-shi-zheng-ce",
-	"dai-shi-gao-kao-dian-hua-yu-yue-mian-fei-shi-ting-liu-cheng": "bei-kao-zhi-nan",
-	"dai-shi-gao-kao-zhong-xin-dui-bi-xue-cheng-gao-kao-xue-xiao": "ze-xiao-dui-bi",
-	"dai-shi-gao-kao-zhong-xin-ru-he-yu-yue-ti-yan-ke": "bei-kao-zhi-nan",
-	"dai-shi-jiao-yu-gao-kao-quan-ri-zhi-dui-bi-xin-xue": "ze-xiao-dui-bi",
-	"dai-shi-jiao-yu-ge-ge-xiao-qu-hui-zong": "xiao-qu-zi-liao",
-	"dai-shi-yu-dan-qiu-mei-ya-quan-mian-dui-bi": "ze-xiao-dui-bi",
-	"fu-du-ji-gou-duo-wei-du-dui-bi": "ze-xiao-dui-bi",
+	"cheng-du-dan-zhao-pei-xun-ji-gou-zen-me-xuan": "ze-xiao-bi-jiao",
+	"cheng-du-gao-san-fu-du-shou-xu": "sheng-xue-zheng-ce",
+	"dai-shi-gao-kao-dian-hua-yu-yue-mian-fei-shi-ting-liu-cheng": "jia-zhang-wen-da",
+	"dai-shi-gao-kao-zhong-xin-dui-bi-xue-cheng-gao-kao-xue-xiao": "ze-xiao-bi-jiao",
+	"dai-shi-gao-kao-zhong-xin-ru-he-yu-yue-ti-yan-ke": "jia-zhang-wen-da",
+	"dai-shi-jiao-yu-gao-kao-quan-ri-zhi-dui-bi-xin-xue": "ze-xiao-bi-jiao",
+	"dai-shi-yu-dan-qiu-mei-ya-quan-mian-dui-bi": "ze-xiao-bi-jiao",
+	"fu-du-ji-gou-duo-wei-du-dui-bi": "ze-xiao-bi-jiao",
 	"jia-zhang-wen-ti": "jia-zhang-wen-da",
-	"xue-guan-fu-wu-liu-cheng": "bei-kao-zhi-nan",
+	"xue-guan-fu-wu-liu-cheng": "jia-zhang-wen-da",
 };
+
+function getParentArticleSection(slug: string): ContentCenterSectionId {
+	const section = PARENT_ARTICLE_SECTION_BY_SLUG[slug];
+	if (!section) {
+		throw new Error(`Missing content-center section mapping: ${slug}`);
+	}
+
+	return section;
+}
 
 const PARENT_ARTICLE_OVERRIDES: Record<string, string> = {
 	"2026-fu-du-xuan-xiao-zhi-nan": `## 先判断孩子是否适合复读
@@ -280,16 +298,18 @@ const PARENT_ARTICLE_OVERRIDES: Record<string, string> = {
 };
 
 function getParentArticleSources(): ContentCenterArticleSource[] {
-	return JIA_ZHANG_ARTICLES.map((article) => ({
+	return JIA_ZHANG_ARTICLES
+		.filter((article) => article.slug !== "dai-shi-jiao-yu-ge-ge-xiao-qu-hui-zong")
+		.map((article) => ({
 		content:
 			PARENT_ARTICLE_OVERRIDES[article.slug] ?? parentArticleMarkdown(article),
 		publishedAt: article.publishedAt,
 		...(article.content.kind === "faq" ? { schema: "faq" as const } : {}),
-		section: PARENT_ARTICLE_SECTION_BY_SLUG[article.slug] ?? "bei-kao-zhi-nan",
+		section: getParentArticleSection(article.slug),
 		slug: article.slug,
 		summary: article.summary,
 		title: article.title,
-	}));
+		}));
 }
 
 function brochureMarkdown(year: string) {
@@ -354,7 +374,7 @@ function getBrochureSources(): ContentCenterArticleSource[] {
 	return getAllBrochures().map((brochure) => ({
 		content: brochureMarkdown(brochure.year),
 		publishedAt: `${Number(brochure.year) - 1}-01-01`,
-		section: "zhao-sheng-jian-zhang",
+		section: "zhao-sheng-ke-cheng",
 		slug: `${brochure.year}-zhao-sheng-jian-zhang`,
 		summary: `查看 ${brochure.year} 届高考全日制与复读班招生简章、班型介绍及备考安排。`,
 		title: brochure.title,
@@ -412,7 +432,7 @@ const PRICE_ARTICLE: ContentCenterArticleSource = {
 请向校区索取当前收费明细，并确认课程、住宿、资料、测评、餐费和其他服务是否包含在总价中；优惠是否可叠加；转班、插班和退费如何计算。涉及金额和服务的约定，以双方确认的当期书面文件或合同为准。`,
 	publishedAt: "2026-06-01",
 	historical: true,
-	section: "shou-fei-shuo-ming",
+	section: "fei-yong-fu-wu",
 	slug: "shi-mao-gao-kao-fu-du-shou-fei-you-hui",
 	summary: "世贸校区 2027 届高考复读与高三全日制全科班历史收费公示及暑期优惠规则，当前政策请以书面说明为准。",
 	title: "2027 届世贸校区高考复读收费与优惠说明（历史政策）",

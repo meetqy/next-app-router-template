@@ -53,7 +53,7 @@ const STATIC_SITE_ROUTES: SiteRoute[] = [
 	},
 	{
 		changeFrequency: "weekly",
-		description: `${SITE_FULL_NAME}资讯中心：集中展示招生简章、收费说明、考试政策、备考建议、择校对比与家长问答。`,
+		description: `${SITE_FULL_NAME}资讯中心：集中展示招生课程、复读全日制、备考提升、升学政策、择校对比、费用服务、新闻动态与热点关注。`,
 		path: "/zi-liao-ku",
 		priority: 0.7,
 		title: "资讯中心",

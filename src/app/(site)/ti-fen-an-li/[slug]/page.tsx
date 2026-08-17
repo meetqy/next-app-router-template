@@ -133,7 +133,9 @@ export default async function ScoreImprovementCasePage({ params }: PageProps) {
 						<DetailSidebarCard title="成绩概览">
 							<div className="grid grid-cols-3 gap-2 text-center">
 								<div>
-									<p className="font-bold text-lg">{item.entryScore}</p>
+									<p className="font-bold text-lg">
+										{item.entryScore ?? "-"}
+									</p>
 									<p className="text-muted-foreground text-xs">
 										{item.entryLabel}
 									</p>
@@ -144,7 +146,9 @@ export default async function ScoreImprovementCasePage({ params }: PageProps) {
 								</div>
 								<div>
 									<p className="font-bold text-lg text-primary">
-										+{item.improvement}
+										{item.improvement !== undefined
+											? `+${item.improvement}`
+											: "-"}
 									</p>
 									<p className="text-muted-foreground text-xs">分数变化</p>
 								</div>
