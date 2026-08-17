@@ -1,12 +1,10 @@
 import { env } from "@/env";
-import { getVisibleCampuses } from "@/lib/constants/campuses";
 import { SITE_FULL_NAME } from "@/lib/constants/site";
 import { TEACHERS } from "@/lib/constants/teachers";
 import {
 	getKnowledgeArticles,
 	getKnowledgeArticleFilters,
 	getKnowledgeArticlesByFilter,
-	getKnowledgeCampuses,
 } from "@/lib/knowledge-base";
 import { normalizeSeoDate } from "@/lib/seo";
 import { SCORE_IMPROVEMENT_CASES } from "@/lib/score-improvement-cases";
@@ -122,26 +120,6 @@ export function getSiteRoutes(): SiteRoute[] {
 		title: `${campus}教师团队`,
 	}));
 
-	const campusRoutes: SiteRoute[] = getVisibleCampuses().map((campus) => ({
-		changeFrequency: "monthly",
-		description: campus.listSummary,
-		path: `/xiao-qu-cha-xun/${campus.slug}`,
-		priority: 0.7,
-		title: `${campus.name}详情`,
-	}));
-
-	const archiveCampusRoutes: SiteRoute[] = getKnowledgeCampuses().map(
-		(campus) => ({
-			changeFrequency: "yearly",
-			description:
-				campus.description ?? `${campus.title}校区地址、路线与到访提示。`,
-			lastModified: normalizeSeoDate(campus.crawledAt),
-			path: `/xiao-qu-cha-xun/${campus.slug}`,
-			priority: 0.4,
-			title: `${campus.title}校区资料`,
-		}),
-	);
-
 	const knowledgeRoutes: SiteRoute[] = getKnowledgeArticles().map(
 		(article) => ({
 			changeFrequency: "yearly",
@@ -212,8 +190,6 @@ export function getSiteRoutes(): SiteRoute[] {
 		...STATIC_SITE_ROUTES,
 		...teacherRoutes,
 		...teacherFilterRoutes,
-		...campusRoutes,
-		...archiveCampusRoutes,
 		...knowledgeRoutes,
 		...scoreImprovementCaseRoutes,
 		...knowledgeListRoutes,
