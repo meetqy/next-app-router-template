@@ -1,24 +1,30 @@
-import {
-	Building2Icon,
-	GraduationCapIcon,
-	MapPinIcon,
-	UsersIcon,
-} from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-	ArticleDetailLayout,
-	DetailSidebarCard,
-} from "@/components/ArticleDetailLayout";
+import { ArticleDetailLayout } from "@/components/ArticleDetailLayout";
 import { JsonLd } from "@/components/JsonLd";
 import { PageHeader } from "@/components/PageHeader";
-import { PhoneButton } from "@/components/phone-action";
+import { PhoneButton, PhoneLink } from "@/components/phone-action";
+import {
+	PaginatedImageGallery,
+	type GalleryImage,
+} from "@/components/gallery/PaginatedImageGallery";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 import { env } from "@/env";
 import { imageUrl } from "@/lib/image-url";
+import { cn } from "@/lib/utils";
+import {
+	createAmapSearchHref,
+	createTencentSearchHref,
+} from "@/lib/constants/contact";
 import {
 	type CampusProfile,
 	getCampusBySlug,
@@ -40,7 +46,7 @@ export async function generateStaticParams() {
 
 function getCampusTitle(campus: CampusProfile) {
 	const area = `${campus.city}${campus.district ?? ""}`;
-	return `戴氏教育${campus.name}｜${area}地址、课程与咨询`;
+	return `${campus.title}｜${area}地址、课程与咨询`;
 }
 
 function getCampusDescription(campus: CampusProfile) {
@@ -72,7 +78,16 @@ function CampusStructuredData({ campus }: { campus: CampusProfile }) {
 		`/xiao-qu-cha-xun/${campus.slug}`,
 		siteUrl,
 	).toString();
-	const images = (campus.gallery ?? []).map((image) =>
+	const entranceImages =
+		campus.entranceImages ??
+		(campus.coverImage
+			? [{ src: campus.coverImage, alt: `${campus.name}门头` }]
+			: []);
+	const images = [
+		...entranceImages,
+		...(campus.programImages ?? []),
+		...(campus.gallery ?? []),
+	].map((image) =>
 		new URL(imageUrl(image.src), siteUrl).toString(),
 	);
 
@@ -114,6 +129,218 @@ function AddressLink({ campus }: { campus: CampusProfile }) {
 	);
 }
 
+function CampusMapLinks({
+	campus,
+	className,
+}: {
+	campus: CampusProfile;
+	className?: string;
+}) {
+	const mapLinks = getCampusMapLinks(campus);
+
+	if (mapLinks.length === 0) return null;
+
+	return (
+		<div className={cn("flex flex-wrap justify-center gap-2", className)}>
+			{mapLinks.map((link) => (
+				<Button asChild key={link.href} size="sm" variant="outline">
+					<a href={link.href} rel="noopener noreferrer" target="_blank">
+						{link.label}
+					</a>
+				</Button>
+			))}
+		</div>
+	);
+}
+
+function CampusLocation({ campus }: { campus: CampusProfile }) {
+	const mapLinks = getCampusMapLinks(campus);
+	const mapScreenshot = getCampusMapScreenshot(campus);
+	const amapHref = mapLinks.find((link) => link.label === "高德地图")?.href;
+
+	if (mapLinks.length === 0 && !mapScreenshot) return null;
+
+	const mapPreview = mapScreenshot ? (
+		<div className="relative aspect-[16/9] overflow-hidden bg-muted">
+			<Image
+				alt={`${campus.name}高德地图位置`}
+				className="object-contain"
+				fill
+				sizes="(max-width: 768px) 100vw, (max-width: 1280px) 66vw, 800px"
+				src={imageUrl(mapScreenshot)}
+			/>
+		</div>
+	) : null;
+
+	return (
+		<section className="border-border/70 border-t py-8 md:py-9">
+			<h2 className="font-bold text-2xl text-slate-950">校区位置</h2>
+			<div className="mt-6">
+				<p className="text-muted-foreground leading-7">
+					<span className="mr-2 text-slate-950">地址</span>
+					<AddressLink campus={campus} />
+				</p>
+				{mapPreview && amapHref ? (
+					<a
+						aria-label={`在高德地图中查看${campus.name}`}
+						className="mt-4 block"
+						href={amapHref}
+						rel="noopener noreferrer"
+						target="_blank"
+					>
+						{mapPreview}
+					</a>
+				) : (
+					mapPreview ? <div className="mt-4">{mapPreview}</div> : null
+				)}
+				<CampusMapLinks campus={campus} className={mapScreenshot ? "mt-4" : undefined} />
+			</div>
+		</section>
+	);
+}
+
+function getCampusMapScreenshot(campus: CampusProfile) {
+	const imagePaths = [
+		campus.coverImage,
+		...(campus.entranceImages ?? []).map((image) => image.src),
+		...(campus.programImages ?? []).map((image) => image.src),
+		...(campus.gallery ?? []).map((image) => image.src),
+	];
+	const campusImagePrefix = `/校区/${campus.name}/`;
+
+	return imagePaths.some((path) => path?.startsWith(campusImagePrefix))
+		? `${campusImagePrefix}高德.png`
+		: undefined;
+}
+
+function getCampusMapLinks(campus: CampusProfile) {
+	if (campus.mapLinks && campus.mapLinks.length > 0) return campus.mapLinks;
+
+	const query = `${campus.title}（${campus.address}）`;
+	return [
+		{ href: campus.mapHref ?? createAmapSearchHref(query), label: "高德地图" },
+		{ href: createTencentSearchHref(query), label: "腾讯地图" },
+	];
+}
+
+function CampusImage({
+	image,
+	maxHeight = false,
+	priority = false,
+}: {
+	image: NonNullable<CampusProfile["gallery"]>[number];
+	maxHeight?: boolean;
+	priority?: boolean;
+}) {
+	return (
+		<div
+			className={
+				maxHeight
+					? "relative h-[min(75vw,32rem)] overflow-hidden bg-slate-100"
+					: "relative aspect-[4/3] overflow-hidden bg-slate-100"
+			}
+		>
+			<Image
+				alt={image.alt}
+				className="object-contain"
+				fill
+				priority={priority}
+				sizes="(max-width: 768px) 100vw, (max-width: 1280px) 66vw, 800px"
+				src={imageUrl(image.src)}
+			/>
+		</div>
+	);
+}
+
+function CampusEnvironmentGallery({
+	campus,
+	images,
+}: {
+	campus: CampusProfile;
+	images: NonNullable<CampusProfile["gallery"]>;
+}) {
+	const galleryImages: GalleryImage[] = images.flatMap((image) =>
+		image.width && image.height ? [{ ...image, height: image.height, width: image.width }] : [],
+	);
+
+	if (galleryImages.length !== images.length) {
+		return (
+			<div className="grid gap-x-4 gap-y-6 md:grid-cols-2">
+				{images.map((image) => (
+					<figure key={image.src}>
+						<CampusImage image={image} />
+						<figcaption className="mt-2 text-muted-foreground text-sm">
+							{image.alt}
+						</figcaption>
+					</figure>
+				))}
+			</div>
+		);
+	}
+
+	return (
+		<PaginatedImageGallery
+			activePage={1}
+			basePath={`/xiao-qu-cha-xun/${campus.slug}`}
+			className="max-w-none bg-transparent px-0 pb-0"
+			emptyMessage="该校区暂未上传环境图片"
+			filterAriaLabel={`${campus.name}环境图片`}
+			filterParam=""
+			filters={[]}
+			images={galleryImages}
+			itemsPerPage={galleryImages.length}
+			paginationAriaLabel={`${campus.name}环境图片分页`}
+		/>
+	);
+}
+
+function CampusEntranceImages({ campus }: { campus: CampusProfile }) {
+	const entranceImages =
+		campus.entranceImages ??
+		(campus.coverImage
+			? [{ src: campus.coverImage, alt: `${campus.name}门头` }]
+			: []);
+
+	if (entranceImages.length === 0) return null;
+
+	if (entranceImages.length === 1) {
+		return <CampusImage image={entranceImages[0]} maxHeight priority />;
+	}
+
+	if (entranceImages.length === 2) {
+		return (
+			<div className="grid gap-3 md:grid-cols-2">
+				{entranceImages.map((image, index) => (
+					<CampusImage image={image} key={image.src} priority={index === 0} />
+				))}
+			</div>
+		);
+	}
+
+	const [primaryImage, ...secondaryImages] = entranceImages;
+	return (
+		<div className="space-y-3">
+			<div className="grid gap-3 md:grid-cols-[2fr_1fr]">
+				<div className="md:row-span-2">
+					<CampusImage image={primaryImage} priority />
+				</div>
+				<div className="grid grid-cols-2 gap-3 md:grid-cols-1">
+					{secondaryImages.slice(0, 2).map((image) => (
+						<CampusImage image={image} key={image.src} />
+					))}
+				</div>
+			</div>
+			{secondaryImages.length > 2 ? (
+				<div className="grid gap-3 sm:grid-cols-2">
+					{secondaryImages.slice(2).map((image) => (
+						<CampusImage image={image} key={image.src} />
+					))}
+				</div>
+			) : null}
+		</div>
+	);
+}
+
 export default async function CampusDetailPage({ params }: PageProps) {
 	const { slug } = await params;
 	const campus = getCampusBySlug(slug);
@@ -123,7 +350,7 @@ export default async function CampusDetailPage({ params }: PageProps) {
 	}
 	const stats = getCampusTeacherStats(campus.campusTeacherName);
 	const programs = campus.programs ?? [];
-	const serviceTags = campus.serviceTags ?? [];
+	const programImages = campus.programImages ?? [];
 	const gallery = campus.gallery ?? [];
 	const hasTeacherProfile = Boolean(campus.campusTeacherName && stats.teacherCount > 0);
 	const teacherHref = hasTeacherProfile
@@ -145,167 +372,129 @@ export default async function CampusDetailPage({ params }: PageProps) {
 			/>
 			<ArticleDetailLayout
 				sidebar={
-					<DetailSidebarCard title="校区信息">
-						<div className="space-y-3 text-muted-foreground text-sm leading-7">
-							<p>城市：{campus.city}</p>
-							{campus.district ? <p>区域：{campus.district}</p> : null}
-							<p>
-								地址：<AddressLink campus={campus} />
-							</p>
-							{campus.operationType ? (
-								<p>
-									运营方式：{campus.operationType === "direct" ? "直营校区" : "加盟校区"}
+					<Card className="gap-0 py-0">
+						<CardHeader className="border-b px-5 py-5">
+							<CardTitle>校区咨询</CardTitle>
+							<CardDescription className="mt-1 line-clamp-2">
+								{campus.title}
+							</CardDescription>
+						</CardHeader>
+						<CardContent className="px-5 py-5">
+							<div>
+								<p className="text-muted-foreground text-xs">统一咨询电话</p>
+								<PhoneLink className="mt-1 block font-bold text-2xl text-primary tracking-tight">
+									{SITE_HOTLINE_TEXT}
+								</PhoneLink>
+								<p className="mt-2 text-muted-foreground text-xs leading-6">
+									咨询课程服务与校区安排
 								</p>
-							) : null}
-							<p>咨询电话：{SITE_HOTLINE_TEXT}</p>
-							{campus.updatedAt ? <p>资料更新：{campus.updatedAt}</p> : null}
-						</div>
-						<div className="mt-5 flex flex-col gap-2">
-							<PhoneButton>电话咨询</PhoneButton>
-							{campus.mapHref ? (
-								<Button asChild variant="outline">
-									<a href={campus.mapHref} rel="noopener noreferrer" target="_blank">
-										查看导航
-									</a>
-								</Button>
-							) : null}
-							<Button asChild variant="outline">
-								<Link href="/xiao-qu-cha-xun">返回校区列表</Link>
-							</Button>
-						</div>
-					</DetailSidebarCard>
+							</div>
+							<PhoneButton className="mt-5 w-full">电话咨询</PhoneButton>
+						</CardContent>
+					</Card>
 				}
 			>
-				<Card className="[--card-spacing:--spacing(6)]">
-					<CardHeader className="border-b text-center">
-						<div className="flex flex-wrap justify-center gap-2">
-							<span className="rounded-full bg-primary/10 px-3 py-1 text-primary text-sm">
-								{campus.city}{campus.district ? ` · ${campus.district}` : ""}
-							</span>
-							{campus.infoStatus === "pending" ? (
-								<span className="rounded-full bg-amber-100 px-3 py-1 text-amber-800 text-sm">
-									信息待完善
+				<Card className="py-0 [--card-spacing:--spacing(6)]">
+					<CampusEntranceImages campus={campus} />
+					<CardContent className="py-0">
+						<header className="py-7 md:py-8">
+							<div className="flex flex-wrap items-center gap-2">
+								<span className="rounded-full border border-primary/20 bg-primary/5 px-3 py-1 font-medium text-primary text-sm">
+									{campus.city}{campus.district ? ` · ${campus.district}` : ""}
 								</span>
+								{campus.operationType ? (
+									<span className="rounded-full border px-3 py-1 text-muted-foreground text-sm">
+										{campus.operationType === "direct" ? "直营校区" : "加盟校区"}
+									</span>
+								) : null}
+								{campus.infoStatus === "pending" ? (
+									<span className="rounded-full bg-amber-100 px-2.5 py-1 text-amber-800 text-xs">
+										信息待完善
+									</span>
+								) : null}
+							</div>
+							<h1 className="mt-4 max-w-3xl font-bold text-3xl text-slate-950 leading-tight md:text-4xl">
+								{campus.title}
+							</h1>
+							{campus.intro ? (
+								<p className="mt-5 max-w-3xl text-muted-foreground leading-8">
+									{campus.intro}
+								</p>
 							) : null}
-						</div>
-						<CardTitle className="mt-4 font-bold text-xl leading-relaxed md:text-2xl">
-							<h1>{campus.title}</h1>
-						</CardTitle>
-						<p className="mt-3 text-muted-foreground text-sm leading-7">
-							<MapPinIcon className="mr-1 inline size-4 text-primary" />
-							<AddressLink campus={campus} />
-						</p>
-					</CardHeader>
-					<CardContent>
+						</header>
+
 						{campus.infoStatus === "pending" ? (
-							<p className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900 text-sm leading-7">
+							<p className="bg-amber-50/70 px-5 py-4 text-amber-900 text-sm leading-7">
 								当前已收录校区名称、地址与咨询入口；课程、师资、环境等资料正在完善。
 							</p>
 						) : null}
-						{campus.intro ? (
-							<p className="mt-4 rounded-xl bg-muted p-4 text-muted-foreground text-sm leading-7">
-								{campus.intro}
-							</p>
-						) : null}
-						{campus.coverImage ? (
-							<div className="relative mt-6 aspect-[4/3] overflow-hidden rounded-xl bg-slate-100">
-								<Image
-									alt={campus.title}
-									className="object-cover"
-									fill
-									priority
-									sizes="(max-width: 1024px) 100vw, 800px"
-									src={imageUrl(campus.coverImage)}
-								/>
-							</div>
+
+						{programs.length > 0 || programImages.length > 0 ? (
+							<section className="border-border/70 border-t py-8 md:py-9">
+								<h2 className="font-bold text-2xl text-slate-950">课程服务</h2>
+								{programs.length > 0 ? (
+									<div className="mt-6 grid gap-x-10 gap-y-1 md:grid-cols-2">
+										{programs.map((program, index) => (
+											<article className="grid grid-cols-[2.5rem_1fr] gap-3 py-5" key={program.title}>
+												<span className="font-semibold text-primary/45 text-sm">
+													{String(index + 1).padStart(2, "0")}
+												</span>
+												<div>
+													<h3 className="font-semibold text-slate-950">{program.title}</h3>
+													{program.description ? (
+														<p className="mt-2 text-muted-foreground text-sm leading-7">
+															{program.description}
+														</p>
+													) : null}
+												</div>
+											</article>
+										))}
+									</div>
+								) : null}
+								{programImages.length > 0 ? (
+									<div className="mt-6 grid gap-x-4 gap-y-6 md:grid-cols-2">
+										{programImages.map((image) => (
+											<figure key={image.src}>
+												<CampusImage image={image} />
+												<figcaption className="mt-2 text-muted-foreground text-sm">
+													{image.alt}
+												</figcaption>
+											</figure>
+										))}
+									</div>
+								) : null}
+							</section>
 						) : null}
 
-						<div className="mt-10 space-y-12">
-							<section>
-								<h2 className="font-bold text-2xl text-slate-950">校区基本信息</h2>
-								<div className="mt-5 grid gap-4 md:grid-cols-2">
-									<div className="rounded-2xl bg-slate-50 p-6">
-										<div className="flex items-center gap-2 font-semibold text-slate-950">
-											<Building2Icon className="size-4 text-primary" />
-											<span>地址与咨询</span>
-										</div>
-										<div className="mt-4 space-y-3 text-slate-600 leading-8">
-											<p>{campus.city}{campus.district ? ` · ${campus.district}` : ""}</p>
-											<p><AddressLink campus={campus} /></p>
-											<p>咨询热线：{SITE_HOTLINE_TEXT}</p>
-										</div>
+						{hasTeacherProfile ? (
+							<section className="border-border/70 border-t py-8 md:py-9">
+								<div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+									<div>
+										<h2 className="font-bold text-2xl text-slate-950">公开师资</h2>
+										<p className="mt-2 text-muted-foreground leading-7">
+											已公开 {stats.teacherCount} 位老师信息，覆盖 {stats.subjectCount} 个学科方向。
+										</p>
 									</div>
-									{serviceTags.length > 0 ? (
-										<div className="rounded-2xl bg-slate-50 p-6">
-											<div className="flex items-center gap-2 font-semibold text-slate-950">
-												<GraduationCapIcon className="size-4 text-primary" />
-												<span>已公开服务方向</span>
-											</div>
-											<div className="mt-4 flex flex-wrap gap-2">
-												{serviceTags.map((tag) => (
-													<span className="rounded-full bg-white px-3 py-1.5 text-slate-600 text-sm" key={tag}>
-														{tag}
-													</span>
-												))}
-											</div>
-										</div>
-									) : null}
+									<Button asChild className="shrink-0" variant="outline">
+										<Link href={teacherHref ?? "/lao-shi"}>查看老师</Link>
+									</Button>
 								</div>
 							</section>
+						) : null}
 
-							{programs.length > 0 ? (
-								<section>
-									<h2 className="font-bold text-2xl text-slate-950">课程与服务</h2>
-									<div className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white">
-										{programs.map((program) => (
-											<div className="border-slate-200 border-b px-6 py-5 last:border-b-0" key={program.title}>
-												<h3 className="font-semibold text-lg text-slate-950">{program.title}</h3>
-												<p className="mt-2 text-slate-600 leading-8">{program.description}</p>
-											</div>
-										))}
-									</div>
-								</section>
-							) : null}
+						<CampusLocation campus={campus} />
 
-							{hasTeacherProfile ? (
-								<section className="rounded-2xl bg-slate-50 p-6">
-									<div className="flex items-center gap-2 font-semibold text-slate-950">
-										<UsersIcon className="size-4 text-primary" />
-										<span>公开师资</span>
-									</div>
-									<p className="mt-4 text-slate-600 leading-8">
-										已公开 {stats.teacherCount} 位老师信息，覆盖 {stats.subjectCount} 个学科方向。
-									</p>
-									<Button asChild className="mt-5" variant="outline">
-										<Link href={teacherHref ?? "/lao-shi"}>查看该校区老师</Link>
-									</Button>
-								</section>
-							) : null}
+						{gallery.length > 0 ? (
+							<section className="border-border/70 border-t py-8 md:py-9">
+								<h2 className="font-bold text-2xl text-slate-950">
+									{campus.galleryTitle ?? "校区环境"}
+								</h2>
+								<div className="mt-6 [margin-inline:calc(var(--card-spacing)*-1)]">
+									<CampusEnvironmentGallery campus={campus} images={gallery} />
+								</div>
+							</section>
+						) : null}
 
-							{gallery.length > 0 ? (
-								<section>
-									<h2 className="font-bold text-2xl text-slate-950">校区环境</h2>
-									<div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-										{gallery.map((image) => (
-											<div className="overflow-hidden rounded-2xl bg-slate-100" key={image.src}>
-												<div className="relative aspect-[4/3]">
-													<Image alt={image.alt} className="object-cover" fill sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw" src={imageUrl(image.src)} />
-												</div>
-												<p className="border-slate-200 border-t bg-white px-4 py-3 text-slate-600 text-sm">{image.alt}</p>
-											</div>
-										))}
-									</div>
-								</section>
-							) : null}
-						</div>
-
-						<section className="mt-12 rounded-2xl bg-slate-900 p-8 text-white md:p-10">
-							<h2 className="font-bold text-3xl leading-tight">咨询校区安排</h2>
-							<p className="mt-4 text-slate-300 leading-8">
-								如需了解校区、课程或老师安排，可直接拨打 {SITE_HOTLINE_TEXT}。
-							</p>
-							<PhoneButton className="mt-7 h-12 rounded-xl px-8 text-base">电话咨询</PhoneButton>
-						</section>
 					</CardContent>
 				</Card>
 			</ArticleDetailLayout>

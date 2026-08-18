@@ -17,6 +17,10 @@ export function createAmapSearchHref(query: string) {
 	return `https://www.amap.com/search?query=${query.replace(/\s+/g, "")}`;
 }
 
+export function createTencentSearchHref(query: string) {
+	return `https://map.qq.com/?type=search&keyword=${encodeURIComponent(query.replace(/\s+/g, ""))}`;
+}
+
 export const CONTACT_HEADQUARTERS = {
 	address: "成都市青羊区顺城大街 252 号顺吉大厦",
 	mapHref: createAmapSearchHref(
