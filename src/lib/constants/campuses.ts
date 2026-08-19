@@ -1,9 +1,16 @@
-import { CONTACT_HEADQUARTERS, createAmapSearchHref } from "./contact";
+import {
+	CONTACT_HEADQUARTERS,
+	createAmapSearchHref,
+	createTencentSearchHref,
+} from "./contact";
+import { OFFICIAL_CAMPUSES } from "./official-campuses";
 import { TEACHERS } from "./teachers";
 
 export type CampusGalleryImage = {
 	alt: string;
+	height?: number;
 	src: string;
+	width?: number;
 };
 
 export type CampusProgram = {
@@ -16,24 +23,44 @@ export type CampusReview = {
 	source: string;
 };
 
+export type CampusInfoStatus = "complete" | "pending";
+
+export type CampusOperationType = "direct" | "franchise";
+
+export type CampusMapLink = {
+	href: string;
+	label: string;
+};
+
 export type CampusProfile = {
 	address: string;
 	campusTeacherName?: string;
-	coverImage: string;
-	gallery: CampusGalleryImage[];
-	highlights: string[];
+	city: string;
+	category?: string;
+	coverImage?: string;
+	district?: string;
+	entranceImages?: CampusGalleryImage[];
+	gallery?: CampusGalleryImage[];
+	galleryTitle?: string;
+	highlights?: string[];
 	hidden?: boolean;
-	intro: string;
-	listSummary: string;
+	infoStatus: CampusInfoStatus;
+	intro?: string;
+	listSummary?: string;
+	latitude?: number;
+	mapLinks?: CampusMapLink[];
 	mapHref?: string;
 	name: string;
-	parentReasons: string[];
-	programs: CampusProgram[];
+	operationType?: CampusOperationType;
+	parentReasons?: string[];
+	programs?: CampusProgram[];
+	programImages?: CampusGalleryImage[];
 	review?: CampusReview;
-	serviceTags: string[];
 	slug: string;
-	subtitle: string;
+	subtitle?: string;
 	title: string;
+	longitude?: number;
+	updatedAt?: string;
 };
 
 export function getCampusTeacherStats(campusTeacherName?: string) {
@@ -64,6 +91,11 @@ export const CAMPUSES: CampusProfile[] = [
 		slug: "shun-ji",
 		name: "顺吉校区",
 		title: "戴氏教育高考中心总部（顺吉校区）",
+		city: "成都",
+		district: "青羊区",
+		infoStatus: "complete",
+		operationType: "direct",
+		updatedAt: "2026-08-17",
 		subtitle: "总部校区",
 		address: CONTACT_HEADQUARTERS.address,
 		intro:
@@ -73,7 +105,6 @@ export const CAMPUSES: CampusProfile[] = [
 		coverImage: "/assets/校区环境1.png",
 		mapHref: CONTACT_HEADQUARTERS.mapHref,
 		campusTeacherName: "顺吉校区",
-		serviceTags: ["高考全日制", "高考复读", "升学规划咨询", "家长到校考察"],
 		highlights: [
 			"总部校区承接家长集中来访，咨询动线与接待安排更清晰。",
 			"围绕高三冲刺、复读与阶段性提分需求，便于统一了解班型与管理节奏。",
@@ -116,6 +147,10 @@ export const CAMPUSES: CampusProfile[] = [
 		slug: "shi-mao",
 		name: "世贸校区",
 		title: "戴氏教育世贸校区",
+		city: "成都",
+		district: "龙泉驿区",
+		infoStatus: "complete",
+		updatedAt: "2026-08-17",
 		subtitle: "教学型校区",
 		address: "龙泉驿区天鹅湖南路333号25-2栋3层1号",
 		intro:
@@ -127,7 +162,6 @@ export const CAMPUSES: CampusProfile[] = [
 			"戴氏教育世贸校区（龙泉驿区天鹅湖南路333号25-2栋3层1号）",
 		),
 		campusTeacherName: "世贸校区",
-		serviceTags: ["学科辅导", "高考冲刺", "日常提分", "老师团队公开"],
 		highlights: [
 			"公开师资覆盖学科较多，方便家长快速匹配孩子薄弱科目。",
 			"更适合先从老师团队、课堂风格和学习氛围角度做校区了解。",
@@ -168,28 +202,22 @@ export const CAMPUSES: CampusProfile[] = [
 		slug: "hua-qian-ji",
 		name: "花千集校区",
 		title: "戴氏教育（花千集直营旗舰校）",
+		city: "成都",
+		district: "金牛区",
+		infoStatus: "complete",
+		operationType: "direct",
+		updatedAt: "2026-08-17",
 		subtitle: "直营旗舰校",
 		address: "金牛区一环路北二段9号4栋2层附210号",
 		intro:
 			"花千集直营旗舰校覆盖小学、初中、高中到中高考集训场景，兼顾精品小班、升学规划、英语能力提升与暑假衔接课程，适合需要多学段衔接与集中规划的家庭。",
 		listSummary:
 			"新开直营旗舰校，覆盖小学到高中、多类精品班与中高考集训，适合关注学习环境、英语课程和暑期衔接安排的家庭。",
-		coverImage: "/校区/花千集/门头 1.JPG",
+		coverImage: "/校区/花千集校区/门头 1.JPG",
 		mapHref: createAmapSearchHref(
 			"戴氏教育花千集直营旗舰校（金牛区一环路北二段9号4栋2层附210号）",
 		),
 		campusTeacherName: "花千集校区",
-		serviceTags: [
-			"KET 报名点",
-			"精品小班",
-			"中高考集训",
-			"艺考文化课",
-			"高考复读",
-			"高职单招",
-			"小学文化课",
-			"初中文化课",
-			"高中文化课",
-		],
 		highlights: [
 			"新开直营旗舰校，门头醒目，到校辨识度高，方便家长首次来访。",
 			"覆盖小学、初中、高中多个学段，便于同一家庭做持续性学习规划。",
@@ -235,23 +263,218 @@ export const CAMPUSES: CampusProfile[] = [
 				"新开的校区，老师们都很专业热情，校区环境也很好，开业活动性价比很高。",
 		},
 		gallery: [
-			{ src: "/校区/花千集/门头 1.JPG", alt: "花千集校区门头展示一" },
-			{ src: "/校区/花千集/门头 2.JPG", alt: "花千集校区门头展示二" },
-			{ src: "/校区/花千集/门头 3.JPG", alt: "花千集校区门头展示三" },
-			{ src: "/校区/花千集/新高一.jpg", alt: "花千集校区新高一课程教室" },
-			{ src: "/校区/花千集/高三.jpg", alt: "花千集校区高三课程教室" },
-			{ src: "/校区/花千集/高中.jpg", alt: "花千集校区高中课程环境" },
-			{ src: "/校区/花千集/数交班.jpg", alt: "花千集校区数学课程环境" },
-			{ src: "/校区/花千集/英语.jpg", alt: "花千集校区英语课程环境" },
-			{ src: "/校区/花千集/小学.jpg", alt: "花千集校区小学课程环境" },
+			{ src: "/校区/花千集校区/门头 1.JPG", alt: "花千集校区门头展示一" },
+			{ src: "/校区/花千集校区/门头 2.JPG", alt: "花千集校区门头展示二" },
+			{ src: "/校区/花千集校区/门头 3.JPG", alt: "花千集校区门头展示三" },
+			{ src: "/校区/花千集校区/新高一.jpg", alt: "花千集校区新高一课程教室" },
+			{ src: "/校区/花千集校区/高三.jpg", alt: "花千集校区高三课程教室" },
+			{ src: "/校区/花千集校区/高中.jpg", alt: "花千集校区高中课程环境" },
+			{ src: "/校区/花千集校区/数交班.jpg", alt: "花千集校区数学课程环境" },
+			{ src: "/校区/花千集校区/英语.jpg", alt: "花千集校区英语课程环境" },
+			{ src: "/校区/花千集校区/小学.jpg", alt: "花千集校区小学课程环境" },
 		],
 	},
 ];
 
+type AuthoritativeCampusRow = {
+	address: string;
+	category: string;
+	city: string;
+	courses?: string[];
+	district?: string;
+	infoStatus?: CampusInfoStatus;
+	name: string;
+	operationType?: CampusOperationType;
+	slug: string;
+};
+
+const LOCAL_CAMPUSES: AuthoritativeCampusRow[] = [
+	{ category: "全日制校区", city: "成都", district: "青羊区", name: "高考中心世贸校区", slug: "shi-mao", address: "顺城街青羊区鼓楼南街117号", courses: ["高三冲刺", "高三全日制"] },
+	{ category: "全日制校区", city: "成都", district: "青羊区", name: "高考中心顺吉校区", slug: "shun-ji", address: "顺城大街252号顺吉大厦6楼", courses: ["高三冲刺", "高三全日制"] },
+	{ category: "全日制校区", city: "成都", district: "金牛区", name: "高考中心基地校区", slug: "gao-kao-ji-di", address: "解放路一段168号柚米国际社区1栋4楼", courses: ["高三冲刺", "高三全日制"] },
+	{ category: "全日制校区", city: "成都", district: "双流区", name: "高考中心顺风校区", slug: "shun-feng", address: "四川省成都市双流区西航港街道希望路117-119号", courses: ["高三冲刺", "高三全日制"] },
+	{ category: "常规校区", city: "成都", district: "天府新区", name: "天府新区总部校区", slug: "tian-fu-xin-qu-zong-bu", address: "正西街88号成南领寓3楼5号", operationType: "direct" },
+	{ category: "常规校区", city: "成都", district: "双流区", name: "戛纳校区", slug: "jia-na", address: "滨河路二段360号2层", operationType: "direct" },
+	{ category: "常规校区", city: "成都", district: "武侯区", name: "紫荆校区", slug: "zi-jing", address: "紫竹北街85号大世界商业广场F2", operationType: "direct" },
+	{ category: "常规校区", city: "成都", district: "青羊区", name: "鼓楼校区", slug: "gu-lou", address: "顺城大街252号顺吉大厦9楼", operationType: "direct" },
+	{ category: "常规校区", city: "成都", district: "武侯区", name: "蓝天校区", slug: "lan-tian", address: "新义路3号附9号中房润新花园B期", operationType: "direct" },
+	{ category: "常规校区", city: "成都", district: "双流区", name: "中和校区", slug: "zhong-he", address: "仁和路288号喜港城购物中心2楼212", operationType: "direct" },
+	{ category: "常规校区", city: "成都", district: "新都区", name: "大丰崇义校区", slug: "da-feng-chong-yi", address: "崇义桥街195号2楼", operationType: "franchise" },
+	{ category: "常规校区", city: "成都", district: "新都区", name: "大丰花都校区", slug: "da-feng-hua-du", address: "花都大道708号3楼", operationType: "franchise" },
+	{ category: "常规校区", city: "成都", district: "郫都区", name: "红光校区", slug: "hong-guang", address: "红光镇银润北二路123号附4号", operationType: "franchise", courses: ["高中辅导", "高考辅导", "艺考文化课辅导"] },
+	{ category: "常规校区", city: "成都", district: "郫都区", name: "犀浦校区", slug: "xi-pu", address: "兴业南街西区花园187号", operationType: "franchise" },
+	{ category: "常规校区", city: "成都", district: "温江区", name: "温江校区", slug: "wen-jiang", address: "文化路138号2楼（大好河山酒店旁）", operationType: "franchise" },
+	{ category: "常规校区", city: "成都", district: "双流区", name: "双流万达校区", slug: "shuang-liu-wan-da", address: "棠湖中学实验学校正门对面2楼", operationType: "direct" },
+	{ category: "常规校区", city: "成都", district: "双流区", name: "西航港校区", slug: "xi-hang-gang", address: "长城路二段389号", operationType: "direct" },
+	{ category: "常规校区", city: "雅安", district: "雨城区", name: "雅安校区", slug: "ya-an", address: "熊猫大道383号西康商业广场2楼", operationType: "franchise" },
+	{ category: "新开常规校区", city: "成都", district: "双流区", name: "戴氏精品1对1中心（双流棠外旗舰校）", slug: "tang-wai", address: "四川省成都市双流区福通路51-53号", operationType: "direct" },
+	{ category: "新开常规校区", city: "成都", district: "双流区", name: "戴氏教育（怡心湖旗舰校区）", slug: "yi-xin-hu", address: "四川省成都市双流区瑞祥东街611号", operationType: "direct" },
+	{ category: "新开常规校区", city: "成都", district: "双流区", name: "戴氏教育（新川校区）", slug: "xin-chuan", address: "成都市双流区吉龙二街39号", operationType: "direct" },
+	{ category: "新开常规校区", city: "成都", district: "双流区", name: "戴氏教育（元音校区）", slug: "yuan-yin", address: "成都市双流区天府新区正兴街隆祥街1208号1栋2楼（广汇御园1期东门）", operationType: "direct" },
+	{ category: "新开常规校区", city: "成都", district: "郫都区", name: "戴氏教育（溪地湾校区）", slug: "xi-di-wan", address: "四川省成都市郫都区犀安路266-3041号", operationType: "franchise" },
+	{ category: "新开常规校区", city: "成都", district: "武侯区", name: "天府长城校区", slug: "tian-fu-chang-cheng", address: "四川省成都市武侯区石羊街道天顺路260号", operationType: "direct" },
+	{ category: "新开常规校区", city: "成都", district: "双流区", name: "戴氏教育（广都校区）", slug: "guang-du", address: "四川省成都市双流区新裕路466号", operationType: "direct" },
+	{ category: "新开常规校区", city: "成都", district: "双流区", name: "戴氏教育（麓湖旗舰校区）", slug: "lu-hu", address: "四川省成都市双流区天津路西段", operationType: "direct" },
+	{ category: "新开常规校区", city: "成都", district: "双流区", name: "戴氏教育君越旗舰校区", slug: "jun-yue", address: "双流区东升街道佳居路155号（君越一号门旁二楼）", operationType: "direct" },
+	{ category: "新开常规校区", city: "成都", district: "双流区", name: "戴氏教育（天西旗舰校区）", slug: "tian-xi", address: "四川省成都市双流区正兴街道田家寺社区5组333号15栋2层3号", operationType: "direct" },
+	{ category: "新开常规校区", city: "成都", district: "双流区", name: "戴氏教育（南湖总校）", slug: "nan-hu", address: "四川省成都市双流区南湖路143号；二江路一段275号", operationType: "direct", infoStatus: "pending" },
+	{ category: "新开常规校区", city: "成都", district: "双流区", name: "戴氏教育（双流广场总校）", slug: "shuang-liu-guang-chang", address: "四川省成都市双流区藏卫路南一段", operationType: "direct", infoStatus: "pending" },
+];
+
+const AUTHORITATIVE_CAMPUSES: AuthoritativeCampusRow[] = OFFICIAL_CAMPUSES.map(
+	(campus) => ({
+		...campus,
+		category: "官网校区",
+	}),
+);
+
+const CAMPUS_DETAIL_OVERRIDES: Record<string, Partial<CampusProfile>> = {
+	"顺吉校区": {
+		address: "四川省成都市青羊区古中市街1号1层",
+		entranceImages: [
+			{ src: "/校区/顺吉校区/门头.jpg", alt: "顺吉校区门头" },
+		],
+		gallery: [
+			{ src: "/校区/顺吉校区/前台.jpg", alt: "顺吉校区前台", width: 1320, height: 971 },
+			{ src: "/校区/顺吉校区/教室1.jpg", alt: "顺吉校区教室一", width: 1320, height: 869 },
+			{ src: "/校区/顺吉校区/教室2.jpg", alt: "顺吉校区教室二", width: 1320, height: 866 },
+			{ src: "/校区/顺吉校区/教室3.jpg", alt: "顺吉校区教室三", width: 1320, height: 966 },
+			{ src: "/校区/顺吉校区/教室4.jpg", alt: "顺吉校区教室四", width: 1320, height: 975 },
+			{ src: "/校区/顺吉校区/环境1.jpg", alt: "顺吉校区环境一", width: 1320, height: 1742 },
+			{ src: "/校区/顺吉校区/环境2.jpg", alt: "顺吉校区环境二", width: 1320, height: 1748 },
+			{ src: "/校区/顺吉校区/环境3.jpg", alt: "顺吉校区环境三", width: 1320, height: 1735 },
+		],
+		infoStatus: "complete",
+		intro: undefined,
+		mapHref: createAmapSearchHref("四川省成都市青羊区古中市街1号1层"),
+		mapLinks: [
+			{
+				href: createAmapSearchHref("四川省成都市青羊区古中市街1号1层"),
+				label: "高德地图",
+			},
+			{
+				href: createTencentSearchHref("四川省成都市青羊区古中市街1号1层"),
+				label: "腾讯地图",
+			},
+		],
+		operationType: "direct",
+		programs: [
+			{ title: "高中全科辅导", description: "" },
+			{ title: "高三全日制", description: "" },
+			{ title: "高考复读", description: "" },
+			{ title: "单招", description: "" },
+		],
+		subtitle: "直营校区",
+		title: "成都戴氏教育高考中心（顺吉校区）",
+		updatedAt: "2026-08-18",
+	},
+	"花千集校区": {
+		coverImage: undefined,
+		entranceImages: [
+			{ src: "/校区/花千集校区/门头 1.JPG", alt: "花千集校区门头一" },
+			{ src: "/校区/花千集校区/门头 2.JPG", alt: "花千集校区门头二" },
+			{ src: "/校区/花千集校区/门头 3.JPG", alt: "花千集校区门头三" },
+		],
+		programImages: [
+			{ src: "/校区/花千集校区/开设课程1.jpg", alt: "高中全科辅导" },
+			{ src: "/校区/花千集校区/开设课程2.jpg", alt: "新高三衔接班" },
+			{ src: "/校区/花千集校区/开设课程3.jpg", alt: "AI 优学暑假班" },
+			{ src: "/校区/花千集校区/开设课程4.jpg", alt: "小学全科辅导" },
+			{ src: "/校区/花千集校区/开设课程5.jpg", alt: "初升高衔接班" },
+			{ src: "/校区/花千集校区/开设课程6.jpg", alt: "英语暑假班" },
+		],
+		infoStatus: "complete",
+		intro:
+			"花千集直营旗舰校覆盖小学、初中、高中到中高考集训场景，兼顾精品小班、升学规划、英语能力提升与暑假衔接课程。",
+		mapHref: createAmapSearchHref(
+			"戴氏教育花千集直营旗舰校（成都市金牛区一环路北二段9号4栋2层附210号）",
+		),
+		mapLinks: [
+			{
+				href: createAmapSearchHref(
+					"戴氏教育花千集直营旗舰校（成都市金牛区一环路北二段9号4栋2层附210号）",
+				),
+				label: "高德地图",
+			},
+			{
+				href: createTencentSearchHref("成都市金牛区一环路北二段9号4栋2层附210号"),
+				label: "腾讯地图",
+			},
+		],
+		operationType: "direct",
+		programs: [
+			{ title: "小学全科辅导", description: "覆盖小学语文、数学、英语等学科辅导。" },
+			{ title: "初升高衔接", description: "面向初升高阶段的暑期衔接与学习规划。" },
+			{ title: "高中全科辅导", description: "提供高中阶段全科辅导与阶段性学习支持。" },
+			{ title: "新高三衔接", description: "围绕高三阶段的学习衔接与冲刺安排。" },
+			{ title: "AI 优学暑假班", description: "提供暑期学习与能力提升课程。" },
+			{ title: "英语暑假班", description: "提供英语暑期学习与能力提升课程。" },
+		],
+		subtitle: "直营旗舰校",
+		title: "戴氏教育（花千集直营旗舰校）",
+		updatedAt: "2026-08-18",
+	},
+};
+
+void LOCAL_CAMPUSES;
+
+function createCampusProfile(row: AuthoritativeCampusRow): CampusProfile {
+	const courses = row.courses ?? [];
+	const title = row.name.startsWith("戴氏") ? row.name : `戴氏教育${row.name}`;
+
+	return {
+		address: row.address,
+		category: row.category,
+		city: row.city,
+		district: row.district,
+		infoStatus: row.infoStatus ?? "complete",
+		listSummary:
+			courses.length > 0
+				? `${row.category}，已公开课程：${courses.join("、")}。`
+				: `${row.category}地址与咨询资料。`,
+		mapHref:
+			row.infoStatus === "pending"
+				? undefined
+				: createAmapSearchHref(`${title}（${row.address}）`),
+		name: row.name,
+		operationType: row.operationType,
+		programs: courses.map((title) => ({
+			description: "该校区已公开的课程方向。",
+			title,
+		})),
+		slug: row.slug,
+		title,
+		updatedAt: "2026-08-17",
+	};
+}
+
+export function getCampuses() {
+	return AUTHORITATIVE_CAMPUSES.map(createCampusProfile).sort(
+		(a, b) =>
+			a.city.localeCompare(b.city, "zh-CN") ||
+			(a.infoStatus === b.infoStatus ? 0 : a.infoStatus === "complete" ? -1 : 1) ||
+			a.category?.localeCompare(b.category ?? "", "zh-CN") ||
+			a.title.localeCompare(b.title, "zh-CN"),
+	);
+}
+
 export function getCampusBySlug(slug: string) {
-	return CAMPUSES.find((campus) => campus.slug === slug && !campus.hidden);
+	const normalizedSlug = decodeCampusSlug(slug);
+	const campus = getCampuses().find((item) => item.slug === normalizedSlug);
+
+	return campus
+		? { ...campus, ...CAMPUS_DETAIL_OVERRIDES[campus.slug] }
+		: undefined;
+}
+
+function decodeCampusSlug(slug: string) {
+	try {
+		return decodeURIComponent(slug);
+	} catch {
+		return slug;
+	}
 }
 
 export function getVisibleCampuses() {
-	return CAMPUSES.filter((campus) => !campus.hidden);
+	return getCampuses().filter((campus) => campus.infoStatus === "complete");
 }

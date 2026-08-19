@@ -8,6 +8,7 @@ import { RowsPhotoAlbum } from "react-photo-album";
 import Lightbox from "yet-another-react-lightbox";
 import { Button } from "@/components/ui/button";
 import { imageUrl } from "@/lib/image-url";
+import { cn } from "@/lib/utils";
 
 export type GalleryImage = {
 	alt: string;
@@ -30,6 +31,7 @@ type PaginatedImageGalleryProps = {
 		label: string;
 	};
 	basePath: string;
+	className?: string;
 	emptyMessage: string;
 	filterAriaLabel: string;
 	filterParam: string;
@@ -57,6 +59,7 @@ export function PaginatedImageGallery({
 	activePage,
 	allFilter,
 	basePath,
+	className,
 	emptyMessage,
 	filterAriaLabel,
 	filterParam,
@@ -77,7 +80,12 @@ export function PaginatedImageGallery({
 	}));
 
 	return (
-		<section className="mx-auto w-full max-w-7xl bg-white px-4 pb-16 sm:px-6 md:pb-24 lg:px-8">
+		<section
+			className={cn(
+				"mx-auto w-full max-w-7xl bg-white px-4 pb-16 sm:px-6 md:pb-24 lg:px-8",
+				className,
+			)}
+		>
 			{allFilter || filters.length > 0 ? (
 				<nav aria-label={filterAriaLabel} className="flex flex-wrap gap-2">
 					{allFilter ? (

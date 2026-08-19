@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
 import "./src/env.js";
 
+const isProductionBuild = process.env.NODE_ENV === "production";
+
 const nextConfig: NextConfig = {
-	output: "export",
+	...(isProductionBuild ? { output: "export" } : {}),
 	trailingSlash: false,
 	images: {
 		loader: "custom",
