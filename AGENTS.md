@@ -11,3 +11,12 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## 重定向规则
 
 所有用户可见的 HTTP 重定向（包括 301、302、307、308）必须先维护根目录 `redirects.json`。禁止直接手改 `edgeone.json` 的 `redirects`，也禁止以 Next 的 `redirect()` 或 `permanentRedirect()` 替代 URL 迁移规则。当前默认使用 301；其他 3xx 状态码必须有明确需求。
+
+## 验证规则
+
+1. 非必要不要启用 `dev` / `build` 进行验证（尤其不要为了验证而启动 `next dev` / `npm run build`）。
+2. UI 相关的改动由用户手动验证，不要自行跑 dev server 做视觉确认。
+3. 每次会话完成之后，只进行必要的验证：
+   - 纯 JSX 类名 / 样式 / 文案改动 → 无需工具验证；
+   - 涉及类型 / 数据逻辑改动 → 最多运行 `npx tsc --noEmit`，不要跑 build；
+   - 仅当改动逻辑确实存疑时，才考虑 dev server 冒烟验证（并说明原因）。
