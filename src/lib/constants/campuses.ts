@@ -3,6 +3,7 @@ import {
 	createAmapSearchHref,
 	createTencentSearchHref,
 } from "./contact";
+import CAMPUS_REVIEWS from "./campus-reviews.json";
 import { OFFICIAL_CAMPUSES } from "./official-campuses";
 import { TEACHERS } from "./teachers";
 
@@ -21,6 +22,14 @@ export type CampusProgram = {
 export type CampusReview = {
 	content: string;
 	source: string;
+};
+
+export type CampusUserReview = {
+	content: string;
+	date: string;
+	rating: number;
+	reviewer: string;
+	screenshot: string;
 };
 
 export type CampusInfoStatus = "complete" | "pending";
@@ -56,6 +65,7 @@ export type CampusProfile = {
 	programs?: CampusProgram[];
 	programImages?: CampusGalleryImage[];
 	review?: CampusReview;
+	reviews?: readonly CampusUserReview[];
 	slug: string;
 	subtitle?: string;
 	title: string;
@@ -463,8 +473,16 @@ export function getCampusBySlug(slug: string) {
 	const campus = getCampuses().find((item) => item.slug === normalizedSlug);
 
 	return campus
-		? { ...campus, ...CAMPUS_DETAIL_OVERRIDES[campus.slug] }
+		? {
+				...campus,
+				...CAMPUS_DETAIL_OVERRIDES[campus.slug],
+				reviews: getCampusReviews(campus.slug),
+			}
 		: undefined;
+}
+
+function getCampusReviews(slug: string): readonly CampusUserReview[] {
+	return (CAMPUS_REVIEWS as Record<string, CampusUserReview[]>)[slug] ?? [];
 }
 
 function decodeCampusSlug(slug: string) {
