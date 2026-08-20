@@ -1,6 +1,7 @@
 import { env } from "@/env";
 import { SITE_FULL_NAME } from "@/lib/constants/site";
 import { TEACHERS } from "@/lib/constants/teachers";
+import { getVisibleCampuses } from "@/lib/constants/campuses";
 import {
 	getKnowledgeArticles,
 	getKnowledgeArticleFilters,
@@ -98,6 +99,14 @@ export function getSiteOrigin() {
 }
 
 export function getSiteRoutes(): SiteRoute[] {
+	const campusRoutes: SiteRoute[] = getVisibleCampuses().map((campus) => ({
+		changeFrequency: "monthly",
+		description: `${campus.title}地址、课程服务、环境图片与咨询信息。`,
+		lastModified: campus.updatedAt,
+		path: `/xiao-qu-cha-xun/${campus.slug}`,
+		priority: 0.6,
+		title: campus.title,
+	}));
 	const teacherRoutes: SiteRoute[] = TEACHERS.map((teacher) => ({
 		changeFrequency: "monthly",
 		description: `查看${teacher.name}教师的教学履历、荣誉任职与教学成果。`,
@@ -188,6 +197,7 @@ export function getSiteRoutes(): SiteRoute[] {
 
 	const routes = [
 		...STATIC_SITE_ROUTES,
+		...campusRoutes,
 		...teacherRoutes,
 		...teacherFilterRoutes,
 		...knowledgeRoutes,

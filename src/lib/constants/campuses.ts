@@ -424,6 +424,51 @@ const CAMPUS_DETAIL_OVERRIDES: Record<string, Partial<CampusProfile>> = {
 		title: "戴氏教育（花千集直营旗舰校）",
 		updatedAt: "2026-08-18",
 	},
+	"鼓楼校区": {
+		address: "成都市青羊区顺城大街252号顺吉大厦3楼",
+		entranceImages: [
+			{ src: "/校区/鼓楼校区/门头1.jpg", alt: "鼓楼校区门头一", width: 1320, height: 1748 },
+			{ src: "/校区/鼓楼校区/门头2.jpg", alt: "鼓楼校区门头二", width: 1320, height: 984 },
+			{ src: "/校区/鼓楼校区/门头3.jpg", alt: "鼓楼校区门头三", width: 1320, height: 1755 },
+		],
+		gallery: [
+			{ src: "/校区/鼓楼校区/环境1.jpg", alt: "鼓楼校区环境一", width: 1320, height: 953 },
+			{ src: "/校区/鼓楼校区/环境2.jpg", alt: "鼓楼校区环境二", width: 1320, height: 724 },
+			{ src: "/校区/鼓楼校区/环境3.jpg", alt: "鼓楼校区环境三", width: 1320, height: 725 },
+			{ src: "/校区/鼓楼校区/环境4.jpg", alt: "鼓楼校区环境四", width: 1320, height: 1752 },
+			{ src: "/校区/鼓楼校区/环境5.jpg", alt: "鼓楼校区环境五", width: 1320, height: 1753 },
+			{ src: "/校区/鼓楼校区/环境6.jpg", alt: "鼓楼校区环境六", width: 1320, height: 979 },
+			{ src: "/校区/鼓楼校区/环境7.jpg", alt: "鼓楼校区环境七", width: 1320, height: 1758 },
+		],
+		infoStatus: "complete",
+		mapHref: createAmapSearchHref("成都市青羊区顺城大街252号顺吉大厦3楼"),
+		mapLinks: [
+			{ href: createAmapSearchHref("成都市青羊区顺城大街252号顺吉大厦3楼"), label: "高德地图" },
+			{ href: createTencentSearchHref("成都市青羊区顺城大街252号顺吉大厦3楼"), label: "腾讯地图" },
+		],
+		operationType: "direct",
+		programImages: [
+			{ src: "/校区/鼓楼校区/课程1.jpg", alt: "艺考文化课", width: 1320, height: 981 },
+			{ src: "/校区/鼓楼校区/课程2.jpg", alt: "高职单招", width: 1320, height: 973 },
+			{ src: "/校区/鼓楼校区/课程3.jpg", alt: "高考复读", width: 1320, height: 967 },
+			{ src: "/校区/鼓楼校区/课程4.jpg", alt: "全科辅导", width: 1320, height: 967 },
+			{ src: "/校区/鼓楼校区/课程5.jpg", alt: "小升初衔接、初升高衔接、小学文化课、初中文化课、高中文化课", width: 1320, height: 981 },
+		],
+		programs: [
+			{ title: "艺考文化课", description: "" },
+			{ title: "高职单招", description: "" },
+			{ title: "高考复读", description: "" },
+			{ title: "全科辅导", description: "" },
+			{ title: "小升初衔接", description: "" },
+			{ title: "初升高衔接", description: "" },
+			{ title: "小学文化课", description: "" },
+			{ title: "高中文化课", description: "" },
+			{ title: "初中文化课", description: "" },
+		],
+		subtitle: "直营校区",
+		title: "戴氏教育总校（顺吉大厦校区）",
+		updatedAt: "2026-08-20",
+	},
 };
 
 void LOCAL_CAMPUSES;
@@ -459,7 +504,10 @@ function createCampusProfile(row: AuthoritativeCampusRow): CampusProfile {
 }
 
 export function getCampuses() {
-	return AUTHORITATIVE_CAMPUSES.map(createCampusProfile).sort(
+	return AUTHORITATIVE_CAMPUSES.map((row) => {
+		const campus = createCampusProfile(row);
+		return { ...campus, ...CAMPUS_DETAIL_OVERRIDES[campus.slug] };
+	}).sort(
 		(a, b) =>
 			a.city.localeCompare(b.city, "zh-CN") ||
 			(a.infoStatus === b.infoStatus ? 0 : a.infoStatus === "complete" ? -1 : 1) ||
@@ -475,7 +523,6 @@ export function getCampusBySlug(slug: string) {
 	return campus
 		? {
 				...campus,
-				...CAMPUS_DETAIL_OVERRIDES[campus.slug],
 				reviews: getCampusReviews(campus.slug),
 			}
 		: undefined;
