@@ -5,6 +5,7 @@ import {
 	SchoolIcon,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { PhoneButton, PhoneLink } from "@/components/phone-action";
 import { CONTACT_HEADQUARTERS, CONTACT_TOPICS } from "@/lib/constants/contact";
 import { SITE_FULL_NAME, SITE_HOTLINE_TEXT } from "@/lib/constants/site";
@@ -146,6 +147,12 @@ export function HeadquartersHub() {
 									一键导航到总部
 								</a>
 							) : null}
+							<Link
+								className="inline-flex h-12 items-center justify-center rounded-full border border-slate-200 bg-white px-7 font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950"
+								href="/guan-fang-he-yan"
+							>
+								核验官网与电话
+							</Link>
 						</div>
 					</div>
 				</div>

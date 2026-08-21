@@ -6,6 +6,7 @@ import {
 	SchoolIcon,
 } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { JsonLd } from "@/components/JsonLd";
 import { PageHeader } from "@/components/PageHeader";
 import { PhoneButton, PhoneLink } from "@/components/phone-action";
@@ -60,7 +61,7 @@ export default function LianXiWoMenPage() {
 			<JsonLd data={jsonLd} />
 
 			<PageHeader
-				actions={
+					actions={
 					<>
 						<PhoneButton
 							className="h-12 rounded-xl px-8 font-semibold"
@@ -78,6 +79,12 @@ export default function LianXiWoMenPage() {
 								查看总部导航
 							</a>
 						) : null}
+						<Link
+							className="inline-flex h-12 items-center justify-center rounded-xl border border-slate-200 bg-white px-8 font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950"
+							href="/guan-fang-he-yan"
+						>
+							核验官网与电话
+						</Link>
 					</>
 				}
 				badge={CONTACT_PAGE_INTRO.badge}

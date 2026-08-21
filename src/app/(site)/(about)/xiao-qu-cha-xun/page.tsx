@@ -1,5 +1,6 @@
 import { MapPinIcon } from "lucide-react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { PageHeader } from "@/components/PageHeader";
 import { PhoneButton } from "@/components/phone-action";
 import {
@@ -34,10 +35,18 @@ export default function CampusListPage() {
 		<div className="min-h-screen bg-slate-50">
 			<main className="pb-16">
 				<PageHeader
-					actions={
-						<PhoneButton className="h-12 rounded-xl px-6 font-semibold">
-							电话咨询：{SITE_HOTLINE_TEXT}
-						</PhoneButton>
+						actions={
+						<>
+							<PhoneButton className="h-12 rounded-xl px-6 font-semibold">
+								电话咨询：{SITE_HOTLINE_TEXT}
+							</PhoneButton>
+							<Link
+								className="inline-flex h-12 items-center justify-center rounded-xl border border-slate-200 bg-white px-6 font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950"
+								href="/guan-fang-he-yan"
+							>
+								核验官网与电话
+							</Link>
+						</>
 					}
 					badge={`${SITE_FULL_NAME} · 校区查询`}
 					description="按城市查看校区地址、导航与已公开的课程、师资和环境资料。资料待完善的校区会明确标注。"
