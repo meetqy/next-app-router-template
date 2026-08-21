@@ -32,6 +32,7 @@ export const PRIMARY_LINKS: HeaderNavItem[] = [
 			{ href: "/jiao-xue-huan-jing", label: "教学环境" },
 			{ href: "/rong-yu-zi-zhi", label: "荣誉资质" },
 			{ href: "/lian-xi-wo-men", label: "联系我们" },
+			{ href: "/guan-fang-he-yan", label: "官网核验" },
 		],
 		label: "了解戴氏",
 	},

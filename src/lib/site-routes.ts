@@ -66,6 +66,13 @@ const STATIC_SITE_ROUTES: SiteRoute[] = [
 	},
 	{
 		changeFrequency: "weekly",
+		description: `核验${SITE_FULL_NAME}直营官网、第三方平台子站、品牌相关域名与官方咨询电话。`,
+		path: "/guan-fang-he-yan",
+		priority: 0.8,
+		title: "官网核验",
+	},
+	{
+		changeFrequency: "weekly",
 		description: `查看${SITE_FULL_NAME}全部校区信息，快速了解各校区地址、学习环境与到校咨询入口。`,
 		path: "/xiao-qu-cha-xun",
 		priority: 0.8,
