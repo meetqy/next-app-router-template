@@ -67,7 +67,7 @@ export default function SiteLayout({
 			<body className="min-h-screen bg-slate-50 text-slate-950 antialiased">
 				<Script
 					id="ttzz"
-					src="https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?c85c4569b226fdb39e4f45bc961f18c591f3c26992111e3ff0a04eb7671022ea3871f0d6a9220c04b06cd03d5ba8e733fe66d20303562cd119c1d6f449af6378"
+					src="https://lf1-cdn-tos.bytegoofy.com/goofy/ttzz/push.js?fde6e72178824b420beadacd06793a94d5cb3e0a9db03af8da8a75be8ec17fc4fd9a9dcb5ced4d7780eb6f3bbd089073c2a6d54440560d63862bbf4ec01bba3a"
 				/>
 				<JsonLd
 					data={{
