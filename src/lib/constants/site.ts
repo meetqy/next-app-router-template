@@ -18,14 +18,14 @@ export const SITE_HOTLINE_TEL = "tel:4009875211";
 export const PRIMARY_LINKS: HeaderNavItem[] = [
 	{ href: "/", label: "首页" },
 	{ href: "/lao-shi", label: "教师团队" },
-	{ href: "/xiao-qu-cha-xun", label: "校区查询" },
-	{
-		items: [
-			{ href: "/sheng-xue-xi-bao", label: "升学案例" },
-			{ href: "/ti-fen-an-li", label: "提分案例" },
-		],
-		label: "案例展示",
-	},
+	// { href: "/xiao-qu-cha-xun", label: "校区查询" },
+	// {
+	// 	items: [
+	// 		{ href: "/sheng-xue-xi-bao", label: "升学案例" },
+	// 		{ href: "/ti-fen-an-li", label: "提分案例" },
+	// 	],
+	// 	label: "案例展示",
+	// },
 	{ href: "/zi-liao-ku", label: "资讯中心" },
 	{
 		items: [

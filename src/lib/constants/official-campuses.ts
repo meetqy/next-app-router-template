@@ -4,7 +4,7 @@ export type OfficialCampusRow = {
 	address: string;
 	city: string;
 	district?: string;
-	infoStatus: "pending";
+	infoStatus: "complete" | "pending";
 	name: string;
 	operationType: CampusOperationType;
 	slug: string;
@@ -501,7 +501,7 @@ export const OFFICIAL_CAMPUSES: OfficialCampusRow[] = [
 		"address": "成都市高新区新义路3号附9号1楼、附10号1楼、附11号1楼",
 		"city": "成都",
 		"district": "高新区",
-		"infoStatus": "pending",
+		"infoStatus": "complete",
 		"name": "蓝天校区",
 		"operationType": "direct",
 		"slug": "蓝天校区"
@@ -618,7 +618,7 @@ export const OFFICIAL_CAMPUSES: OfficialCampusRow[] = [
 		"address": "成都市天府新区华阳正西街88号城南领寓3楼5号",
 		"city": "成都",
 		"district": "天府新区",
-		"infoStatus": "pending",
+		"infoStatus": "complete",
 		"name": "南湖校区",
 		"operationType": "direct",
 		"slug": "南湖校区"
