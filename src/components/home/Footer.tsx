@@ -9,19 +9,19 @@ const FOOTER_LINK_GROUPS = [
 		align: "text-left",
 		links: [
 			{ href: "/lao-shi", label: "教师团队" },
-			{ href: "/xiao-qu-cha-xun", label: "校区查询" },
+			// { href: "/xiao-qu-cha-xun", label: "校区查询" },
 			{ href: "/zi-liao-ku", label: "资讯中心" },
 		],
 		title: "快速入口",
 	},
-	{
-		align: "text-center",
-		links: [
-			{ href: "/sheng-xue-xi-bao", label: "升学案例" },
-			{ href: "/ti-fen-an-li", label: "提分案例" },
-		],
-		title: "案例展示",
-	},
+	// {
+	// 	align: "text-center",
+	// 	links: [
+	// 		{ href: "/sheng-xue-xi-bao", label: "升学案例" },
+	// 		{ href: "/ti-fen-an-li", label: "提分案例" },
+	// 	],
+	// 	title: "案例展示",
+	// },
 	{
 		align: "text-center",
 		links: [
@@ -91,7 +91,7 @@ export function Footer() {
 
 				<nav
 					aria-label="页脚导航"
-					className="grid grid-cols-2 gap-x-6 gap-y-8 py-9 md:grid-cols-4 md:py-10"
+					className="grid grid-cols-2 gap-x-6 gap-y-8 py-9 md:grid-cols-3 md:py-10"
 				>
 					{FOOTER_LINK_GROUPS.map((group) => (
 						<div className={group.align} key={group.title}>
