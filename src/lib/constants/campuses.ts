@@ -623,6 +623,97 @@ const CAMPUS_DETAIL_OVERRIDES: Record<string, Partial<CampusProfile>> = {
 		title: "戴氏教育（戛纳湾旗舰校区）",
 		updatedAt: "2026-08-21",
 	},
+	"蓝天校区": {
+		address: "成都市高新区新义路3号附9号1楼、附10号1楼、附11号1楼",
+		entranceImages: Array.from({ length: 3 }, (_, index) => ({
+			src: `/校区/蓝天校区/门头${index + 1}.jpg`,
+			alt: `蓝天校区门头${index + 1}`,
+		})),
+		gallery: Array.from({ length: 8 }, (_, index) => ({
+			src: `/校区/蓝天校区/环境${index + 1}.jpg`,
+			alt: `蓝天校区教学环境${index + 1}`,
+			width: [1700, 1706, 500, 1706, 2048, 1500, 2000, 374][index],
+			height: [1280, 1279, 375, 1280, 1536, 2000, 1500, 500][index],
+		})).concat({
+			src: "/校区/蓝天校区/门头4.jpg",
+			alt: "蓝天校区环境展示九",
+			width: 2048,
+			height: 1536,
+		}),
+		infoStatus: "complete",
+		mapHref: createAmapSearchHref(
+			"成都市高新区新义路3号附9号1楼、附10号1楼、附11号1楼",
+		),
+		mapLinks: [
+			{
+				href: createAmapSearchHref(
+					"成都市高新区新义路3号附9号1楼、附10号1楼、附11号1楼",
+				),
+				label: "高德地图",
+			},
+			{
+				href: createTencentSearchHref(
+					"成都市高新区新义路3号附9号1楼、附10号1楼、附11号1楼",
+				),
+				label: "腾讯地图",
+			},
+		],
+		operationType: "direct",
+		programImages: Array.from({ length: 6 }, (_, index) => ({
+			src: `/校区/蓝天校区/课程${index + 1}.jpg`,
+			alt: `蓝天校区课程服务${index + 1}`,
+		})),
+		programs: [
+			{ title: "高中文化课", description: "" },
+			{ title: "秋季班", description: "" },
+		],
+		subtitle: "直营旗舰校",
+		title: "戴氏教育（高新区直营旗舰校）",
+		updatedAt: "2026-08-25",
+	},
+	"南湖校区": {
+		address: "成都市天府新区华阳正西街88号城南领寓3楼5号",
+		entranceImages: Array.from({ length: 3 }, (_, index) => ({
+			src: `/校区/南湖校区/门头${index + 1}.jpg`,
+			alt: `南湖校区门头${index + 1}`,
+		})),
+		gallery: Array.from({ length: 10 }, (_, index) => ({
+			src: `/校区/南湖校区/环境${index + 1}.jpg`,
+			alt: `南湖校区教学环境${index + 1}`,
+			width: [500, 2016, 1080, 1279, 1000, 1536, 1500, 500, 1500, 2016][index],
+			height: [375, 1512, 1920, 1706, 499, 2048, 2000, 375, 2000, 1512][index],
+		})).concat({
+			src: "/校区/南湖校区/门头4.jpg",
+			alt: "南湖校区环境展示十一",
+			width: 1080,
+			height: 1920,
+		}),
+		infoStatus: "complete",
+		mapHref: createAmapSearchHref("成都市天府新区华阳正西街88号城南领寓3楼5号"),
+		mapLinks: [
+			{
+				href: createAmapSearchHref("成都市天府新区华阳正西街88号城南领寓3楼5号"),
+				label: "高德地图",
+			},
+			{
+				href: createTencentSearchHref("成都市天府新区华阳正西街88号城南领寓3楼5号"),
+				label: "腾讯地图",
+			},
+		],
+		operationType: "direct",
+		programImages: Array.from({ length: 9 }, (_, index) => ({
+			src: `/校区/南湖校区/课程${index + 1}.jpg`,
+			alt: `南湖校区课程服务${index + 1}`,
+		})),
+		programs: [
+			{ title: "初中文化课", description: "" },
+			{ title: "高职单招", description: "" },
+			{ title: "小学文化课", description: "" },
+		],
+		subtitle: "直营校区",
+		title: "戴氏教育（南湖校区）",
+		updatedAt: "2026-08-25",
+	},
 };
 
 void LOCAL_CAMPUSES;
