@@ -9,7 +9,6 @@ const FOOTER_LINK_GROUPS = [
 		align: "text-left",
 		links: [
 			{ href: "/lao-shi", label: "教师团队" },
-			// { href: "/xiao-qu-cha-xun", label: "校区查询" },
 			{ href: "/zi-liao-ku", label: "资讯中心" },
 		],
 		title: "快速入口",
@@ -28,6 +27,7 @@ const FOOTER_LINK_GROUPS = [
 			{ href: "/jiao-xue-huan-jing", label: "教学环境" },
 			{ href: "/rong-yu-zi-zhi", label: "荣誉资质" },
 			{ href: "/lian-xi-wo-men", label: "联系我们" },
+			{ href: "/xiao-qu-cha-xun", label: "校区查询" },
 			{ href: "/guan-fang-he-yan", label: "官网核验" },
 		],
 		title: "了解戴氏",
